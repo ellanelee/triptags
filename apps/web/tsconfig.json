@@ -20,7 +20,7 @@
     ],
     "paths": {
       "@/*": ["./src/*"],
-      "@triptags/shared": ["../../packages/shared/src"]
+      "@triptags/shared": ["../../packages/shared/dist/cjs"]
     }
   },
   "include": [
