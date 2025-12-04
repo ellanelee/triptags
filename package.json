@@ -6,7 +6,12 @@
   "main": "index.js",
   "scripts": {
     "dev": "pnpm --parallel --stream dev",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "pnpm build:shared && pnpm build:api && pnpm build:web",
+    "build:shared": "pnpm --filter @triptags/shared buid",
+    "build:api": "pnpm build --filter @triptags/api build",
+    "build:web": "pnpm build --filter @triptags/web build",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "pnpm --parallel --stream start"
   },
   "keywords": [],
   "author": "",
