@@ -1,0 +1,70 @@
+// Prisma Schema for TripTags
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url = env("DATABASE_URL")
+}
+
+// ========= enum ===========
+
+Enum UserRole {
+  USER
+  LOCAL
+  BUSINESS
+  ADMIN
+}
+
+enum VenueCategory {
+  RESTAURANT
+  CAFE
+  HOTEL
+  STREET_FOOD
+  BAR
+  ATTRACTION
+  ACTIVITY
+  SHOPPING
+  NATURE
+  CULTURE
+}
+
+enum PointType {
+  REVIEW_WRITE
+  VENUE_CREATE
+  HELPFUL_RECEIVED
+  LOCAL_VERIFIED
+}
+
+enum VerificationMethod {
+  ADDRESS
+  GPS
+  ACTIVITY
+}
+
+enum ImageSource {
+  GOOGLE
+  TOUR_API
+  USER_UPLOAD
+}
+
+// ======== DB Table ============
+
+Table users {
+  id      String @id @default(uuid())
+  email   String 
+  password varchar
+  nickname varchar
+  role UserRole [not null, default: 'USER']
+  profile_image varchar
+  provider varchar
+  provider_id varchar
+  language varchar
+  created_at timestamp
+  updated_at timestamp
+  deleted_at timestamp
+}
+
+
