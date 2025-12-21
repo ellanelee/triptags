@@ -62,38 +62,78 @@ enum ImageSource {
 // ======== DB Table ============
 
 model User { 
-  id             String      @id @default(uuid()) @db.Uuid
-  email          String      @db.VarChar(255)
-  password       String?     @db.Text
-  nickname       String      @db.VarChar(100)
-  role           UserRole    @default(USER)
-  profileImage   String?     @db.Text @map("profile_image")
-  provider       Provider    @default(LOCAL)
-  providerId    String?      @db.VarChar(255) @map("provider_id")   
-  language       String      @db.VarChar(255) @default("ko")  
-  createdAt      DateTime    @default(now()) @map("created_at")
-  updatedAt      DateTime    @updatedAt @map("updated_at")
-  deletedAt      DateTime?   @map("deleted_at")
-  profile        UserProfile?
+  id                String                @id @default(uuid()) @db.Uuid
+  email             String                @db.VarChar(255)
+  password          String?               @db.Text
+  nickname          String                @db.VarChar(100)
+  role              UserRole              @default(USER)
+  profileImage      String?               @db.Text @map("profile_image")
+  provider          Provider              @default(LOCAL)
+  providerId        String?               @db.VarChar(255) @map("provider_id")   
+  language          String                @db.VarChar(255) @default("ko")  
+  createdAt         DateTime              @default(now()) @map("created_at")
+  updatedAt         DateTime              @updatedAt @map("updated_at")
+  deletedAt         DateTime?             @map("deleted_at")
+  profile           UserProfile?
+  localVerification LocalVerification[]
+  venue             Venue[] 
   @@map("users")
 }
 
 model UserProfile {
   id                String      @id @default(uuid()) @db.Uuid
-  city              String      @db.VarChar(100)
-  district          String      @db.VarChar(100)
-  subdistrict       String      @db.VarChar(100)
+  city              String      @db.VarChar(255)
+  district          String      @db.VarChar(255)
+  subdistrict       String      @db.VarChar(255)
   detailedAddress   String      @db.Text @map("detailed_address")
   latitude          Float      
   longitude         Float
   introduction      String      @db.Text
   point             Int         @default(0)
-  reviewCount      Int          @default(0) @map("review_count")
-  helpCount        Int          @default(0) @map("help_count")
-  userId           String       @unique @map("user_id") @db.Uuid
+  reviewCount       Int         @default(0) @map("review_count")
+  helpCount         Int         @default(0) @map("help_count")
+  userId            String      @unique @map("user_id") @db.Uuid
   deletedAt         DateTime?   @map("deleted_at")
   user              User        @relation(fields: [userId], references:[id], onDelete:Cascade)
   @@map("user_profiles")
 }
 
+model LocalVerification {
+  id                    String              @id @default(uuid()) @db.Uuid
+  city                  String              @db.VarChar(255)
+  district              String              @db.VarChar(255)
+  longitude             Float
+  latitude              Float         
+  verificationMethod    VerificationMethod  @map("verification_method")
+  createdAt             DateTime            @default(now()) @map("created_at")   
+  deletedAt             DateTime?           @map("deleted_at")
+  //user table 연관요소
+  userId                String              @map("user_id") @db.Uuid
+  user                  User                @relation(fields:[userId], references:[id], onDelete:Cascade)
+  //venue table연관요소
+  venueId               String?             @db.Uuid @map("venue_id")
+  venue                 Venue?              @relation(fields:[venueId], references:[id], onDelete: Cascade)               
+  @@map("local_verifications")
+}
 
+model Venue {
+  id                     String               @id @default(uuid()) @db.Uuid
+  name                   Json
+  description            Json
+  latitude               Float              
+  longitude              Float 
+  country                String               @db.VarChar(255)
+  city                   String               @db.VarChar(255)
+  district               String               @db.VarChar(255)
+  tourApiContentId       String?              @map("tour_api_content_id")
+  google_place_id        String?              @map("google_place_id")
+  mainImage              String?              @map("main_image")
+  overallRating          Float                @default(0) @map("overall_rating")
+  reviewCount            Int                  @default(0) @map("review_count")
+  createdAt              DateTime             @default(now()) @map("created_at")
+  deletedAt              DateTime?            @map("deleted_at")
+  createdBy              String               @map("created_by") @db.Uuid   
+  user                   User                 @relation(fields:[createdBy], references:[id], onDelete: Cascade)
+  localVerification      LocalVerification[]
+  @@map( "venues")
+}
