@@ -58,82 +58,212 @@ enum ImageSource {
 }
 
 
-
-// ======== DB Table ============
+// ======== User Table =========
 
 model User { 
-  id                String                @id @default(uuid()) @db.Uuid
-  email             String                @db.VarChar(255)
-  password          String?               @db.Text
-  nickname          String                @db.VarChar(100)
-  role              UserRole              @default(USER)
-  profileImage      String?               @db.Text @map("profile_image")
-  provider          Provider              @default(LOCAL)
-  providerId        String?               @db.VarChar(255) @map("provider_id")   
-  language          String                @db.VarChar(255) @default("ko")  
-  createdAt         DateTime              @default(now()) @map("created_at")
-  updatedAt         DateTime              @updatedAt @map("updated_at")
-  deletedAt         DateTime?             @map("deleted_at")
-  profile           UserProfile?
-  localVerification LocalVerification[]
-  venue             Venue[] 
+  id                 String                @id @default(uuid()) @db.Uuid
+  email              String                @db.VarChar(255)
+  password           String?               @db.Text
+  nickname           String                @db.VarChar(100)
+  role               UserRole              @default(USER)
+  profileImage       String?               @db.Text @map("profile_image")
+  provider           Provider              @default(LOCAL)
+  providerId         String?               @db.VarChar(255) @map("provider_id")   
+  language           String                @db.VarChar(255) @default("ko")  
+  createdAt          DateTime              @default(now()) @map("created_at")
+  updatedAt          DateTime              @updatedAt @map("updated_at")
+  deletedAt          DateTime?             @map("deleted_at")
+  profile            UserProfile?
+  point              UserPoint[]
+  localVerifications LocalVerification[]
+  venues             Venue[] 
+  tags               Tag[]
+  @@unique([provider, providerId])
   @@map("users")
 }
 
 model UserProfile {
   id                String      @id @default(uuid()) @db.Uuid
-  city              String      @db.VarChar(255)
-  district          String      @db.VarChar(255)
-  subdistrict       String      @db.VarChar(255)
   detailedAddress   String      @db.Text @map("detailed_address")
   latitude          Float      
   longitude         Float
   introduction      String      @db.Text
-  point             Int         @default(0)
   reviewCount       Int         @default(0) @map("review_count")
-  helpCount         Int         @default(0) @map("help_count")
-  userId            String      @unique @map("user_id") @db.Uuid
+  helpfulCount      Int         @default(0) @map("helpful_count")
   deletedAt         DateTime?   @map("deleted_at")
+  updatedAt         DateTime    @updatedAt @map("updated_at")
+  //테이블 연관요소
+  userId            String      @unique @map("user_id") @db.Uuid
   user              User        @relation(fields: [userId], references:[id], onDelete:Cascade)
+  regionId          String      @map("region_id") @db.Uuid
+  region            Region      @relation(fields:[regionId], references:[id], onDelete:Cascade)
   @@map("user_profiles")
 }
 
 model LocalVerification {
   id                    String              @id @default(uuid()) @db.Uuid
-  city                  String              @db.VarChar(255)
-  district              String              @db.VarChar(255)
   longitude             Float
   latitude              Float         
   verificationMethod    VerificationMethod  @map("verification_method")
-  createdAt             DateTime            @default(now()) @map("created_at")   
+  createdAt             DateTime            @default(now()) @map("created_at")  
   deletedAt             DateTime?           @map("deleted_at")
-  //user table 연관요소
+  //테이블 간 연관요소
   userId                String              @map("user_id") @db.Uuid
   user                  User                @relation(fields:[userId], references:[id], onDelete:Cascade)
-  //venue table연관요소
   venueId               String?             @db.Uuid @map("venue_id")
-  venue                 Venue?              @relation(fields:[venueId], references:[id], onDelete: Cascade)               
+  venue                 Venue?              @relation(fields:[venueId], references:[id])               
+  regionId              String              @map("region_id") @db.Uuid
+  region                Region              @relation(fields: [regionId], references:[id], onDelete:Cascade)
+  userPoint             UserPoint[]
   @@map("local_verifications")
 }
 
+model UserPoint{
+  id                   String               @id @default(uuid()) @db.Uuid 
+  point                Int                  @default(0)
+  pointActivity        PointType            @map("point_activity")
+  localVerified        VerificationMethod?  @map("local_verified")
+  createdAt            DateTime             @default(now()) @map("created_at")
+  deletedAt            DateTime?            @map("deleted_at")
+  //연관요소  
+  userId               String               @db.Uuid @map("user_id")
+  localVerificationId  String?              @db.Uuid @map("local_verification_id")
+  venueId              String?              @db.Uuid @map("venue_id")
+  user                 User                 @relation(fields:[userId], references:[id], onDelete: Cascade)
+  venue                Venue?               @relation(fields:[venueId], references:[id])
+  localVerification    LocalVerification?   @relation(fields:[localVerificationId], references:[id])
+  @@map("user_points")
+}
+
+model BusinessVerification {
+  id                   String      @id @default(uuid()) @db.Uuid
+  businessName         String      @db.VarChar(100) @map("business_name")
+  businessNumber       String      @db.VarChar(100) @map("business_number")
+  businessVerified     Boolean     @default(false)  @map("business_verified")
+  createdAt            DateTime    @default(now())  @map("created_at")
+  updatedAt            DateTime    @updatedAt @map("updated_at")
+  deletedAt            DateTime?   @map("deleted_at")
+  // user테이블 관련요소 
+  userId               String      @db.Uuid @unique @map("user_id")
+  user                 User        @relation(fields:[userId],references:[id],onDelete: Cascade)
+  @@map("business_verification")
+}
+
+// ====== Region Table ======
+model Region {
+  id                  String               @id @default(uuid()) @db.Uuid
+  country             String               @db.VarChar(100)
+  city                String               @db.VarChar(100) 
+  district            String               @db.VarChar(100) 
+  subdistrict         String               @db.VarChar(100) 
+  userProfile         UserProfile[]
+  localVerification   LocalVerification[] 
+  venues              Venue[]
+  @@unique([country, city, district, subdistrict])
+  @@index([country, city])
+  @@map("regions")
+}
+
+// ====== Venue Table ======
 model Venue {
   id                     String               @id @default(uuid()) @db.Uuid
   name                   Json
   description            Json
   latitude               Float              
   longitude              Float 
-  country                String               @db.VarChar(255)
-  city                   String               @db.VarChar(255)
-  district               String               @db.VarChar(255)
   tourApiContentId       String?              @map("tour_api_content_id")
-  google_place_id        String?              @map("google_place_id")
+  googlePlaceId          String?              @map("google_place_id")
   mainImage              String?              @map("main_image")
   overallRating          Float                @default(0) @map("overall_rating")
   reviewCount            Int                  @default(0) @map("review_count")
   createdAt              DateTime             @default(now()) @map("created_at")
+  updatedAt              DateTime             @updatedAt @map("updated_at")
   deletedAt              DateTime?            @map("deleted_at")
-  createdBy              String               @map("created_by") @db.Uuid   
+  //user table, local verification 연관요소
+  createdBy              String               @map("created_by") @db.Uuid
   user                   User                 @relation(fields:[createdBy], references:[id], onDelete: Cascade)
-  localVerification      LocalVerification[]
+  regionId               String               @db.Uuid @map("region_id")
+  region                 Region               @relation(fields:[regionId], references:[id], onDelete:Cascade)
+  localVerifications     LocalVerification[]
+  venueDetails           VenueDetail?
+  googlePlace            GooglePlace?      
+  venueImages            VenueImage[]
+  venueTags              VenueTag[]
+  venueStats             VenueStats?
   @@map( "venues")
 }
+
+model VenueDetail {
+  id            String      @id @default(uuid()) @db.Uuid
+  phoneNumber   String      @db.VarChar(100) @map("phone_number")
+  priceRange    String      @db.VarChar(100) @map("price_range")
+  subCategory   String      @db.VarChar(100) @map("sub_category")
+  websiteUrl    String      @db.VarChar(100) @map("website_url")
+  work_hour     Json        @map("work_hour")
+  description   Json         
+  createdAt     DateTime    @default(now()) @map("created_at") 
+  updatedAt     DateTime    @updatedAt @map("updated_at")
+  deletedAt     DateTime?   @map("deleted_at")  
+  //Venue와 연관   
+  venueId       String      @map("venue_id") @unique @db.Uuid
+  venue         Venue       @relation(fields:[venueId], references:[id], onDelete: Cascade)
+  @@map("venue_details")
+}
+
+model GooglePlace {
+  id                String   @id @default(uuid()) @db.Uuid 
+  googlePlaceId     String   @db.VarChar(255) @map("google_place_id") 
+  googleRating      Float    @map("google_rating") @default(0)
+  googleType        String   @db.VarChar(255) @map("google_types")
+  googleUrl         String   @map("google_url")
+  createdAt         DateTime @default(now()) @map("created_at")
+  venueId           String   @db.Uuid @map("venue_id") @unique
+  //테이블 연관내용
+  venue             Venue    @relation(fields:[venueId], references:[id], onDelete: Cascade)     
+  @@map("google_place")
+}
+
+model VenueImage {
+  id                String            @id @default(uuid()) @db.Uuid 
+  isThumbnail       Boolean           @default(false) @map("is_thumbnail")
+  imageSource       ImageSource       @map("image_source")  
+  createdAt         DateTime          @default(now()) @map("created_at")
+  venueId           String            @db.Uuid @map("venue_id")
+  //테이블 연관내용
+  venue             Venue             @relation(fields:[venueId], references:[id], onDelete: Cascade)     
+  @@map("venue_images")
+}
+
+model VenueStats {
+  id                String            @id @default(uuid()) @db.Uuid 
+  ratingAvg         Float             @default(0) @map("rating_avg")
+  reviewCount       Int               @default(0) @map("review_count")
+  localRatingAvg    Float             @default(0) @map("local_rating_avg")
+  venueId           String            @map("venue_id") @db.Uuid @unique
+  //table
+  venue             Venue             @relation(fields:[venueId], references:[id], onDelete:Cascade) 
+  @@map("venue_stats")
+}
+
+model Tag{
+  id                String            @id @default(uuid()) @db.Uuid
+  tagName           String            @db.VarChar(100) @map("tag_name") @unique
+  systemTag         Boolean           @map("system_tag")
+  // user Table
+  creatorId         String?           @db.Uuid @map("creator_id")
+  user              User?             @relation(fields:[creatorId], references:[id])  
+  venueTags         VenueTag[]
+  @@map("tags")
+}
+
+model VenueTag {
+  venueId       String    @map("venue_id") @db.Uuid
+  tagId         String    @map("tag_id") @db.Uuid
+  createdAt     DateTime  @default(now()) @map("created_at")
+
+  venue         Venue     @relation(fields:[venueId], references:[id], onDelete: Cascade)
+  tag           Tag       @relation(fields:[tagId], references:[id],onDelete: Cascade)
+  @@id([venueId, tagId])
+  @@map("venue_tags")
+}
+
