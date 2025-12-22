@@ -76,8 +76,9 @@ model User {
   profile            UserProfile?
   point              UserPoint[]
   localVerifications LocalVerification[]
-  venues             Venue[] 
-  tags               Tag[]
+  venues             Venue[]
+  tag                Tag[]
+  review             Review[]
   @@unique([provider, providerId])
   @@map("users")
 }
@@ -96,7 +97,7 @@ model UserProfile {
   userId            String      @unique @map("user_id") @db.Uuid
   user              User        @relation(fields: [userId], references:[id], onDelete:Cascade)
   regionId          String      @map("region_id") @db.Uuid
-  region            Region      @relation(fields:[regionId], references:[id], onDelete:Cascade)
+  region            Region      @relation(fields:[regionId], references:[id])
   @@map("user_profiles")
 }
 
@@ -158,7 +159,7 @@ model Region {
   subdistrict         String               @db.VarChar(100) 
   userProfile         UserProfile[]
   localVerification   LocalVerification[] 
-  venues              Venue[]
+  venue               Venue[]
   @@unique([country, city, district, subdistrict])
   @@index([country, city])
   @@map("regions")
@@ -184,11 +185,11 @@ model Venue {
   user                   User                 @relation(fields:[createdBy], references:[id], onDelete: Cascade)
   regionId               String               @db.Uuid @map("region_id")
   region                 Region               @relation(fields:[regionId], references:[id], onDelete:Cascade)
+  venueDetail            VenueDetail?         
   localVerifications     LocalVerification[]
-  venueDetails           VenueDetail?
   googlePlace            GooglePlace?      
-  venueImages            VenueImage[]
-  venueTags              VenueTag[]
+  venueImage             VenueImage[]
+  venueTag               VenueTag[]
   venueStats             VenueStats?
   @@map( "venues")
 }
@@ -266,4 +267,59 @@ model VenueTag {
   @@id([venueId, tagId])
   @@map("venue_tags")
 }
+
+// ====== Review Table ======
+model Review {
+  id                String            @id @default(uuid()) @db.Uuid
+  rating            Int               @default(0)
+  contents          Json
+  authorRole        UserRole          @default(USER) @map("author_role")
+  isLocalVerified   Boolean           @map("is_local_verified") @default(false) 
+  likeCount         Int               @map("like_count") @default(0)
+  createdAt         DateTime          @default(now()) @map("created_at")
+  updatedAt         DateTime          @updatedAt @map("updated_at")
+  deletedAt         DateTime?         @map("deleted_at")
+  venueId           String            @db.Uuid @map("venue_id")
+  venue             Venue             @relation(fields:[venueId], references:[id], onDelete:Cascade)
+  userId            String?           @db.Uuid @map("user_id")
+  user              User?             @relation(fields:[userId], references:[id], onDelete: SetNull)
+  reviewHelpfuls    ReviewHelpful[]
+  reviewImages      ReviewImage[]  
+  reviewDetail      ReviewDetail?
+  @@map("reviews")
+}
+
+
+model ReviewDetail {
+  id                String            @id @default(uuid()) @db.Uuid
+  tasteRating       Int               @default(0) @map("taste_rating")
+  serviceRating     Int               @default(0) @map("service_rating")
+  priceRating       Int               @default(0) @map("price_rating") 
+  visitDate         DateTime?         @map("visit_date")
+  visitPurpose      String            @db.Text @map("visit_purpose")
+  createdAt         DateTime          @default(now()) @map("created_at")
+  reviewId          String            @db.Uuid @map("review_id") @unique
+  review            Review            @relation(fields:[reviewId], references:[id], onDelete:Cascade)
+  @@map("review_details")
+}
+
+model ReviewHelpful {
+  id                String            @id @default(uuid()) @db.Uuid
+  reviewId          String            @db.Uuid @map("review_id")
+  userId            String            @db.Uuid @map("user_id")
+  user              User?             @relation(fields:[userId], references:[id], onDelete:SetNull)
+  review            Review            @relation(fields:[reviewId], references:[id], onDelete:Cascade)
+  @@unique([reviewId, userId])
+  @@map("review_helpful")
+}
+
+model ReviewImage {
+    id                String            @id @default(uuid()) @db.Uuid
+    mainImage         Boolean           @default(false)
+    imageUrl          String            @map("image_url")
+    reviewId          String            @db.Uuid @map("review_id")
+    review            Review            @relation(fields:[reviewId], references:[id])
+    @@map("review_images")
+}
+
 
