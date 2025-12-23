@@ -61,24 +61,26 @@ enum ImageSource {
 // ======== User Table =========
 
 model User { 
-  id                 String                @id @default(uuid()) @db.Uuid
-  email              String                @db.VarChar(255)
-  password           String?               @db.Text
-  nickname           String                @db.VarChar(100)
-  role               UserRole              @default(USER)
-  profileImage       String?               @db.Text @map("profile_image")
-  provider           Provider              @default(LOCAL)
-  providerId         String?               @db.VarChar(255) @map("provider_id")   
-  language           String                @db.VarChar(255) @default("ko")  
-  createdAt          DateTime              @default(now()) @map("created_at")
-  updatedAt          DateTime              @updatedAt @map("updated_at")
-  deletedAt          DateTime?             @map("deleted_at")
-  profile            UserProfile?
-  point              UserPoint[]
-  localVerifications LocalVerification[]
-  venues             Venue[]
-  tag                Tag[]
-  review             Review[]
+  id                     String                @id @default(uuid()) @db.Uuid
+  email                  String                @db.VarChar(255)
+  password               String?               @db.Text
+  nickname               String                @db.VarChar(100)
+  role                   UserRole              @default(USER)
+  profileImage           String?               @db.Text @map("profile_image")
+  provider               Provider              @default(LOCAL)
+  providerId             String?               @db.VarChar(255) @map("provider_id")   
+  language               String                @db.VarChar(255) @default("ko")  
+  createdAt              DateTime              @default(now()) @map("created_at")
+  updatedAt              DateTime              @updatedAt @map("updated_at")
+  deletedAt              DateTime?             @map("deleted_at")
+  profile                UserProfile?
+  userPoint              UserPoint[]
+  localVerifications     LocalVerification[]
+  venues                 Venue[]
+  tag                    Tag[]
+  review                 Review[]
+  businessVerification   BusinessVerification[]
+  reviewHelpful          ReviewHelpful[]
   @@unique([provider, providerId])
   @@map("users")
 }
@@ -191,6 +193,8 @@ model Venue {
   venueImage             VenueImage[]
   venueTag               VenueTag[]
   venueStats             VenueStats?
+  userPoint              UserPoint[]
+  review                 Review[]
   @@map( "venues")
 }
 
