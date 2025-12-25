@@ -13,6 +13,10 @@ import * as path from 'path';
         path.join(__dirname, '../../.env.local'),
       ],
     }),
+    CacheModule.register({
+      isGlobal: true,
+      ttl: 5,
+    }),
     ThrottlerModule.forRoot([
       {
         ttl: 60000, //ms단위
