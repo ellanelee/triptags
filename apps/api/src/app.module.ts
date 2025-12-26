@@ -3,6 +3,10 @@ import { ConfigModule } from '@nestjs/config';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { CacheModule } from '@nestjs/cache-manager';
 import * as path from 'path';
+import { PrismaModule } from './prisma/prisma.module';
+import { VenueModule } from './venue/venue.module';
+import { UserModule } from './user/user.module';
+import { ReviewModule } from './review/review.module';
 
 @Module({
   imports: [
@@ -13,12 +17,20 @@ import * as path from 'path';
         path.join(__dirname, '../../.env.local'),
       ],
     }),
+    CacheModule.register({
+      isGlobal: true,
+      ttl: 5,
+    }),
     ThrottlerModule.forRoot([
       {
         ttl: 60000, //ms단위
         limit: 10, //요청횟수
       },
     ]),
+    PrismaModule,
+    VenueModule,
+    UserModule,
+    ReviewModule,
   ],
 })
 export class AppModule {}
