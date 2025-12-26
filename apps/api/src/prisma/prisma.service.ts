@@ -1,19 +1,6 @@
 import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 
-type DeleteManyCapable = {
-  deleteMany: (...args: never[]) => Promise<unknown>;
-};
-
-function hasDeleteMany(x: unknown): x is DeleteManyCapable {
-  return (
-    typeof x === 'object' &&
-    x !== null &&
-    'deleteMany' in x &&
-    typeof (x as { deleteMany?: unknown }).deleteMany === 'function'
-  );
-}
-
 @Injectable()
 export class PrismaService
   extends PrismaClient
