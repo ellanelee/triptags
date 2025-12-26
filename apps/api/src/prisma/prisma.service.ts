@@ -1,6 +1,19 @@
 import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 
+type DeleteManyCapable = {
+  deleteMany: (...args: never[]) => Promise<unknown>;
+};
+
+function hasDeleteMany(x: unknown): x is DeleteManyCapable {
+  return (
+    typeof x === 'object' &&
+    x !== null &&
+    'deleteMany' in x &&
+    typeof (x as { deleteMany?: unknown }).deleteMany === 'function'
+  );
+}
+
 @Injectable()
 export class PrismaService
   extends PrismaClient
@@ -31,8 +44,10 @@ export class PrismaService
 
     return await this.$transaction(async (tx) => {
       for (const modelName of modelNames) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
         const model = (tx as any)[modelName];
         if (model && 'deleteMany' in model) {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
           await model.deleteMany();
         }
       }
