@@ -37,9 +37,9 @@ CREATE TABLE "users" (
 -- CreateTable
 CREATE TABLE "user_profiles" (
     "id" UUID NOT NULL,
-    "detailed_address" TEXT NOT NULL,
-    "latitude" DOUBLE PRECISION NOT NULL,
-    "longitude" DOUBLE PRECISION NOT NULL,
+    "detailed_address" TEXT,
+    "latitude" DOUBLE PRECISION,
+    "longitude" DOUBLE PRECISION,
     "introduction" TEXT NOT NULL,
     "review_count" INTEGER NOT NULL DEFAULT 0,
     "helpful_count" INTEGER NOT NULL DEFAULT 0,
@@ -98,10 +98,9 @@ CREATE TABLE "business_verification" (
 -- CreateTable
 CREATE TABLE "regions" (
     "id" UUID NOT NULL,
-    "country" VARCHAR(100) NOT NULL,
-    "city" VARCHAR(100) NOT NULL,
-    "district" VARCHAR(100) NOT NULL,
-    "subdistrict" VARCHAR(100) NOT NULL,
+    "name" VARCHAR(100) NOT NULL,
+    "level" INTEGER NOT NULL,
+    "parent_id" UUID,
 
     CONSTRAINT "regions_pkey" PRIMARY KEY ("id")
 );
@@ -110,14 +109,13 @@ CREATE TABLE "regions" (
 CREATE TABLE "venues" (
     "id" UUID NOT NULL,
     "name" JSONB NOT NULL,
-    "description" JSONB NOT NULL,
-    "latitude" DOUBLE PRECISION NOT NULL,
-    "longitude" DOUBLE PRECISION NOT NULL,
+    "description" JSONB,
+    "venueCategory" "VenueCategory",
+    "detailed_address" TEXT,
+    "latitude" DOUBLE PRECISION,
+    "longitude" DOUBLE PRECISION,
     "tour_api_content_id" TEXT,
     "google_place_id" TEXT,
-    "main_image" TEXT,
-    "overall_rating" DOUBLE PRECISION NOT NULL DEFAULT 0,
-    "review_count" INTEGER NOT NULL DEFAULT 0,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
     "deleted_at" TIMESTAMP(3),
@@ -130,12 +128,12 @@ CREATE TABLE "venues" (
 -- CreateTable
 CREATE TABLE "venue_details" (
     "id" UUID NOT NULL,
-    "phone_number" VARCHAR(100) NOT NULL,
-    "price_range" VARCHAR(100) NOT NULL,
-    "sub_category" VARCHAR(100) NOT NULL,
-    "website_url" VARCHAR(100) NOT NULL,
-    "work_hour" JSONB NOT NULL,
-    "description" JSONB NOT NULL,
+    "phone_number" VARCHAR(100),
+    "price_range" VARCHAR(100),
+    "sub_category" VARCHAR(100),
+    "website_url" VARCHAR(100),
+    "work_hour" JSONB,
+    "description" JSONB,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
     "deleted_at" TIMESTAMP(3),
@@ -148,9 +146,9 @@ CREATE TABLE "venue_details" (
 CREATE TABLE "google_place" (
     "id" UUID NOT NULL,
     "google_place_id" VARCHAR(255) NOT NULL,
-    "google_rating" DOUBLE PRECISION NOT NULL DEFAULT 0,
-    "google_types" VARCHAR(255) NOT NULL,
-    "google_url" TEXT NOT NULL,
+    "google_rating" DOUBLE PRECISION DEFAULT 0,
+    "google_types" VARCHAR(255),
+    "google_url" TEXT,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "venue_id" UUID NOT NULL,
 
@@ -160,8 +158,9 @@ CREATE TABLE "google_place" (
 -- CreateTable
 CREATE TABLE "venue_images" (
     "id" UUID NOT NULL,
+    "image_url" TEXT NOT NULL,
     "is_thumbnail" BOOLEAN NOT NULL DEFAULT false,
-    "image_source" "ImageSource" NOT NULL,
+    "image_source" "ImageSource",
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "venue_id" UUID NOT NULL,
 
@@ -183,7 +182,7 @@ CREATE TABLE "venue_stats" (
 CREATE TABLE "tags" (
     "id" UUID NOT NULL,
     "tag_name" VARCHAR(100) NOT NULL,
-    "system_tag" BOOLEAN NOT NULL,
+    "system_tag" BOOLEAN NOT NULL DEFAULT false,
     "creator_id" UUID,
 
     CONSTRAINT "tags_pkey" PRIMARY KEY ("id")
@@ -210,7 +209,7 @@ CREATE TABLE "reviews" (
     "updated_at" TIMESTAMP(3) NOT NULL,
     "deleted_at" TIMESTAMP(3),
     "venue_id" UUID NOT NULL,
-    "user_id" UUID,
+    "user_id" UUID NOT NULL,
 
     CONSTRAINT "reviews_pkey" PRIMARY KEY ("id")
 );
@@ -258,10 +257,7 @@ CREATE UNIQUE INDEX "user_profiles_user_id_key" ON "user_profiles"("user_id");
 CREATE UNIQUE INDEX "business_verification_user_id_key" ON "business_verification"("user_id");
 
 -- CreateIndex
-CREATE INDEX "regions_country_city_idx" ON "regions"("country", "city");
-
--- CreateIndex
-CREATE UNIQUE INDEX "regions_country_city_district_subdistrict_key" ON "regions"("country", "city", "district", "subdistrict");
+CREATE UNIQUE INDEX "regions_parent_id_name_level_key" ON "regions"("parent_id", "name", "level");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "venue_details_venue_id_key" ON "venue_details"("venue_id");
@@ -309,6 +305,9 @@ ALTER TABLE "user_points" ADD CONSTRAINT "user_points_local_verification_id_fkey
 ALTER TABLE "business_verification" ADD CONSTRAINT "business_verification_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "regions" ADD CONSTRAINT "regions_parent_id_fkey" FOREIGN KEY ("parent_id") REFERENCES "regions"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "venues" ADD CONSTRAINT "venues_created_by_fkey" FOREIGN KEY ("created_by") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -339,13 +338,13 @@ ALTER TABLE "venue_tags" ADD CONSTRAINT "venue_tags_tag_id_fkey" FOREIGN KEY ("t
 ALTER TABLE "reviews" ADD CONSTRAINT "reviews_venue_id_fkey" FOREIGN KEY ("venue_id") REFERENCES "venues"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "reviews" ADD CONSTRAINT "reviews_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "reviews" ADD CONSTRAINT "reviews_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "review_details" ADD CONSTRAINT "review_details_review_id_fkey" FOREIGN KEY ("review_id") REFERENCES "reviews"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "review_helpful" ADD CONSTRAINT "review_helpful_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "review_helpful" ADD CONSTRAINT "review_helpful_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "review_helpful" ADD CONSTRAINT "review_helpful_review_id_fkey" FOREIGN KEY ("review_id") REFERENCES "reviews"("id") ON DELETE CASCADE ON UPDATE CASCADE;

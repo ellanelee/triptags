@@ -118,15 +118,46 @@ async function fetchTourData(
   }
 }
 
-function extractCityDistract(addr: string): {
-  city: string;
-  district: string;
-} {
-  const parts = addr.split(' ');
-  return {
-    city: parts[0] || '',
-    district: parts[1] || '',
-  };
+function getRegionLevels(addr: string): string[] | null {
+  const addrInfo = addr.split(' ').filter(Boolean);
+  if (!addr || addr.trim() === ' ') return null;
+  if (addrInfo.length === 0) return null;
+  const country = 'KR';
+  const city = addrInfo[0];
+  const district = addrInfo[1];
+  console.log('City: ', city, 'District: ', district);
+  return [country, city, district].filter(Boolean);
+}
+
+async function getOrCreateRegion(levels: string[]): Promise<string> {
+  let parentId: string | null = null;
+
+  for (let i = 0; i < levels.length; i++) {
+    const levelName: string = levels[i];
+    const currentLevel = i + 1;
+
+    let region = await prisma.region.findFirst({
+      where: {
+        name: levelName,
+        level: currentLevel,
+        parentId: parentId,
+      },
+    });
+    if (!region) {
+      region = await prisma.region.create({
+        data: {
+          name: levelName,
+          level: currentLevel,
+          parentId: parentId,
+        },
+      });
+    }
+    parentId = region.id;
+  }
+  if (!parentId) {
+    throw new Error('Region Id를 생성하는데 실패하였습니다');
+  }
+  return parentId;
 }
 
 async function main() {
@@ -203,26 +234,13 @@ async function main() {
         //     continue;
         //   }
         const address = [item.addr1, item.addr2].filter(Boolean).join(' ');
-        const { city, district } = extractCityDistract(address);
-        const targetCity = city || area.name;
-        const targetDistrict = district || area.name;
-
+        const regionLevels = getRegionLevels(address);
+        if (!regionLevels) {
+          console.warn('주소가 없는 데이터는 표시할수 없어 Skip합니다');
+          continue;
+        }
         try {
-          const region = await prisma.region.upsert({
-            where: {
-              country_city_district: {
-                country: 'KR',
-                city: targetCity,
-                district: targetDistrict,
-              },
-            },
-            update: {},
-            create: {
-              city: targetCity,
-              country: 'KR',
-              district: district,
-            },
-          });
+          const currentRegionId = await getOrCreateRegion(regionLevels);
           await prisma.venue.create({
             data: {
               name: { ko: item.title, en: '' },
@@ -231,7 +249,7 @@ async function main() {
               latitude,
               longitude,
               tourApiContentId: item.contentid,
-              regionId: region.id,
+              regionId: currentRegionId,
               createdBy: systemUser.id,
 
               venueDetail: {
