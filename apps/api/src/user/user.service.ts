@@ -10,6 +10,27 @@ export class UserService {
       where: {
         email,
         provider: 'LOCAL',
+        deletedAt: null,
+      },
+    });
+  }
+
+  async findByNickname(nickname: string) {
+    return this.prisma.user.findFirst({
+      where: {
+        nickname,
+        provider: 'LOCAL',
+        deletedAt: null,
+      },
+    });
+  }
+
+  async findById(id: string) {
+    return this.prisma.user.findFirst({
+      where: {
+        id,
+        provider: 'LOCAL',
+        deletedAt: null,
       },
     });
   }
