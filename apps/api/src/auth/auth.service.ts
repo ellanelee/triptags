@@ -88,6 +88,6 @@ export class AuthService {
     if (!checkCredentials)
       throw new UnauthorizedException('비밀번호가 정확하지 않습니다');
 
-    generateToken(user.id);
+    return this.generateToken(user.id);
   }
 }
