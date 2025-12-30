@@ -86,15 +86,15 @@ model User {
 }
 
 model UserProfile {
-  id              String    @id @default(uuid()) @db.Uuid
-  detailedAddress String    @map("detailed_address") @db.Text
-  latitude        Float
-  longitude       Float
-  introduction    String    @db.Text
-  reviewCount     Int       @default(0) @map("review_count")
-  helpfulCount    Int       @default(0) @map("helpful_count")
-  deletedAt       DateTime? @map("deleted_at")
-  updatedAt       DateTime  @updatedAt @map("updated_at")
+  id              String     @id @default(uuid()) @db.Uuid
+  detailedAddress String?    @map("detailed_address") @db.Text
+  latitude        Float?
+  longitude       Float?
+  introduction    String     @db.Text
+  reviewCount     Int        @default(0) @map("review_count")
+  helpfulCount    Int        @default(0) @map("helpful_count")
+  deletedAt       DateTime?  @map("deleted_at")
+  updatedAt       DateTime   @updatedAt @map("updated_at")
   //테이블 연관요소
   userId          String    @unique @map("user_id") @db.Uuid
   user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -156,20 +156,24 @@ model BusinessVerification {
   @@map("business_verification")
 }
 
-// ====== Region Table ======
+//region table
 model Region {
-  id                 String              @id @default(uuid()) @db.Uuid
-  country            String              @db.VarChar(100)
-  city               String              @db.VarChar(100)
-  district           String              @db.VarChar(100)
-  userProfiles       UserProfile[]
-  localVerifications LocalVerification[]
-  venues             Venue[]
+   id                 String              @id @default(uuid()) @db.Uuid
+   name               String              @db.VarChar(100)
+   level              Int                 //1.country, 2.city, 3:district 
 
-  @@unique([country, city, district])
-  @@index([country, city])
+   parentId           String?             @map("parent_id") @db.Uuid 
+   parent             Region?             @relation("RegionalHierachy", fields:[parentId], references:[id])
+   children           Region[]            @relation("RegionalHierachy")
+
+   userProfiles       UserProfile[]
+   localVerifications LocalVerification[]
+   venues             Venue[]
+
+  @@unique([parentId, name, level], name:"region_depth")
   @@map("regions")
 }
+
 
 // ====== Venue Table ======
 model Venue {

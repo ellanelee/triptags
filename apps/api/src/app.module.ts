@@ -7,6 +7,7 @@ import { PrismaModule } from './prisma/prisma.module';
 import { VenueModule } from './venue/venue.module';
 import { UserModule } from './user/user.module';
 import { ReviewModule } from './review/review.module';
+import { RedisModule } from 'redis/redis.moule';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { ReviewModule } from './review/review.module';
     VenueModule,
     UserModule,
     ReviewModule,
+    RedisModule,
   ],
 })
 export class AppModule {}

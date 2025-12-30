@@ -9,7 +9,9 @@
     "strict": true,
     "skipLibCheck": true,
     "rootDir": "./src",
-    "outDir": "./dist" //scripts에서 조정 
+    "outDir": "./dist", //scripts에서 조정
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
   },
   "include": ["src/**/*"]
 }

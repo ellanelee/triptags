@@ -5,11 +5,53 @@ import { PrismaService } from '@/prisma/prisma.service';
 export class UserService {
   constructor(private prisma: PrismaService) {}
 
+  async emailExist(email: string) {
+    const user = await this.prisma.user.findFirst({
+      where: {
+        email,
+        provider: 'LOCAL',
+        deletedAt: null,
+      },
+    });
+    return !!user;
+  }
+  async nicknameExist(nickname: string) {
+    const user = await this.prisma.user.findFirst({
+      where: {
+        nickname,
+        provider: 'LOCAL',
+        deletedAt: null,
+      },
+    });
+    return !!user;
+  }
+
   async findByEmail(email: string) {
     return this.prisma.user.findFirst({
       where: {
         email,
         provider: 'LOCAL',
+        deletedAt: null,
+      },
+    });
+  }
+
+  async findByNickname(nickname: string) {
+    return this.prisma.user.findFirst({
+      where: {
+        nickname,
+        provider: 'LOCAL',
+        deletedAt: null,
+      },
+    });
+  }
+
+  async findById(id: string) {
+    return this.prisma.user.findFirst({
+      where: {
+        id,
+        provider: 'LOCAL',
+        deletedAt: null,
       },
     });
   }
