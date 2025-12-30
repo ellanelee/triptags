@@ -4,20 +4,48 @@ import {
   ConflictException,
   Injectable,
   InternalServerErrorException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { RegisterDto } from '@../../../packages/shared/src/dtos/auth/register.dto';
+import { LoginDto } from '../../../../packages/shared/src/dtos/auth/login.dto';
 import * as bcrypt from 'bcryptjs';
+import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
+import { RedisService } from 'redis/redis.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private prisma: PrismaService,
     private userService: UserService,
+    private jwtService: JwtService,
+    private configService: ConfigService,
+    private redisService: RedisService,
   ) {}
 
+  private async generateToken(userId: string) {
+    const accessToken = await this.jwtService.signAsync(
+      { sub: userId },
+      {
+        secret: this.configService.get<string>('JWT_ACCESS_SECRET'),
+        expiresIn: this.configService.get<number>('JWT_ACCESS_EXPIRED_IN'),
+      },
+    );
+    const refreshToken = await this.jwtService.signAsync(
+      { sub: userId },
+      {
+        secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
+        expiresIn: this.configService.get<number>('JWT_REFRESH_EXPIRED_IN'),
+      },
+    );
+
+    await this.redisService.setRefreshToken(userId, refreshToken, 1209600);
+    return { accessToken, refreshToken };
+  }
+
   async userRegister(registerDto: RegisterDto): Promise<void> {
-    const isEmailExist = await this.userService.findByEmail(registerDto.email);
-    const isNickNameExist = await this.userService.findByNickname(
+    const isEmailExist = await this.userService.emailExist(registerDto.email);
+    const isNickNameExist = await this.userService.nicknameExist(
       registerDto.nickname,
     );
     if (isEmailExist) {
@@ -41,5 +69,25 @@ export class AuthService {
       console.log('사용자 생성 오류', error);
       throw new InternalServerErrorException('유저 생성 실패');
     }
+  }
+
+  async userLogin(loginDto: LoginDto) {
+    const user = await this.userService.findByEmail(loginDto.email);
+    if (!user) throw new UnauthorizedException('이메일이 존재하지 않습니다');
+    if (!user.password)
+      throw new UnauthorizedException('비밀번호가 존재하지 않습니다.');
+    if (user.provider !== 'LOCAL')
+      throw new UnauthorizedException(
+        '이메일 계정으로 가입한 사용자만 이메일 로그인이 가능합니다.',
+      );
+
+    const checkCredentials = await bcrypt.compare(
+      loginDto.password,
+      user.password,
+    );
+    if (!checkCredentials)
+      throw new UnauthorizedException('비밀번호가 정확하지 않습니다');
+
+    generateToken(user.id);
   }
 }
