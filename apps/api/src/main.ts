@@ -6,6 +6,7 @@ import { ValidationPipe } from '@nestjs/common';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  //쿠키_경로_cors설정
   app.use(cookieParser());
   app.setGlobalPrefix('api');
   app.enableCors({
