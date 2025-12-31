@@ -6,12 +6,12 @@ import {
   InternalServerErrorException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { RegisterDto } from '@../../../packages/shared/src/dtos/auth/register.dto';
-import { LoginDto } from '../../../../packages/shared/src/dtos/auth/login.dto';
+import { RegisterDto } from '@triptags/shared';
+import { LoginDto } from '@triptags/shared';
 import * as bcrypt from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { RedisService } from 'redis/redis.service';
+import { RedisService } from '@/redis/redis.service';
 
 @Injectable()
 export class AuthService {
