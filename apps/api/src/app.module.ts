@@ -7,7 +7,8 @@ import { PrismaModule } from './prisma/prisma.module';
 import { VenueModule } from './venue/venue.module';
 import { UserModule } from './user/user.module';
 import { ReviewModule } from './review/review.module';
-import { RedisModule } from '@/redis/redis.moule';
+import { RedisModule } from './redis/redis.moule';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { RedisModule } from '@/redis/redis.moule';
         limit: 10, //요청횟수
       },
     ]),
+    AuthModule,
     PrismaModule,
     VenueModule,
     UserModule,
