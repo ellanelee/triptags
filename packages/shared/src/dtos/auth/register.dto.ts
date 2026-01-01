@@ -1,14 +1,22 @@
 import { IsEmail, IsEnum, IsString, IsStrongPassword } from "class-validator"
 import { Language } from "../../common/enums"
 import { Match } from "../../utils/match.decorator"
+import { ApiProperty } from "@nestjs/swagger"
 
 export class RegisterDto {
+  @ApiProperty({
+    example: "user@example.com",
+    description: "사용자 이메일 주소",
+    required: true,
+  })
   @IsEmail({}, { message: "이메일 형식을 지켜주세요" })
   email!: string
 
-  @IsString()
-  passwordConfirm!: string
-
+  @ApiProperty({
+    example: "1234Abcd!",
+    description: "로그인 패스워드(영문대소문자,숫자,특수문자포함 8자 이상",
+    required: true,
+  })
   @IsString()
   @IsStrongPassword(
     {
@@ -22,9 +30,27 @@ export class RegisterDto {
   )
   password!: string
 
+  @ApiProperty({
+    example: "1234Abcd!",
+    description: "로그인 패스워드 재확인(영문대소문자,숫자,특수문자포함 8자 이상",
+    required: true,
+  })
+  @IsString()
+  passwordConfirm!: string
+
+    @ApiProperty({
+    example: "홍길동!",
+    description: "로그인 패스워드 재확인(영문대소문자,숫자,특수문자포함 8자 이상",
+    required: true,
+  })
   @IsString()
   nickname!: string
 
+    @ApiProperty({
+    example: "ko",
+    description: "ko(korean),en(english),zh(chinese),es(spanish),ja(japanese),fr(french)ge(german)",
+    required: true,
+  })
   @IsEnum(Language)
   language!: Language
 }
