@@ -1,9 +1,17 @@
-import { Controller, Get, HttpCode, Patch, Put, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  HttpCode,
+  Patch,
+  Put,
+  UseGuards,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '@/auth/jwt-auth.guard.ts/jwt-auth.guard';
-import { CurrentUserId } from '@/common/current_user.decorator';
-import { JwtSubInfo } from '@/common/types';
+import { CurrentUserId } from '@/common/decorator/current_user.decorator';
+import { JwtSubInfo } from '@/common/type/types';
+import { IUserResponse } from '@triptags/shared';
 
 @ApiTags('users')
 @Controller('users')
@@ -13,8 +21,10 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   @Get('me')
   @HttpCode(204)
-  async userProfie(@CurrentUserId() jwtUserInfo: JwtSubInfo) {
-    return await this.userService.findLoginUser(jwtUserInfo.sub);
+  async userProfie(
+    @CurrentUserId() jwtUserInfo: JwtSubInfo,
+  ): Promise<IUserResponse> {
+    return await this.userService.findById(jwtUserInfo.sub);
   }
 
   //Local User에만 있는 기본 정보 Update
