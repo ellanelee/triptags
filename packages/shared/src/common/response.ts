@@ -1,4 +1,4 @@
-import { ApiResponse } from "./enums"
+import { ApiResponse } from "./interface"
 
 export const createResponse = <T>(
   success: true,

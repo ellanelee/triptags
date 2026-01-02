@@ -13,9 +13,9 @@ export enum Language {
   DE = "de",
 }
 
-export interface ApiResponse<T> {
-  success: boolean
-  data? : T
-  error?: string
-  message?: string
+export enum Provider {
+  "GOOGLE",
+  "KAKAO",
+  "NAVER",
+  "LOCAL",
 }
