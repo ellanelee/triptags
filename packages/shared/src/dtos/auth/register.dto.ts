@@ -1,6 +1,5 @@
-import { IsEmail, IsEnum, IsString, IsStrongPassword } from "class-validator"
+import { IsEmail, IsString, IsStrongPassword } from "class-validator"
 import { Language } from "../../common/types"
-import { Match } from "../../utils/match.decorator"
 import { ApiProperty } from "@nestjs/swagger"
 
 export class RegisterDto {
