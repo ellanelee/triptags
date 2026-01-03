@@ -5,6 +5,7 @@ import {
   HttpCode,
   Param,
   Patch,
+  Post,
   UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
@@ -64,7 +65,7 @@ export class UserController {
 
   //nickname변경
   @UseGuards(JwtAuthGuard)
-  @Get('changeNickname')
+  @Patch('changeNickname')
   @HttpCode(204)
   async updateUserNickname(
     @CurrentUserId() jwtUserInfo: JwtSubInfo,
@@ -75,7 +76,7 @@ export class UserController {
 
   //로컬 사용자의 password변경
   @UseGuards(JwtAuthGuard)
-  @Get('changeNickname')
+  @Patch('changeNickname')
   @HttpCode(204)
   async updateUserPassword(
     @CurrentUserId() jwtUserInfo: JwtSubInfo,
