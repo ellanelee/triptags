@@ -169,4 +169,21 @@ export class UserService {
       },
     });
   }
+
+  //탈퇴
+  async softDeleteUser(userId: string) {
+    const user = await this.prisma.user.findFirst({
+      where: {
+        id: userId,
+        deletedAt: null,
+      },
+    });
+    if (!user) throw new NotFoundException('사용자를 찾을수 없습니다');
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        deletedAt: new Date(),
+      },
+    });
+  }
 }

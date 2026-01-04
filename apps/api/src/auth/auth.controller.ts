@@ -1,6 +1,6 @@
 import { Body, Controller, HttpCode, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { RegisterDto } from '@triptags/shared';
+import { ApiResponse, createResponse, RegisterDto } from '@triptags/shared';
 import { LoginDto } from '@triptags/shared';
 import { ApiTags } from '@nestjs/swagger';
 
@@ -11,8 +11,9 @@ export class AuthController {
 
   @Post('register')
   @HttpCode(201)
-  async register(@Body() reisterDto: RegisterDto): Promise<void> {
+  async register(@Body() reisterDto: RegisterDto): Promise<ApiResponse<null>> {
     await this.authService.userRegister(reisterDto);
+    return createResponse(true, null, '회원정보 생성완료');
   }
 
   @Post('login')
