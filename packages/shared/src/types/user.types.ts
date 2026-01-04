@@ -23,6 +23,7 @@ export interface IUserResponse {
 export interface IUserPublicResponse {
   nickname: string
   profileImage: string | null
+  role: UserRole
   createdAt: Date
   profile: {
     latitude: number | null
@@ -46,4 +47,3 @@ export interface IUserUpdate {
 export interface IUserNickname {
   nickname: string
 }
-

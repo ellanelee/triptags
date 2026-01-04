@@ -24,6 +24,7 @@ export const USER_PERSONAL_SELECT = Prisma.validator<Prisma.UserSelect>()({
 export const USER_PUBLIC_SELECT = Prisma.validator<Prisma.UserSelect>()({
   nickname: true,
   profileImage: true,
+  role: true,
   createdAt: true,
   profile: {
     select: {
