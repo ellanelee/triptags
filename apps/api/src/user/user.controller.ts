@@ -8,15 +8,14 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
+import { JwtAccessGuard } from '@/auth/jwt-auth.guard.ts/jwt-auth.access.guard';
 import { UserService } from './user.service';
 import { ApiTags } from '@nestjs/swagger';
-import { JwtAuthGuard } from '@/auth/jwt-auth.guard.ts/jwt-auth.guard';
 import { CurrentUserId } from '@/common/decorator/current_user.decorator';
 import { JwtSubInfo } from '@/common/type/types';
 import {
   IUserNickname,
   UpdatePasswordDto,
-  IUserPublicResponse,
   IUserResponse,
   IUserUpdate,
   createResponse,
@@ -28,7 +27,7 @@ import {
 export class UserController {
   constructor(private userService: UserService) {}
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAccessGuard)
   @Get('me')
   @HttpCode(200)
   async getUserProfie(
@@ -39,7 +38,7 @@ export class UserController {
   }
 
   //사용자 ID로 정보조회
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAccessGuard)
   @Get(':userId/profile')
   @HttpCode(200)
   async userPersonalInfo(
@@ -58,7 +57,7 @@ export class UserController {
   }
 
   //User 정보 Update (nickname, password제외)
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAccessGuard)
   @Patch('me')
   @HttpCode(200)
   async updateLocalUserProfile(
@@ -73,7 +72,7 @@ export class UserController {
   }
 
   //nickname변경
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAccessGuard)
   @Patch('changeNickname')
   @HttpCode(200)
   async updateUserNickname(
@@ -88,8 +87,8 @@ export class UserController {
   }
 
   //로컬 사용자의 password변경
-  @UseGuards(JwtAuthGuard)
-  @Patch('changeNickname')
+  @UseGuards(JwtAccessGuard)
+  @Patch('changePassword')
   @HttpCode(204)
   async updateUserPassword(
     @CurrentUserId() jwtUserInfo: JwtSubInfo,
@@ -98,7 +97,7 @@ export class UserController {
     return this.userService.updateUserPassword(jwtUserInfo.sub, passwordUpdate);
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAccessGuard)
   @Post('withdraw')
   @HttpCode(204)
   async withdraw(@CurrentUserId() jwtUserInfo: JwtSubInfo) {

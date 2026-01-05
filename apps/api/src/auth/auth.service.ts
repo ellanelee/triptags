@@ -4,6 +4,7 @@ import {
   ConflictException,
   Injectable,
   InternalServerErrorException,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { RegisterDto } from '@triptags/shared';
@@ -89,5 +90,23 @@ export class AuthService {
       throw new UnauthorizedException('비밀번호가 정확하지 않습니다');
 
     return this.generateToken(user.id);
+  }
+
+  async issueNewToken(userId: string, incomingToken: string) {
+    const user = await this.userService.findAllById(userId);
+    await this.vaidateRefreshToken(userId, incomingToken);
+    if (!user) throw new NotFoundException('사용자를 찾을수 없습니다');
+    const { accessToken, refreshToken } = await this.generateToken(userId);
+    return { accessToken, refreshToken };
+  }
+
+  async vaidateRefreshToken(userId: string, incomingToken: string) {
+    const savedToken = await this.redisService.getRefreshToken(userId);
+    if (savedToken !== incomingToken) {
+      await this.redisService.deleteRefreshToken(userId);
+      throw new UnauthorizedException(
+        '비정상적인 접근이 감지되어 재로그인이 필요합니다',
+      );
+    }
   }
 }
