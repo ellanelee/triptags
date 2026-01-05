@@ -13,8 +13,8 @@ import { LoginDto } from '@triptags/shared';
 import { ApiTags } from '@nestjs/swagger';
 import { JwtAccessGuard } from './jwt-auth.guard.ts/jwt-auth.access.guard';
 import { CurrentUserId } from '@/common/decorator/current_user.decorator';
-import { JwtSubInfo } from '@/common/type/types';
-import { Request, response, Response } from 'express';
+import { Request, Response } from 'express';
+import { User } from '@prisma/client';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -29,7 +29,7 @@ export class AuthController {
   }
 
   @Post('login')
-  @HttpCode(204)
+  @HttpCode(200)
   async login(
     @Body() loginDto: LoginDto,
     @Res({ passthrough: true }) res: Response,
@@ -51,15 +51,12 @@ export class AuthController {
   @Post('refresh')
   @HttpCode(200)
   async refresh(
-    @CurrentUserId() jwtUserInfo: JwtSubInfo,
+    @CurrentUserId() user: User,
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
   ) {
     const incomingToken = req.cookies['refreshToken'] as string;
-    const tokens = await this.authService.issueNewToken(
-      jwtUserInfo.sub,
-      incomingToken,
-    );
+    const tokens = await this.authService.issueNewToken(user.id, incomingToken);
     res.cookie('refreshToken', tokens.refreshToken, {
       httpOnly: true,
       secure: true,
@@ -75,10 +72,10 @@ export class AuthController {
   @Post('logout')
   @HttpCode(204)
   async logout(
-    @CurrentUserId() jwtUserInfo: JwtSubInfo,
+    @CurrentUserId() user: User,
     @Res({ passthrough: true }) res: Response,
   ) {
-    await this.authService.revokeRefreshToken(jwtUserInfo.sub);
+    await this.authService.revokeRefreshToken(user.id);
     res.clearCookie('refreshToken', {
       httpOnly: true,
       secure: true,

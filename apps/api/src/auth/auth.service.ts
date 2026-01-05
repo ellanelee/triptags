@@ -49,6 +49,7 @@ export class AuthService {
     const isNickNameExist = await this.userService.nicknameExist(
       registerDto.nickname,
     );
+    console.log(isEmailExist, isNickNameExist, registerDto);
     if (isEmailExist) {
       throw new ConflictException('이미 사용중인 이메일입니다.');
     }

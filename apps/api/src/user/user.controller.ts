@@ -10,9 +10,8 @@ import {
 } from '@nestjs/common';
 import { JwtAccessGuard } from '@/auth/jwt-auth.guard.ts/jwt-auth.access.guard';
 import { UserService } from './user.service';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { CurrentUserId } from '@/common/decorator/current_user.decorator';
-import { JwtSubInfo } from '@/common/type/types';
 import {
   IUserNickname,
   UpdatePasswordDto,
@@ -20,20 +19,23 @@ import {
   IUserUpdate,
   createResponse,
   ApiResponse,
+  IUserPublicResponse,
 } from '@triptags/shared';
+import { User } from '@prisma/client';
 
+@ApiBearerAuth('access-token')
 @ApiTags('users')
 @Controller('users')
 export class UserController {
   constructor(private userService: UserService) {}
-
   @UseGuards(JwtAccessGuard)
   @Get('me')
   @HttpCode(200)
   async getUserProfie(
-    @CurrentUserId() jwtUserInfo: JwtSubInfo,
+    @CurrentUserId() user: User,
   ): Promise<ApiResponse<IUserResponse>> {
-    const userProfile = await this.userService.findAllById(jwtUserInfo.sub);
+    console.log('UserId: ', user.id);
+    const userProfile = await this.userService.findAllById(user.id);
     return createResponse(true, userProfile, '회원 정보 검색완료');
   }
 
@@ -43,11 +45,11 @@ export class UserController {
   @HttpCode(200)
   async userPersonalInfo(
     @Param('userId') targetUserId: string,
-    @CurrentUserId() jwtUserInfo: JwtSubInfo,
+    @CurrentUserId() user: User,
   ) {
-    const loggedInUser = await this.getUserProfie(jwtUserInfo);
+    const loggedInUser = await this.getUserProfie(user);
     console.log('로그인된 유저정보 :', loggedInUser);
-    let userPubicProfile;
+    let userPubicProfile: IUserResponse | IUserPublicResponse;
     if (loggedInUser.data?.role === 'ADMIN') {
       userPubicProfile = await this.userService.findAllById(targetUserId);
     } else {
@@ -61,13 +63,14 @@ export class UserController {
   @Patch('me')
   @HttpCode(200)
   async updateLocalUserProfile(
-    @CurrentUserId() jwtUserInfo: JwtSubInfo,
+    @CurrentUserId() user: User,
     @Body() userUpdate: IUserUpdate,
   ): Promise<ApiResponse<IUserUpdate>> {
     const updatedUserProfile = await this.userService.updateLoginUser(
-      jwtUserInfo.sub,
+      user.id,
       userUpdate,
     );
+    console.log(user.id);
     return createResponse(true, updatedUserProfile, '회원 정보 수정완료');
   }
 
@@ -76,11 +79,11 @@ export class UserController {
   @Patch('changeNickname')
   @HttpCode(200)
   async updateUserNickname(
-    @CurrentUserId() jwtUserInfo: JwtSubInfo,
+    @CurrentUserId() user: User,
     @Body() userNickname: IUserNickname,
   ) {
     const changeNickname = await this.userService.updateUserNickname(
-      jwtUserInfo.sub,
+      user.id,
       userNickname,
     );
     return createResponse(true, changeNickname, '닉네임 수정완료');
@@ -91,16 +94,16 @@ export class UserController {
   @Patch('changePassword')
   @HttpCode(204)
   async updateUserPassword(
-    @CurrentUserId() jwtUserInfo: JwtSubInfo,
+    @CurrentUserId() user: User,
     @Body() passwordUpdate: UpdatePasswordDto,
   ) {
-    return this.userService.updateUserPassword(jwtUserInfo.sub, passwordUpdate);
+    return this.userService.updateUserPassword(user.id, passwordUpdate);
   }
 
   @UseGuards(JwtAccessGuard)
   @Post('withdraw')
   @HttpCode(204)
-  async withdraw(@CurrentUserId() jwtUserInfo: JwtSubInfo) {
-    return this.userService.softDeleteUser(jwtUserInfo.sub);
+  async withdraw(@CurrentUserId() user: User) {
+    return this.userService.softDeleteUser(user.id);
   }
 }

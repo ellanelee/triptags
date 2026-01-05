@@ -41,7 +41,7 @@ export class UserService {
         deletedAt: null,
       },
     });
-    return !user;
+    return !!user;
   }
   //이메일로 사용자 검색
   async findByEmail(email: string) {
