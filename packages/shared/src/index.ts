@@ -2,6 +2,7 @@
 export * from "./dtos/auth/login.dto"
 export * from "./dtos/auth/register.dto"
 export * from "./dtos/user/passwordupdate.dto"
+export * from "./dtos/user/nicknameupdate.dto"
 
 //Common
 export * from "./common/types"

@@ -11,7 +11,7 @@ import {
   USER_UPDATE_SELECT,
 } from '@/common/const/user.select';
 import {
-  IUserNickname,
+  UpdateNicknameDto,
   IUserUpdate,
   UpdatePasswordDto,
 } from '@triptags/shared';
@@ -115,9 +115,11 @@ export class UserService {
     });
   }
   //로그인된 local 사용자의 nickname수정
-  async updateUserNickname(userId: string, userUpdate: IUserNickname) {
-    const userNicknameAvailable = await this.nicknameExist(userUpdate.nickname);
-    if (!userNicknameAvailable)
+  async updateUserNickname(userId: string, updateNickname: UpdateNicknameDto) {
+    const userNicknameAvailable = await this.nicknameExist(
+      updateNickname.nickname,
+    );
+    if (userNicknameAvailable)
       throw new ForbiddenException('이미 사용중인 nickname입니다');
     const user = await this.prisma.user.findFirst({
       where: {
@@ -131,7 +133,7 @@ export class UserService {
         id: userId,
       },
       data: {
-        nickname: userUpdate.nickname,
+        nickname: updateNickname.nickname,
       },
     });
   }

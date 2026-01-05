@@ -13,13 +13,13 @@ import { UserService } from './user.service';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { CurrentUserId } from '@/common/decorator/current_user.decorator';
 import {
-  IUserNickname,
   UpdatePasswordDto,
   IUserResponse,
   IUserUpdate,
   createResponse,
   ApiResponse,
   IUserPublicResponse,
+  UpdateNicknameDto,
 } from '@triptags/shared';
 import { User } from '@prisma/client';
 
@@ -47,15 +47,14 @@ export class UserController {
     @Param('userId') targetUserId: string,
     @CurrentUserId() user: User,
   ) {
-    const loggedInUser = await this.getUserProfie(user);
-    console.log('로그인된 유저정보 :', loggedInUser);
-    let userPubicProfile: IUserResponse | IUserPublicResponse;
-    if (loggedInUser.data?.role === 'ADMIN') {
-      userPubicProfile = await this.userService.findAllById(targetUserId);
+    let userProfile: IUserResponse | IUserPublicResponse;
+    console.log(`Params targetId: ${targetUserId}, Current User:${user.id}`);
+    if (user.role === 'ADMIN') {
+      userProfile = await this.userService.findAllById(targetUserId);
     } else {
-      userPubicProfile = await this.userService.findPubicInfoById(targetUserId);
+      userProfile = await this.userService.findPubicInfoById(targetUserId);
     }
-    return createResponse(true, userPubicProfile, '회원 정보 조회완료');
+    return createResponse(true, userProfile, '회원 정보 조회완료');
   }
 
   //User 정보 Update (nickname, password제외)
@@ -80,11 +79,11 @@ export class UserController {
   @HttpCode(200)
   async updateUserNickname(
     @CurrentUserId() user: User,
-    @Body() userNickname: IUserNickname,
+    @Body() updateNickname: UpdateNicknameDto,
   ) {
     const changeNickname = await this.userService.updateUserNickname(
       user.id,
-      userNickname,
+      updateNickname,
     );
     return createResponse(true, changeNickname, '닉네임 수정완료');
   }
