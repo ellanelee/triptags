@@ -109,4 +109,7 @@ export class AuthService {
       );
     }
   }
+  async revokeRefreshToken(userId: string) {
+    await this.redisService.deleteRefreshToken(userId);
+  }
 }

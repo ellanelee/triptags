@@ -14,7 +14,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { JwtAccessGuard } from './jwt-auth.guard.ts/jwt-auth.access.guard';
 import { CurrentUserId } from '@/common/decorator/current_user.decorator';
 import { JwtSubInfo } from '@/common/type/types';
-import { Request, Response } from 'express';
+import { Request, response, Response } from 'express';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -46,6 +46,7 @@ export class AuthController {
     return createResponse(true, tokens.accessToken, '로그인 및 토큰 발행 완료');
   }
 
+  //refresh, Cookie의 refresh Token검증 및 redis비교후 Issue
   @UseGuards(JwtAccessGuard)
   @Post('refresh')
   @HttpCode(200)
@@ -67,5 +68,21 @@ export class AuthController {
     });
 
     return createResponse(true, tokens.accessToken, '토큰 재발행완료');
+  }
+
+  //redis에 토큰 저장정보 및 브라우저의 토큰 삭제
+  @UseGuards(JwtAccessGuard)
+  @Post('logout')
+  @HttpCode(204)
+  async logout(
+    @CurrentUserId() jwtUserInfo: JwtSubInfo,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    await this.authService.revokeRefreshToken(jwtUserInfo.sub);
+    res.clearCookie('refreshToken', {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'strict',
+    });
   }
 }
