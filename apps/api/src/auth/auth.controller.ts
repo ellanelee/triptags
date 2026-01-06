@@ -10,12 +10,13 @@ import {
 import { AuthService } from './auth.service';
 import { ApiResponse, createResponse, RegisterDto } from '@triptags/shared';
 import { LoginDto } from '@triptags/shared';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtAccessGuard } from './jwt-auth.guard.ts/jwt-auth.access.guard';
 import { CurrentUserId } from '@/common/decorator/current_user.decorator';
 import { Request, Response } from 'express';
 import { User } from '@prisma/client';
 
+@ApiBearerAuth('access-token')
 @ApiTags('auth')
 @Controller('auth')
 export class AuthController {

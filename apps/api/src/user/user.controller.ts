@@ -15,11 +15,12 @@ import { CurrentUserId } from '@/common/decorator/current_user.decorator';
 import {
   UpdatePasswordDto,
   IUserResponse,
-  IUserUpdate,
   createResponse,
   ApiResponse,
   IUserPublicResponse,
   UpdateNicknameDto,
+  UserUpdateDto,
+  IUserUpdate,
 } from '@triptags/shared';
 import { User } from '@prisma/client';
 
@@ -63,8 +64,8 @@ export class UserController {
   @HttpCode(200)
   async updateLocalUserProfile(
     @CurrentUserId() user: User,
-    @Body() userUpdate: IUserUpdate,
-  ): Promise<ApiResponse<IUserUpdate>> {
+    @Body() userUpdate: UserUpdateDto,
+  ) {
     const updatedUserProfile = await this.userService.updateLoginUser(
       user.id,
       userUpdate,

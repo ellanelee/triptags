@@ -12,10 +12,20 @@ import {
 } from '@/common/const/user.select';
 import {
   UpdateNicknameDto,
-  IUserUpdate,
   UpdatePasswordDto,
+  UserProfileUpdateDto,
+  UserUpdateDto,
 } from '@triptags/shared';
 import * as bcrypt from 'bcryptjs';
+
+function normalizeUserUpdate(profile: UserProfileUpdateDto) {
+  return {
+    detailedAddress: profile.detailedAddress ?? undefined,
+    latitude: profile.latitude ?? undefined,
+    longitude: profile.longitude ?? undefined,
+    introduction: profile ? (profile.introduction ?? '') : '',
+  };
+}
 
 @Injectable()
 export class UserService {
@@ -100,7 +110,7 @@ export class UserService {
   }
 
   //로그인된 local 사용자 정보 수정_Local사용자
-  async updateLoginUser(userId: string, userUpdate: IUserUpdate) {
+  async updateLoginUser(userId: string, userUpdate: UserUpdateDto) {
     const { profileImage, profile } = userUpdate;
     return this.prisma.user.update({
       where: {
@@ -109,11 +119,12 @@ export class UserService {
       },
       data: {
         profileImage,
-        profile: profile ? { update: { ...profile } } : undefined,
+        profile: profile ? { update: normalizeUserUpdate(profile) } : undefined,
       },
       select: USER_UPDATE_SELECT,
     });
   }
+
   //로그인된 local 사용자의 nickname수정
   async updateUserNickname(userId: string, updateNickname: UpdateNicknameDto) {
     const userNicknameAvailable = await this.nicknameExist(
