@@ -11,7 +11,7 @@ import {
 import { JwtAccessGuard } from '@/auth/jwt-auth.guard.ts/jwt-auth.access.guard';
 import { UserService } from './user.service';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { CurrentUserId } from '@/common/decorator/current_user.decorator';
+import { CurrentUser } from '@/common/decorator/current_user.decorator';
 import {
   UpdatePasswordDto,
   IUserResponse,
@@ -19,7 +19,9 @@ import {
   ApiResponse,
   IUserPublicResponse,
   UpdateNicknameDto,
-  UserUpdateDto,
+  UserProfileImageDto,
+  UserIntroductionDto,
+  UserAddressDto,
 } from '@triptags/shared';
 import { User } from '@prisma/client';
 
@@ -32,7 +34,7 @@ export class UserController {
   @Get('me')
   @HttpCode(200)
   async getUserProfie(
-    @CurrentUserId() user: User,
+    @CurrentUser() user: User,
   ): Promise<ApiResponse<IUserResponse>> {
     console.log('UserId: ', user.id);
     const userProfile = await this.userService.findAllById(user.id);
@@ -45,7 +47,7 @@ export class UserController {
   @HttpCode(200)
   async userPersonalInfo(
     @Param('userId') targetUserId: string,
-    @CurrentUserId() user: User,
+    @CurrentUser() user: User,
   ) {
     let userProfile: IUserResponse | IUserPublicResponse;
     console.log(`Params targetId: ${targetUserId}, Current User:${user.id}`);
@@ -57,28 +59,12 @@ export class UserController {
     return createResponse(true, userProfile, '회원 정보 조회완료');
   }
 
-  //User 정보 Update (nickname, password제외)
-  @UseGuards(JwtAccessGuard)
-  @Patch('me')
-  @HttpCode(200)
-  async updateLocalUserProfile(
-    @CurrentUserId() user: User,
-    @Body() userUpdate: UserUpdateDto,
-  ) {
-    const updatedUserProfile = await this.userService.updateLoginUser(
-      user.id,
-      userUpdate,
-    );
-    console.log(user.id);
-    return createResponse(true, updatedUserProfile, '회원 정보 수정완료');
-  }
-
   //nickname변경
   @UseGuards(JwtAccessGuard)
   @Patch('changeNickname')
   @HttpCode(200)
   async updateUserNickname(
-    @CurrentUserId() user: User,
+    @CurrentUser() user: User,
     @Body() updateNickname: UpdateNicknameDto,
   ) {
     const changeNickname = await this.userService.updateUserNickname(
@@ -93,24 +79,64 @@ export class UserController {
   @Patch('changePassword')
   @HttpCode(204)
   async updateUserPassword(
-    @CurrentUserId() user: User,
+    @CurrentUser() user: User,
     @Body() passwordUpdate: UpdatePasswordDto,
   ) {
     return this.userService.updateUserPassword(user.id, passwordUpdate);
   }
 
+  //User 정보 이미지 정보 Update
   @UseGuards(JwtAccessGuard)
-  @Post('withdraw')
-  @HttpCode(204)
-  async withdraw(@CurrentUserId() user: User) {
-    return this.userService.softDeleteUser(user.id);
+  @Patch('profileImage')
+  @HttpCode(200)
+  async updateUserProfileImage(
+    @CurrentUser() user: User,
+    @Body() userImageUpdate: UserProfileImageDto,
+  ) {
+    const updatedUserProfile = await this.userService.updateUserProfileImage(
+      user.id,
+      userImageUpdate.profileImageUrl,
+    );
+    console.log(user.id);
+    return createResponse(true, updatedUserProfile, '회원 정보 수정완료');
+  }
+
+  //User Introduction Update
+  @UseGuards(JwtAccessGuard)
+  @Patch('introduction')
+  @HttpCode(200)
+  async userProfileImage(
+    @CurrentUser() user: User,
+    @Body() userIntroduction: UserIntroductionDto,
+  ) {
+    const updatedUserIntroduction =
+      await this.userService.updateUserProfileImage(
+        user.id,
+        userIntroduction.introduction,
+      );
+    console.log(user.id);
+    return createResponse(true, updatedUserIntroduction, '회원 정보 수정완료');
   }
 
   @UseGuards(JwtAccessGuard)
-  @Post('registerProfile')
+  @Post('address')
+  @HttpCode(200)
+  async userAddress(
+    @CurrentUser() user: User,
+    @Body() userAddress: UserAddressDto,
+  ) {
+    const updatedUserAddress = await this.userService.updateUserAddress(
+      user.id,
+      userAddress,
+    );
+    console.log(user.id);
+    return createResponse(true, updatedUserAddress, '회원 정보 수정완료');
+  }
+
+  @UseGuards(JwtAccessGuard)
+  @Post('withdraw')
   @HttpCode(204)
-  async registerUserProfile(@CurrentUserId() user: User) {
-    //const user = this.userService()
-    return this.userService.createUserProfile(user.id);
+  async withdraw(@CurrentUser() user: User) {
+    return this.userService.softDeleteUser(user.id);
   }
 }
