@@ -20,7 +20,6 @@ import {
   IUserPublicResponse,
   UpdateNicknameDto,
   UserUpdateDto,
-  IUserUpdate,
 } from '@triptags/shared';
 import { User } from '@prisma/client';
 
@@ -105,5 +104,13 @@ export class UserController {
   @HttpCode(204)
   async withdraw(@CurrentUserId() user: User) {
     return this.userService.softDeleteUser(user.id);
+  }
+
+  @UseGuards(JwtAccessGuard)
+  @Post('registerProfile')
+  @HttpCode(204)
+  async registerUserProfile(@CurrentUserId() user: User) {
+    //const user = this.userService()
+    return this.userService.createUserProfile(user.id);
   }
 }

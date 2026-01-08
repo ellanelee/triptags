@@ -4,16 +4,16 @@ import { Injectable } from '@nestjs/common';
 @Injectable()
 export class RegionService {
   constructor(private prisma: PrismaService) {}
-
   async getOrCreateRegionHistory(
     country: string,
     city: string,
     district: string,
   ) {
+    const root_parent_id = 'defautParentIdToPreventError';
     const countryNode = await this.prisma.region.upsert({
       where: {
         region_depth: {
-          parentId: 'defautParentIdNotNull',
+          parentId: root_parent_id,
           name: country,
           level: 1,
         },
