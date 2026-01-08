@@ -8,18 +8,21 @@ import { PrismaService } from '@/prisma/prisma.service';
 import {
   USER_PERSONAL_SELECT,
   USER_PUBLIC_SELECT,
-  USER_UPDATE_SELECT,
 } from '@/common/const/user.select';
 import {
-  IUserNickname,
-  IUserUpdate,
+  UpdateNicknameDto,
   UpdatePasswordDto,
+  UserAddressDto,
 } from '@triptags/shared';
 import * as bcrypt from 'bcryptjs';
+import { RegionService } from '@/region/region.service';
 
 @Injectable()
 export class UserService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private region: RegionService,
+  ) {}
 
   //사용자 local email존재여부 확인
   async emailExist(email: string) {
@@ -41,7 +44,7 @@ export class UserService {
         deletedAt: null,
       },
     });
-    return !user;
+    return !!user;
   }
   //이메일로 사용자 검색
   async findByEmail(email: string) {
@@ -99,25 +102,12 @@ export class UserService {
     return true;
   }
 
-  //로그인된 local 사용자 정보 수정_Local사용자
-  async updateLoginUser(userId: string, userUpdate: IUserUpdate) {
-    const { profileImage, profile } = userUpdate;
-    return this.prisma.user.update({
-      where: {
-        id: userId,
-        deletedAt: null,
-      },
-      data: {
-        profileImage,
-        profile: profile ? { update: { ...profile } } : undefined,
-      },
-      select: USER_UPDATE_SELECT,
-    });
-  }
   //로그인된 local 사용자의 nickname수정
-  async updateUserNickname(userId: string, userUpdate: IUserNickname) {
-    const userNicknameAvailable = await this.nicknameExist(userUpdate.nickname);
-    if (!userNicknameAvailable)
+  async updateUserNickname(userId: string, updateNickname: UpdateNicknameDto) {
+    const userNicknameAvailable = await this.nicknameExist(
+      updateNickname.nickname,
+    );
+    if (userNicknameAvailable)
       throw new ForbiddenException('이미 사용중인 nickname입니다');
     const user = await this.prisma.user.findFirst({
       where: {
@@ -131,7 +121,7 @@ export class UserService {
         id: userId,
       },
       data: {
-        nickname: userUpdate.nickname,
+        nickname: updateNickname.nickname,
       },
     });
   }
@@ -166,6 +156,65 @@ export class UserService {
       },
       data: {
         password: hashedPassword,
+      },
+    });
+  }
+
+  //로그인된 사용자의 이미지 정보수정
+  async updateUserProfileImage(userId: string, profileImageUrl: string) {
+    return this.prisma.user.update({
+      where: {
+        id: userId,
+        deletedAt: null,
+      },
+      data: {
+        profileImage: profileImageUrl,
+      },
+    });
+  }
+
+  //User소개정보
+  async updateUserIntroduction(userId: string, profileImageUrl: string) {
+    return this.prisma.user.update({
+      where: {
+        id: userId,
+        deletedAt: null,
+      },
+      data: {
+        profileImage: profileImageUrl,
+      },
+    });
+  }
+
+  //User소개정보
+  async updateUserAddress(userId: string, userAddress: UserAddressDto) {
+    const { country, city, district, details } = userAddress;
+    // if (!detailedAddress)
+    //   throw new ForbiddenException('상세 주소가 누락되었습니다.');
+    const districtId = await this.region.getOrCreateRegionHistory(
+      country,
+      city,
+      district,
+    );
+    return this.prisma.userProfile.update({
+      where: {
+        id: userId,
+        deletedAt: null,
+      },
+      data: {
+        detailedAddress: details,
+        regionId: districtId,
+      },
+      include: {
+        region: {
+          include: {
+            parent: {
+              include: {
+                parent: true,
+              },
+            },
+          },
+        },
       },
     });
   }

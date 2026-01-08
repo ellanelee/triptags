@@ -1,9 +1,22 @@
-import { Body, Controller, HttpCode, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  HttpCode,
+  Post,
+  Req,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { ApiResponse, createResponse, RegisterDto } from '@triptags/shared';
 import { LoginDto } from '@triptags/shared';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { JwtAccessGuard } from './jwt-auth.guard.ts/jwt-auth.access.guard';
+import { CurrentUser } from '@/common/decorator/current_user.decorator';
+import { Request, Response } from 'express';
+import { User } from '@prisma/client';
 
+@ApiBearerAuth('access-token')
 @ApiTags('auth')
 @Controller('auth')
 export class AuthController {
@@ -17,8 +30,57 @@ export class AuthController {
   }
 
   @Post('login')
+  @HttpCode(200)
+  async login(
+    @Body() loginDto: LoginDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const tokens = await this.authService.userLogin(loginDto);
+
+    res.cookie('refreshToken', tokens.refreshToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'strict',
+      maxAge: 1209600,
+    });
+
+    return createResponse(true, tokens.accessToken, '로그인 및 토큰 발행 완료');
+  }
+
+  //refresh, Cookie의 refresh Token검증 및 redis비교후 Issue
+  @UseGuards(JwtAccessGuard)
+  @Post('refresh')
+  @HttpCode(200)
+  async refresh(
+    @CurrentUser() user: User,
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const incomingToken = req.cookies['refreshToken'] as string;
+    const tokens = await this.authService.issueNewToken(user.id, incomingToken);
+    res.cookie('refreshToken', tokens.refreshToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'strict',
+      maxAge: 1209600,
+    });
+
+    return createResponse(true, tokens.accessToken, '토큰 재발행완료');
+  }
+
+  //redis에 토큰 저장정보 및 브라우저의 토큰 삭제
+  @UseGuards(JwtAccessGuard)
+  @Post('logout')
   @HttpCode(204)
-  async login(@Body() loginDto: LoginDto): Promise<void> {
-    await this.authService.userLogin(loginDto);
+  async logout(
+    @CurrentUser() user: User,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    await this.authService.revokeRefreshToken(user.id);
+    res.clearCookie('refreshToken', {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'strict',
+    });
   }
 }

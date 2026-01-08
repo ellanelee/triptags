@@ -35,8 +35,8 @@ export interface IUserPublicResponse {
 }
 
 export interface IUserUpdate {
-  profileImage: string | null
-  profile: {
+  profileImage?: string | null
+  profile?: {
     detailedAddress: string | null
     latitude: number | null
     longitude: number | null
