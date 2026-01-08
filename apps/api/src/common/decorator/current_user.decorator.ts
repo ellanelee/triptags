@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { RequestWithUser } from '../type/types';
 
-export const CurrentUserId = createParamDecorator(
+export const CurrentUser = createParamDecorator(
   (data: unknown, ctx: ExecutionContext) => {
     const request = ctx.switchToHttp().getRequest<RequestWithUser>();
     if (!request.user)
