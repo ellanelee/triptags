@@ -174,14 +174,18 @@ export class UserService {
   }
 
   //User소개정보
-  async updateUserIntroduction(userId: string, profileImageUrl: string) {
-    return this.prisma.user.update({
+  async updateUserIntroduction(userId: string, userIntroduction: string) {
+    return this.prisma.userProfile.upsert({
       where: {
         id: userId,
         deletedAt: null,
       },
-      data: {
-        profileImage: profileImageUrl,
+      update: {
+        introduction: userIntroduction,
+      },
+      create: {
+        userId: userId,
+        introduction: userIntroduction,
       },
     });
   }
