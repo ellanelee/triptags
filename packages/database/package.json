@@ -2,21 +2,22 @@
   "name": "@triptags/database",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "prisma:generate": "dotenv -e ../../.env -e .env -- prisma generate --schema prisma/schema.prisma",
-    "prisma:migrate": "dotenv -e ../../.env -e .env -- prisma migrate dev --schema prisma/schema.prisma",
-    "prisma:studio": "dotenv -e ../../.env -e .env -- prisma studio --schema prisma/schema.prisma"
+    "db:generate": "dotenv -e ../../.env -e .env -- prisma generate --schema prisma/schema.prisma",
+    "db:migrate": "dotenv -e ../../.env -e .env -- prisma migrate dev --schema prisma/schema.prisma",
+    "dba:studio": "dotenv -e ../../.env -e .env -- prisma studio --schema prisma/schema.prisma"
   },
   "keywords": [],
   "author": "",
-  
   "license": "ISC",
   "dependencies": {
     "@prisma/client": "catalog:prisma"
   },
   "devDependencies": {
+    "dotenv-cli": "^11.0.0",
     "prisma": "catalog:prisma"
   }
 }
