@@ -1,6 +1,4 @@
-import { PrismaClient, VenueCategory } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { prisma, VenueCategory } from '@triptags/database';
 
 const TOUR_API_KEY = process.env.TOUR_API_KEY;
 const BASE_URL = 'https://apis.data.go.kr/B551011/KorService2';
@@ -272,9 +270,6 @@ async function main() {
 }
 
 main()
-  .then(async () => {
-    await prisma.$disconnect();
-  })
   .catch((e) => {
     console.error('error:', e);
     process.exit(1);
