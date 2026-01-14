@@ -26,7 +26,7 @@ export class UserService {
 
   //사용자 local email존재여부 확인
   async emailExist(email: string) {
-    const user = await this.prisma.user.findFirst({
+    const user = await this.prisma.client.user.findFirst({
       where: {
         email,
         provider: 'LOCAL',
@@ -37,7 +37,7 @@ export class UserService {
   }
   //사용자 local nickname존재여부 확인
   async nicknameExist(nickname: string) {
-    const user = await this.prisma.user.findFirst({
+    const user = await this.prisma.client.user.findFirst({
       where: {
         nickname,
         provider: 'LOCAL',
@@ -48,7 +48,7 @@ export class UserService {
   }
   //이메일로 사용자 검색
   async findByEmail(email: string) {
-    return this.prisma.user.findFirst({
+    return this.prisma.client.user.findFirst({
       where: {
         email,
         deletedAt: null,
@@ -58,7 +58,7 @@ export class UserService {
 
   //nickname으로 사용자 검색
   async findByNickname(nickname: string) {
-    return this.prisma.user.findFirst({
+    return this.prisma.client.user.findFirst({
       where: {
         nickname,
         deletedAt: null,
@@ -68,7 +68,7 @@ export class UserService {
 
   //검색한 사용자의 모든 정보를 반환
   async findAllById(id: string) {
-    const user = await this.prisma.user.findFirst({
+    const user = await this.prisma.client.user.findFirst({
       where: {
         id,
         deletedAt: null,
@@ -83,7 +83,7 @@ export class UserService {
   }
   //검색한 사용자의 모든 정보를 반환
   async findPubicInfoById(id: string) {
-    const user = await this.prisma.user.findFirst({
+    const user = await this.prisma.client.user.findFirst({
       where: {
         id,
         deletedAt: null,
@@ -109,14 +109,14 @@ export class UserService {
     );
     if (userNicknameAvailable)
       throw new ForbiddenException('이미 사용중인 nickname입니다');
-    const user = await this.prisma.user.findFirst({
+    const user = await this.prisma.client.user.findFirst({
       where: {
         id: userId,
         deletedAt: null,
       },
     });
     if (!user) throw new UnauthorizedException('사용자가 존재하지 않습니다');
-    return this.prisma.user.update({
+    return this.prisma.client.user.update({
       where: {
         id: userId,
       },
@@ -127,7 +127,7 @@ export class UserService {
   }
 
   async updateUserPassword(userId: string, passwordUpdate: UpdatePasswordDto) {
-    const user = await this.prisma.user.findFirst({
+    const user = await this.prisma.client.user.findFirst({
       where: {
         id: userId,
         deletedAt: null,
@@ -150,7 +150,7 @@ export class UserService {
       throw new ForbiddenException('비밀번호가 일치하지 않습니다');
 
     const hashedPassword = await bcrypt.hash(passwordUpdate.newPassword, 10);
-    return this.prisma.user.update({
+    return this.prisma.client.user.update({
       where: {
         id: userId,
       },
@@ -162,7 +162,7 @@ export class UserService {
 
   //로그인된 사용자의 이미지 정보수정
   async updateUserProfileImage(userId: string, profileImageUrl: string) {
-    return this.prisma.user.update({
+    return this.prisma.client.user.update({
       where: {
         id: userId,
         deletedAt: null,
@@ -175,7 +175,7 @@ export class UserService {
 
   //User소개정보
   async updateUserIntroduction(userId: string, userIntroduction: string) {
-    return this.prisma.userProfile.upsert({
+    return this.prisma.client.userProfile.upsert({
       where: {
         id: userId,
         deletedAt: null,
@@ -200,7 +200,7 @@ export class UserService {
       city,
       district,
     );
-    return this.prisma.userProfile.update({
+    return this.prisma.client.userProfile.update({
       where: {
         id: userId,
         deletedAt: null,
@@ -225,14 +225,14 @@ export class UserService {
 
   //탈퇴
   async softDeleteUser(userId: string) {
-    const user = await this.prisma.user.findFirst({
+    const user = await this.prisma.client.user.findFirst({
       where: {
         id: userId,
         deletedAt: null,
       },
     });
     if (!user) throw new NotFoundException('사용자를 찾을수 없습니다');
-    await this.prisma.user.update({
+    await this.prisma.client.user.update({
       where: { id: userId },
       data: {
         deletedAt: new Date(),

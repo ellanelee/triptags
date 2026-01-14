@@ -1,13 +1,14 @@
 import { PrismaClient } from "@prisma/client"
 
-const globalPrisma = globalThis as unknown as {
-  prisma?: PrismaClient
+const globalForPrisma = globalThis as unknown as {
+  prisma: PrismaClient | undefined
 }
 
+//prismaClient를 singleton으로 내보냄
 export const prisma =
-  new globalForPrisma.prisma() ??
+  globalForPrisma.prisma ??
   new PrismaClient({
-    log: ["queryObjects", "error", "warn"],
+    log: ["query", "error", "warn"],
   })
 
 if (process.env.NODE_ENV !== "production") {
