@@ -2,12 +2,11 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { CacheModule } from '@nestjs/cache-manager';
-import * as path from 'path';
 import { PrismaModule } from './prisma/prisma.module';
 import { VenueModule } from './venue/venue.module';
 import { UserModule } from './user/user.module';
 import { ReviewModule } from './review/review.module';
-import { RedisModule } from './redis/redis.moule';
+import { RedisModule } from './redis/redis.module';
 import { AuthModule } from './auth/auth.module';
 import { RegionModule } from './region/region.modue';
 
@@ -15,10 +14,7 @@ import { RegionModule } from './region/region.modue';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: [
-        path.join(__dirname, '../../../.env'),
-        path.join(__dirname, '../../.env.local'),
-      ],
+      envFilePath: '.env',
     }),
     CacheModule.register({
       isGlobal: true,

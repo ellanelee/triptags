@@ -58,7 +58,7 @@ export class AuthService {
     }
     const hashedPassword = await bcrypt.hash(registerDto.password, 10);
     try {
-      await this.prisma.user.create({
+      await this.prisma.client.user.create({
         data: {
           email: registerDto.email,
           password: hashedPassword,

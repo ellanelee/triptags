@@ -6,17 +6,21 @@
   "main": "index.js",
   "scripts": {
     "dev": "pnpm --parallel --stream dev",
-    "build": "pnpm build:shared && pnpm build:api && pnpm build:web",
+    "build": "pnpm build:shared && pnpm build:database && pnpm build:api && pnpm build:web",
+    "build:database": "pnpm --filter @triptags/database build",
     "build:shared": "pnpm --filter @triptags/shared build",
     "build:api": "pnpm build --filter @triptags/api build",
     "build:web": "pnpm build --filter @triptags/web build",
+    "db:generate": "pnpm --filter @triptags/database run db:generate",
+    "db:migrate": "pnpm --filter @triptags/database run db:migrate",
+    "db:studio": "pnpm --filter @triptags/database run db:studio",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "pnpm --parallel --stream start"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "packageManager": "pnpm@9.0.0",
+  "packageManager": "pnpm@9.15.9",
   "engines": {
     "node": ">=20.0.0",
     "pnpm": ">=9.0.0"

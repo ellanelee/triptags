@@ -105,12 +105,12 @@ export class UserController {
   @UseGuards(JwtAccessGuard)
   @Patch('introduction')
   @HttpCode(200)
-  async userProfileImage(
+  async user(
     @CurrentUser() user: User,
     @Body() userIntroduction: UserIntroductionDto,
   ) {
     const updatedUserIntroduction =
-      await this.userService.updateUserProfileImage(
+      await this.userService.updateUserIntroduction(
         user.id,
         userIntroduction.introduction,
       );

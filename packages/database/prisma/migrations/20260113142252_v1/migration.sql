@@ -46,7 +46,7 @@ CREATE TABLE "user_profiles" (
     "deleted_at" TIMESTAMP(3),
     "updated_at" TIMESTAMP(3) NOT NULL,
     "user_id" UUID NOT NULL,
-    "region_id" UUID NOT NULL,
+    "region_id" UUID,
 
     CONSTRAINT "user_profiles_pkey" PRIMARY KEY ("id")
 );
@@ -281,7 +281,7 @@ CREATE UNIQUE INDEX "review_helpful_review_id_user_id_key" ON "review_helpful"("
 ALTER TABLE "user_profiles" ADD CONSTRAINT "user_profiles_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "user_profiles" ADD CONSTRAINT "user_profiles_region_id_fkey" FOREIGN KEY ("region_id") REFERENCES "regions"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "user_profiles" ADD CONSTRAINT "user_profiles_region_id_fkey" FOREIGN KEY ("region_id") REFERENCES "regions"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "local_verifications" ADD CONSTRAINT "local_verifications_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
