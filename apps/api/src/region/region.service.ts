@@ -9,18 +9,17 @@ export class RegionService {
     city: string,
     district: string,
   ) {
-    const root_parent_id = 'defautCountryParentId';
-    const countryNode = await this.prisma.client.region.upsert({
-      where: {
-        region_depth: {
-          parentId: root_parent_id,
+    const countryNode =
+      (await this.prisma.client.region.findFirst({
+        where: {
+          parentId: null,
           name: country,
           level: 1,
         },
-      },
-      update: {},
-      create: { name: country, level: 1, parentId: root_parent_id },
-    });
+      })) ??
+      (await this.prisma.client.region.create({
+        data: { name: country, level: 1, parentId: null },
+      }));
     const cityNode = await this.prisma.client.region.upsert({
       where: {
         region_depth: { parentId: countryNode.id, name: city, level: 2 },

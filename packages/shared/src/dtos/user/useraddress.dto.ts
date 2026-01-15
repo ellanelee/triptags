@@ -4,8 +4,8 @@ import { Type } from "class-transformer"
 
 export class UserAddressDto {
   @ApiProperty({
-    example: "대한민국",
-    description: "거주 국가명",
+    example: "KR",
+    description: "거주 국가명의 영문명, KR, UK, USA등등",
   })
   @IsString()
   @IsNotEmpty()
