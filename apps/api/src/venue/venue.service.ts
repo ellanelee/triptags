@@ -6,7 +6,7 @@ export class VenueService {
   constructor(private readonly prisma: PrismaService) {}
 
   async findAll() {
-    return await this.prisma.venue.findMany({
+    return await this.prisma.client.venue.findMany({
       include: {
         venueDetail: true,
         region: true,
