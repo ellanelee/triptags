@@ -30,6 +30,7 @@ import { User } from '@prisma/client';
 @Controller('users')
 export class UserController {
   constructor(private userService: UserService) {}
+
   @UseGuards(JwtAccessGuard)
   @Get('me')
   @HttpCode(200)
