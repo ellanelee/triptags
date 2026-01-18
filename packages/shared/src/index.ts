@@ -6,6 +6,7 @@ export * from "./dtos/user/nicknameupdate.dto"
 export * from "./dtos/user/useraddress.dto"
 export * from "./dtos/user/userimageprofile.dto"
 export * from "./dtos/user/userintroduction.dto"
+export * from "./dtos/venue/venuecreate.dto"
 
 //Common
 export * from "./common/types"
@@ -16,4 +17,4 @@ export * from "./common/interface"
 export * from "./utils/match.decorator"
 
 //Types
-export * from "./types/user.types"
+export * from "./types/user.interface"
