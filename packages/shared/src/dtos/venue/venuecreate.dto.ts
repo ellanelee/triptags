@@ -26,7 +26,7 @@ export class VenueCreateDto {
     example: "여의도의 유명한 콩국수 전문점, 줄서는 집",
     description: "설명을 작성하세요",
   })
-  description?: string
+  description?: I18nText
 
   @ApiProperty({
     example: "KR",
@@ -75,4 +75,21 @@ export class VenueCreateDto {
   @IsNumber()
   @IsNotEmpty()
   longitude!: number
+
+  @ApiProperty({
+    example: 126.927,
+    description: "사용자 위치(경도)",
+  })
+  @IsNumber()
+  @IsNotEmpty()
+  googlePlaceId?: string
+
+  @ApiProperty({
+    example: {
+      1: "https://previews.123rf.com/images/breakingdots/breakingdots2304/breakingdots230400781/202938341-cat-kawaii-character-cartoon-vector-illustration.jpg",
+    },
+    description: "장소의 이미지를 등록해주세요",
+    type: [String],
+  })
+  venueImage?: string[]
 }

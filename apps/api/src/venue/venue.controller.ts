@@ -3,7 +3,8 @@ import { VenueService } from './venue.service';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtAccessStrategy } from '@/auth/strategy/jwt.access.strategy';
 import { CurrentUser } from '@/common/decorator/current_user.decorator';
-import { Venue } from '@prisma/client';
+import { User, Venue } from '@prisma/client';
+import { VenueCreateDto } from '@triptags/shared';
 
 @ApiBearerAuth('access-token')
 @ApiTags('users')
@@ -25,6 +26,8 @@ export class VenueController {
   @UseGuards(JwtAccessStrategy)
   async createVenue(
     @CurrentUser() user: User,
-    @Body() venueUpdateDto: VenueCreateDto,
-  ) {}
+    @Body() venueCreateDto: VenueCreateDto,
+  ) {
+    return await this.venueService.createVenue(user.id, venueCreateDto);
+  }
 }

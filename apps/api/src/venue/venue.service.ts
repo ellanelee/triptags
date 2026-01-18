@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@/prisma/prisma.service';
 import { RegionService } from '@/region/region.service';
+import { VenueCreateDto } from '@triptags/shared';
 
 @Injectable()
 export class VenueService {
@@ -26,5 +27,23 @@ export class VenueService {
     });
   }
 
-  async createVenueById(userId: string, venueId: string) {}
+  async createVenue(userId: string, venueCreateDto: VenueCreateDto) {
+    const newRegionId = await this.region.getOrCreateRegionHistory(
+      venueCreateDto.country,
+      venueCreateDto.city,
+      venueCreateDto.district,
+    );
+    return await this.prisma.client.venue.create({
+      data: {
+        name: venueCreateDto.name,
+        description: venueCreateDto.description,
+        venueCategory: venueCreateDto.venueCategory,
+        longitude: venueCreateDto.longitude,
+        latitude: venueCreateDto.latitude,
+        googlePlaceId: venueCreateDto.googlePlaceId,
+        regionId: newRegionId,
+        createdBy: userId,
+      },
+    });
+  }
 }
