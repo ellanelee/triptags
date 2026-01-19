@@ -19,7 +19,7 @@ export class VenueCreateDto {
   name!: string
 
   @ApiProperty({
-    example: "식당",
+    example: "RESTAURANT",
     description:
       "RESTAURANT(식당), CAFE(카페), HOTEL(호텔), STREET_FOOD(거리음식), BAR(바),SHOPPING(쇼핑), CULTURE(문화) 등등, 하단에서 적절한 영역으로 설정하세요",
   })
@@ -40,8 +40,8 @@ export class VenueCreateDto {
   country!: string
 
   @ApiProperty({
-    example: "서울시",
-    description: "도시명",
+    example: "서울특별시",
+    description: "행정구역(서울특별시/부산광역시/경기도)",
   })
   @IsString()
   @IsNotEmpty()
