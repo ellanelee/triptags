@@ -1,7 +1,6 @@
 import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { VenueService } from './venue.service';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { JwtAccessStrategy } from '@/auth/strategy/jwt.access.strategy';
 import { CurrentUser } from '@/common/decorator/current_user.decorator';
 import { User } from '@prisma/client';
 import { VenueCreateDto } from '@triptags/shared';

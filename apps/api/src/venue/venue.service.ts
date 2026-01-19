@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@/prisma/prisma.service';
 import { RegionService } from '@/region/region.service';
-import { VenueCreateDto } from '@triptags/shared';
+import { Language, VenueCreateDto } from '@triptags/shared';
 
 @Injectable()
 export class VenueService {
@@ -33,10 +33,16 @@ export class VenueService {
       venueCreateDto.city,
       venueCreateDto.district,
     );
+    const lang: Language = venueCreateDto.language;
+    const venueNameJson = { [lang]: venueCreateDto.name };
+    const descriptionJson = venueCreateDto.description
+      ? { [lang]: venueCreateDto.description }
+      : undefined;
+
     return await this.prisma.client.venue.create({
       data: {
-        name: venueCreateDto.name,
-        description: venueCreateDto.description,
+        name: venueNameJson,
+        description: descriptionJson,
         venueCategory: venueCreateDto.venueCategory,
         longitude: venueCreateDto.longitude,
         latitude: venueCreateDto.latitude,

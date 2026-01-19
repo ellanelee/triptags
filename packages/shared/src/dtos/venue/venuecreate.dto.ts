@@ -1,13 +1,16 @@
 import { ApiProperty } from "@nestjs/swagger"
 import { I18nText, Language, VenueCategory } from "../../common/types"
-import { IsNotEmpty, IsNumber, IsString } from "class-validator"
+import { IsIn, IsNotEmpty, IsNumber, IsString } from "class-validator"
 
 export class VenueCreateDto {
   @ApiProperty({
-    example: "진주집",
-    description: "ko,en,ja,zh,es,fr,de",
+    example: "ko",
+    description: "언어코드",
+    enum: ["ko", "en", "ja", "zh", "es", "fr", "de"],
   })
-  language!: I18nText
+  @IsString()
+  @IsIn(["ko", "en", "ja", "zh", "es", "fr", "de"])
+  language!: Language
 
   @ApiProperty({
     example: "진주집",
@@ -26,7 +29,7 @@ export class VenueCreateDto {
     example: "여의도의 유명한 콩국수 전문점, 줄서는 집",
     description: "설명을 작성하세요",
   })
-  description?: I18nText
+  description?: string
 
   @ApiProperty({
     example: "KR",
