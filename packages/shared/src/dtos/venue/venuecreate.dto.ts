@@ -16,9 +16,9 @@ export class VenueCreateDto {
   name!: string
 
   @ApiProperty({
-    example: "진주집",
+    example: "식당",
     description:
-      "식당, 카페, 호텔, 거리음식, 바 등등, 하단에서 적절한 영역으로 설정하세요",
+      "RESTAURANT(식당), CAFE(카페), HOTEL(호텔), STREET_FOOD(거리음식), BAR(바),SHOPPING(쇼핑), CULTURE(문화) 등등, 하단에서 적절한 영역으로 설정하세요",
   })
   venueCategory?: VenueCategory
 
@@ -45,7 +45,7 @@ export class VenueCreateDto {
   city!: string
 
   @ApiProperty({
-    example: "강남구",
+    example: "영등포구",
     description: "군/구",
   })
   @IsString()
@@ -53,7 +53,7 @@ export class VenueCreateDto {
   district!: string
 
   @ApiProperty({
-    example: "테헤란로 1길 1 ",
+    example: "국제금융로6길 33 지하1층 ",
     description: "상세 주소(건물명, 호수등 상세주소)",
   })
   @IsString()

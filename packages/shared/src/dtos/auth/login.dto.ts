@@ -11,7 +11,7 @@ export class LoginDto {
   email!: string
 
   @ApiProperty({
-    example: "1234Abcd!",
+    example: "User1234!",
     description: "로그인 패스워드(영문대소문자,숫자,특수문자포함 8자 이상",
     required: true,
   })

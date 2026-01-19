@@ -12,7 +12,7 @@ export class RegisterDto {
   email!: string
 
   @ApiProperty({
-    example: "1234Abcd!",
+    example: "User1234!",
     description: "로그인 패스워드(영문대소문자,숫자,특수문자포함 8자 이상",
     required: true,
   })
@@ -25,7 +25,7 @@ export class RegisterDto {
       minNumbers: 1,
       minSymbols: 1,
     },
-    { message: "비밀번호는 영문대소문자,숫자,특수문자 반드시 포함, 8자 이상" }
+    { message: "비밀번호는 영문대소문자,숫자,특수문자 반드시 포함, 8자 이상" },
   )
   password!: string
 
