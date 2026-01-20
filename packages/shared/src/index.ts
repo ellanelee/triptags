@@ -7,6 +7,8 @@ export * from "./dtos/user/useraddress.dto"
 export * from "./dtos/user/userimageprofile.dto"
 export * from "./dtos/user/userintroduction.dto"
 export * from "./dtos/venue/venuecreate.dto"
+export * from "./dtos/venue/venueupdate.dto"
+export * from "./dtos/venue/venueupdateuser.dto"
 
 //Common
 export * from "./common/types"
