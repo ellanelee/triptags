@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { PrismaService } from '@/prisma/prisma.service';
 import { RegionService } from '@/region/region.service';
@@ -114,10 +115,16 @@ export class VenueService {
     updateDto: VenueUpdateDtoUser,
   ) {
     //이름 update
-    if (!!updateDto.name && !!updateDto.name) {
+    const targetVenue = await this.prisma.client.venue.findUnique({
+      where: { id: venueId },
+      select: { id: true, createdBy: true },
+    });
+    if (!targetVenue) throw new NotFoundException('데이터가 존재하지 않습니다');
+    if (targetVenue.createdBy)
+      throw new UnauthorizedException('수정 권한이 없습니다');
+    if (updateDto.name) {
       await this.updateVenueNameById(venueId, updateDto.name);
     }
-
     //이미지 Update
     if (updateDto.venueImage) {
       await this.updateVenueImageById(venueId, updateDto.venueImage);
@@ -129,12 +136,57 @@ export class VenueService {
     venueId: string,
     updateDto: VenueUpdateDto,
   ) {
-    const venue = await this.prisma.client.venue.findUnique({
-      where: {
-        id: venueId,
-      },
-      select: { id: true, name: true },
+    const targetVenue = await this.prisma.client.venue.findUnique({
+      where: { id: venueId },
     });
-    if (!venue) throw new NotFoundException('Venue Not Found');
+    if (!targetVenue) throw new NotFoundException('데이터가 존재하지 않습니다');
+    if (targetVenue.createdBy)
+      throw new UnauthorizedException('수정 권한이 없습니다');
+    //venue의 이름 수정
+    if (updateDto.name) {
+      await this.updateVenueNameById(venueId, updateDto.name);
+    }
+    //venue의 이미지 Update
+    if (updateDto.venueImage) {
+      await this.updateVenueImageById(venueId, updateDto.venueImage);
+    }
+    //Venue의 googleApiId
+    if (updateDto.googlePlaceId) {
+      await this.prisma.client.venue.update({
+        where: { id: venueId },
+        data: { googlePlaceId: updateDto.googlePlaceId },
+      });
+    }
+    //venue의 tourApiContentId
+    if (updateDto.tourApiContentId) {
+      await this.prisma.client.venue.update({
+        where: { id: venueId },
+        data: { tourApiContentId: updateDto.tourApiContentId },
+      });
+    }
+    //venue의 지역정보 갱신
+    if (
+      updateDto.country &&
+      !!updateDto.city &&
+      !!updateDto.district &&
+      !!updateDto.details
+    ) {
+      await this.region.getOrCreateRegionHistory(
+        updateDto.country,
+        updateDto.city,
+        updateDto.district,
+      );
+      await this.prisma.client.venue.update({
+        where: { id: venueId },
+        data: { detailedAddress: updateDto.details },
+      });
+    }
+    //위도 경도 정보
+    if (updateDto.longitude) {
+      await this.prisma.client.venue.update({
+        where: { id: venueId },
+        data: { longitude: updateDto.longitude },
+      });
+    }
   }
 }

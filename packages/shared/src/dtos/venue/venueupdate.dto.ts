@@ -98,5 +98,5 @@ export class VenueUpdateDto {
     example: "597467",
     description: "한국관광공사 TourApi Id(가덕도 횟집)",
   })
-  tourApiContentId?: string[]
+  tourApiContentId?: string
 }
