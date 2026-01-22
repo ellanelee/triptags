@@ -12,6 +12,7 @@ import {
   VenueUpdateDto,
   VenueUpdateDtoUser,
 } from '@triptags/shared';
+import { VenuePaginationDto } from '@triptags/shared';
 
 @Injectable()
 export class VenueService {
@@ -26,13 +27,33 @@ export class VenueService {
     });
   }
 
-  async findAll() {
-    return await this.prisma.client.venue.findMany({
-      include: {
-        venueDetail: true,
-        region: true,
+  async findAll(paginationDto: VenuePaginationDto) {
+    const page = Number(paginationDto.page) || 1;
+    const items = Number(paginationDto.items) || 10;
+    const skip = (page - 1) * items;
+    const [totalCount, data] = await Promise.all([
+      this.prisma.client.venue.count(),
+      this.prisma.client.venue.findMany({
+        skip,
+        take: items,
+        include: {
+          venueDetail: true,
+          region: true,
+        },
+        orderBy: { createdAt: 'desc' },
+      }),
+    ]);
+    return {
+      items: data,
+      meta: {
+        totalCount,
+        page,
+        itemsPerPage: items,
+        totalPage: Math.ceil(totalCount / items),
+        hasNextPage: page < Math.ceil(totalCount / items),
+        hasPrevPage: page > 1,
       },
-    });
+    };
   }
 
   async findVenueById(venueId: string) {
@@ -63,15 +84,39 @@ export class VenueService {
       data: { name: targetName },
     });
   }
+  async updateVenueDescriptionById(
+    venueId: string,
+    venueDescription: I18nText,
+  ) {
+    const targetVenue = await this.findVenueById(venueId);
+    if (!venueId || !venueDescription)
+      throw new NotFoundException('수정할 데이터가 없습니다');
+    if (!targetVenue)
+      throw new NotFoundException('관련 데이터를 찾을수 없습니다');
+
+    const currentDescription =
+      targetVenue.description &&
+      typeof targetVenue.description === 'object' &&
+      !Array.isArray(targetVenue.description)
+        ? targetVenue.description
+        : {};
+
+    const targetDescription = { ...currentDescription, ...venueDescription };
+    await this.prisma.client.venue.update({
+      where: { id: venueId, deletedAt: null },
+      data: { description: targetDescription },
+    });
+  }
+
+  //DB의 venueImage수정
   async updateVenueImageById(venueId: string, targetImages: string[]) {
     const targetVenue = await this.findActiveVenueById(venueId);
-    if (!venueId || !targetImages || targetImages.length !== 0)
+    if (!venueId || !targetImages || targetImages.length === 0)
       throw new NotFoundException('수정할 데이터가 없습니다');
     if (!targetVenue)
       throw new NotFoundException('관련 데이터를 찾을수 없습니다');
 
     const imageData = targetImages.map((name, idx) => ({
-      venueId,
       imageUrl: name,
       isThumbnail: idx === 0 ? true : false,
     }));
@@ -115,8 +160,8 @@ export class VenueService {
 
   //사용자 venue추가 (언어별 장소명칭 및 이름)
   async updateVenueByUser(
-    venueId: string,
     userId: string,
+    venueId: string,
     updateDto: VenueUpdateDtoUser,
   ) {
     //이름 update
@@ -125,7 +170,7 @@ export class VenueService {
       select: { id: true, createdBy: true },
     });
     if (!targetVenue) throw new NotFoundException('데이터가 존재하지 않습니다');
-    if (!targetVenue.createdBy || targetVenue.createdBy === userId)
+    if (targetVenue.createdBy !== userId)
       throw new UnauthorizedException('수정 권한이 없습니다');
     if (updateDto.name) {
       await this.updateVenueNameById(venueId, updateDto.name);
@@ -134,8 +179,13 @@ export class VenueService {
     if (updateDto.venueImage) {
       await this.updateVenueImageById(venueId, updateDto.venueImage);
     }
+    return await this.prisma.client.venue.findFirst({
+      where: { id: venueId },
+      select: { name: true, venueImages: true },
+    });
   }
 
+  //관리자의 venue update
   async updateVenue(
     userId: string,
     venueId: string,
@@ -143,12 +193,16 @@ export class VenueService {
   ) {
     const targetVenue = await this.findActiveVenueById(venueId);
     if (!targetVenue) throw new NotFoundException('데이터가 존재하지 않습니다');
-    if (targetVenue.createdBy)
-      throw new UnauthorizedException('수정 권한이 없습니다');
+
     //venue의 이름 수정
     if (updateDto.name) {
       await this.updateVenueNameById(venueId, updateDto.name);
     }
+    //Venue의 Description수정
+    if (updateDto.description) {
+      await this.updateVenueDescriptionById(venueId, updateDto.description);
+    }
+
     //venue의 이미지 Update
     if (updateDto.venueImage) {
       await this.updateVenueImageById(venueId, updateDto.venueImage);
@@ -191,6 +245,10 @@ export class VenueService {
         data: { longitude: updateDto.longitude },
       });
     }
+
+    return await this.prisma.client.venue.findUnique({
+      where: { id: venueId },
+    });
   }
 
   async deleteVenue(userId: string, venueId: string) {

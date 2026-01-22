@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { VenueService } from './venue.service';
@@ -14,6 +15,7 @@ import { CurrentUser } from '@/common/decorator/current_user.decorator';
 import { User } from '@prisma/client';
 import {
   VenueCreateDto,
+  VenuePaginationDto,
   VenueUpdateDto,
   VenueUpdateDtoUser,
 } from '@triptags/shared';
@@ -28,8 +30,9 @@ export class VenueController {
   constructor(private venueService: VenueService) {}
 
   @Get()
-  async getAllVenues() {
-    return await this.venueService.findAll();
+  async getAllVenues(@Query() paginationDto: VenuePaginationDto) {
+    console.log(paginationDto);
+    return await this.venueService.findAll(paginationDto);
   }
 
   @Get()
@@ -69,7 +72,7 @@ export class VenueController {
   @UseGuards(JwtAccessGuard, RolesGuard)
   async updateVenue(
     @CurrentUser() user: User,
-    @Param() venueId: string,
+    @Param('id') venueId: string,
     @Body() venueUpdateDto: VenueUpdateDto,
   ) {
     console.log(user);
