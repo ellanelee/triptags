@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
@@ -77,5 +78,13 @@ export class VenueController {
       venueId,
       venueUpdateDto,
     );
+  }
+
+  //Venue비활성화
+  @Delete(':id')
+  @Roles('ADMIN')
+  @UseGuards(JwtAccessGuard, RolesGuard)
+  async inactivateVenue(@CurrentUser() user: User, @Param() venueId: string) {
+    return await this.venueService.deleteVenue(user.id, venueId);
   }
 }

@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -21,47 +20,9 @@ export class VenueService {
     private region: RegionService,
   ) {}
 
-  async updateVenueNameById(venueId: string, venueNames: I18nText) {
-    const targetVenue = await this.findVenueById(venueId);
-    if (!venueId || !venueNames)
-      throw new NotFoundException('수정할 데이터가 없습니다');
-    if (!targetVenue)
-      throw new NotFoundException('관련 데이터를 찾을수 없습니다');
-
-    const currentName =
-      targetVenue.name &&
-      typeof targetVenue.name === 'object' &&
-      !Array.isArray(targetVenue.name)
-        ? targetVenue.name
-        : {};
-
-    const targetName = { ...currentName, ...venueNames };
-    await this.prisma.client.venue.update({
-      where: { id: venueId },
-      data: { name: targetName },
-    });
-  }
-  async updateVenueImageById(venueId: string, targetImages: string[]) {
-    const targetVenue = await this.findVenueById(venueId);
-    if (!venueId || !targetImages || targetImages.length !== 0)
-      throw new NotFoundException('수정할 데이터가 없습니다');
-    if (!targetVenue)
-      throw new NotFoundException('관련 데이터를 찾을수 없습니다');
-
-    const imageData = targetImages.map((name, idx) => ({
-      venueId,
-      imageUrl: name,
-      isThumbnail: idx === 0 ? true : false,
-    }));
-
-    await this.prisma.client.venue.update({
-      where: { id: venueId },
-      data: {
-        venueImages: {
-          deleteMany: {},
-          create: imageData,
-        },
-      },
+  private findActiveVenueById(venueId: string) {
+    return this.prisma.client.venue.findFirst({
+      where: { id: venueId, deletedAt: null },
     });
   }
 
@@ -78,6 +39,50 @@ export class VenueService {
     return await this.prisma.client.venue.findFirst({
       where: {
         id: venueId,
+      },
+    });
+  }
+
+  async updateVenueNameById(venueId: string, venueNames: I18nText) {
+    const targetVenue = await this.findVenueById(venueId);
+    if (!venueId || !venueNames)
+      throw new NotFoundException('수정할 데이터가 없습니다');
+    if (!targetVenue)
+      throw new NotFoundException('관련 데이터를 찾을수 없습니다');
+
+    const currentName =
+      targetVenue.name &&
+      typeof targetVenue.name === 'object' &&
+      !Array.isArray(targetVenue.name)
+        ? targetVenue.name
+        : {};
+
+    const targetName = { ...currentName, ...venueNames };
+    await this.prisma.client.venue.update({
+      where: { id: venueId, deletedAt: null },
+      data: { name: targetName },
+    });
+  }
+  async updateVenueImageById(venueId: string, targetImages: string[]) {
+    const targetVenue = await this.findActiveVenueById(venueId);
+    if (!venueId || !targetImages || targetImages.length !== 0)
+      throw new NotFoundException('수정할 데이터가 없습니다');
+    if (!targetVenue)
+      throw new NotFoundException('관련 데이터를 찾을수 없습니다');
+
+    const imageData = targetImages.map((name, idx) => ({
+      venueId,
+      imageUrl: name,
+      isThumbnail: idx === 0 ? true : false,
+    }));
+
+    await this.prisma.client.venue.update({
+      where: { id: venueId, deletedAt: null },
+      data: {
+        venueImages: {
+          deleteMany: {},
+          create: imageData,
+        },
       },
     });
   }
@@ -110,17 +115,17 @@ export class VenueService {
 
   //사용자 venue추가 (언어별 장소명칭 및 이름)
   async updateVenueByUser(
-    userId: string,
     venueId: string,
+    userId: string,
     updateDto: VenueUpdateDtoUser,
   ) {
     //이름 update
-    const targetVenue = await this.prisma.client.venue.findUnique({
-      where: { id: venueId },
+    const targetVenue = await this.prisma.client.venue.findFirst({
+      where: { id: venueId, deletedAt: null },
       select: { id: true, createdBy: true },
     });
     if (!targetVenue) throw new NotFoundException('데이터가 존재하지 않습니다');
-    if (targetVenue.createdBy)
+    if (!targetVenue.createdBy || targetVenue.createdBy === userId)
       throw new UnauthorizedException('수정 권한이 없습니다');
     if (updateDto.name) {
       await this.updateVenueNameById(venueId, updateDto.name);
@@ -136,9 +141,7 @@ export class VenueService {
     venueId: string,
     updateDto: VenueUpdateDto,
   ) {
-    const targetVenue = await this.prisma.client.venue.findUnique({
-      where: { id: venueId },
-    });
+    const targetVenue = await this.findActiveVenueById(venueId);
     if (!targetVenue) throw new NotFoundException('데이터가 존재하지 않습니다');
     if (targetVenue.createdBy)
       throw new UnauthorizedException('수정 권한이 없습니다');
@@ -153,14 +156,14 @@ export class VenueService {
     //Venue의 googleApiId
     if (updateDto.googlePlaceId) {
       await this.prisma.client.venue.update({
-        where: { id: venueId },
+        where: { id: venueId, deletedAt: null },
         data: { googlePlaceId: updateDto.googlePlaceId },
       });
     }
     //venue의 tourApiContentId
     if (updateDto.tourApiContentId) {
       await this.prisma.client.venue.update({
-        where: { id: venueId },
+        where: { id: venueId, deletedAt: null },
         data: { tourApiContentId: updateDto.tourApiContentId },
       });
     }
@@ -188,5 +191,16 @@ export class VenueService {
         data: { longitude: updateDto.longitude },
       });
     }
+  }
+
+  async deleteVenue(userId: string, venueId: string) {
+    const targetVenue = await this.findActiveVenueById(venueId);
+    if (!targetVenue) throw new NotFoundException('데이터가 존재하지 않습니다');
+    if (targetVenue.createdBy !== userId)
+      throw new UnauthorizedException('수정 권한이 없습니다');
+    return await this.prisma.client.venue.update({
+      where: { id: venueId },
+      data: { deletedAt: new Date() },
+    });
   }
 }
