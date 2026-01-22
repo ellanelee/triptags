@@ -177,7 +177,7 @@ export class UserService {
   async updateUserIntroduction(userId: string, userIntroduction: string) {
     return this.prisma.client.userProfile.upsert({
       where: {
-        id: userId,
+        userId: userId,
         deletedAt: null,
       },
       update: {
@@ -192,7 +192,18 @@ export class UserService {
 
   //User소개정보
   async updateUserAddress(userId: string, userAddress: UserAddressDto) {
-    const { country, city, district, details } = userAddress;
+    const norm = (s: string) => s.trim().replace(/\s+/g, ' ');
+    function normalize(userAddress: UserAddressDto) {
+      return {
+        ...userAddress,
+        country: norm(userAddress.country),
+        city: norm(userAddress.city),
+        district: norm(userAddress.district),
+      };
+    }
+    const normalizedAddress = normalize(userAddress);
+    const { country, city, district, details } = normalizedAddress;
+
     // if (!detailedAddress)
     //   throw new ForbiddenException('상세 주소가 누락되었습니다.');
     const districtId = await this.region.getOrCreateRegionHistory(
@@ -202,7 +213,7 @@ export class UserService {
     );
     return this.prisma.client.userProfile.update({
       where: {
-        id: userId,
+        userId: userId,
         deletedAt: null,
       },
       data: {

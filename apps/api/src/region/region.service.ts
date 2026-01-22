@@ -4,36 +4,55 @@ import { Injectable } from '@nestjs/common';
 @Injectable()
 export class RegionService {
   constructor(private prisma: PrismaService) {}
+
+  norm(regionSeparated: string, isCountry?: boolean) {
+    if (isCountry) {
+      regionSeparated = regionSeparated.toUpperCase();
+    }
+    return regionSeparated.trim().replace(/\s+/g, ' ');
+  }
+
   async getOrCreateRegionHistory(
     country: string,
     city: string,
     district: string,
   ) {
-    const root_parent_id = 'defautCountryParentId';
-    const countryNode = await this.prisma.client.region.upsert({
+    const normalizedCountry = this.norm(country, true);
+    const normalizedCity = this.norm(city);
+    const normalizedDistrict = this.norm(district);
+
+    const countryNode =
+      (await this.prisma.client.region.findFirst({
+        where: {
+          parentId: null,
+          name: normalizedCountry,
+          level: 1,
+        },
+      })) ??
+      (await this.prisma.client.region.create({
+        data: { name: normalizedCountry, level: 1, parentId: null },
+      }));
+    const cityNode = await this.prisma.client.region.upsert({
       where: {
         region_depth: {
-          parentId: root_parent_id,
-          name: country,
-          level: 1,
+          parentId: countryNode.id,
+          name: normalizedCity,
+          level: 2,
         },
       },
       update: {},
-      create: { name: country, level: 1, parentId: root_parent_id },
-    });
-    const cityNode = await this.prisma.client.region.upsert({
-      where: {
-        region_depth: { parentId: countryNode.id, name: city, level: 2 },
-      },
-      update: {},
-      create: { name: city, level: 2, parentId: countryNode.id },
+      create: { name: normalizedCity, level: 2, parentId: countryNode.id },
     });
     const districtNode = await this.prisma.client.region.upsert({
       where: {
-        region_depth: { parentId: cityNode.id, name: district, level: 3 },
+        region_depth: {
+          parentId: cityNode.id,
+          name: normalizedDistrict,
+          level: 3,
+        },
       },
       update: {},
-      create: { name: district, level: 3, parentId: cityNode.id },
+      create: { name: normalizedDistrict, level: 3, parentId: cityNode.id },
     });
     return districtNode.id;
   }

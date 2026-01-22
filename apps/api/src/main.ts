@@ -43,6 +43,9 @@ async function bootstrap() {
       whitelist: true, //DTO미포함 제거
       forbidNonWhitelisted: true, //DTO미정의 속성포함, 요청거부
       transform: true, // 수신된 데이터를 DTO Type으로 자동변환
+      transformOptions: {
+        enableImplicitConversion: true,
+      },
     }),
   );
 
