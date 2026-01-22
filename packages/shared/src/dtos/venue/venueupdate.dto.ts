@@ -1,22 +1,16 @@
-import { ApiProperty } from "@nestjs/swagger"
-import { Language, VenueCategory } from "../../common/types"
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger"
+import { I18nText, VenueCategory } from "../../common/types"
 import { IsIn, IsNotEmpty, IsNumber, IsString } from "class-validator"
 
 export class VenueUpdateDto {
-  @ApiProperty({
-    example: "ko",
-    description: "언어코드",
+  @ApiPropertyOptional({
+    example: { ko: "진주집", en: "JinjuJip" },
+    description: "언어별 장소이름",
     enum: ["ko", "en", "ja", "zh", "es", "fr", "de"],
   })
   @IsString()
   @IsIn(["ko", "en", "ja", "zh", "es", "fr", "de"])
-  language!: Language
-
-  @ApiProperty({
-    example: "진주집",
-    description: "장소의 이름",
-  })
-  name?: string
+  name?: I18nText
 
   @ApiProperty({
     example: "RESTAURANT",
@@ -26,10 +20,14 @@ export class VenueUpdateDto {
   venueCategory?: VenueCategory
 
   @ApiProperty({
-    example: "여의도의 유명한 콩국수 전문점, 줄서는 집",
-    description: "설명을 작성하세요",
+    example: {
+      ko: "여의도의 유명한 콩국수 전문점",
+      en: "famous place of soy-bean milk based noodle ",
+    },
+    description: "언어별 장소의 묘사",
+    enum: ["ko", "en", "ja", "zh", "es", "fr", "de"],
   })
-  description?: string
+  description?: I18nText
 
   @ApiProperty({
     example: "KR",
@@ -95,4 +93,10 @@ export class VenueUpdateDto {
     type: [String],
   })
   venueImage?: string[]
+
+  @ApiProperty({
+    example: "597467",
+    description: "한국관광공사 TourApi Id(가덕도 횟집)",
+  })
+  tourApiContentId?: string[]
 }

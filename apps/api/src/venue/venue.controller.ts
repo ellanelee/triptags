@@ -17,6 +17,8 @@ import {
   VenueUpdateDtoUser,
 } from '@triptags/shared';
 import { JwtAccessGuard } from '@/auth/jwt-auth.guard.ts/jwt-auth.access.guard';
+import { Roles } from '@/common/decorator/roles.decorator';
+import { RolesGuard } from '@/auth/jwt-auth.guard.ts/roels.guard';
 
 @ApiBearerAuth('access-token')
 @ApiTags('venues')
@@ -62,12 +64,18 @@ export class VenueController {
 
   //관리자의 venue수정 (모든 필드 수정가능)
   @Patch(':id/admin')
-  @UseGuards(JwtAccessGuard)
+  @Roles('ADMIN')
+  @UseGuards(JwtAccessGuard, RolesGuard)
   async updateVenue(
     @CurrentUser() user: User,
+    @Param() venueId: string,
     @Body() venueUpdateDto: VenueUpdateDto,
   ) {
     console.log(user);
-    return await this.venueService.updateVenueByUser(user.id, venueUpdateDto);
+    return await this.venueService.updateVenue(
+      user.id,
+      venueId,
+      venueUpdateDto,
+    );
   }
 }
