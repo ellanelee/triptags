@@ -87,7 +87,10 @@ export class VenueController {
   @Delete(':id')
   @Roles('ADMIN')
   @UseGuards(JwtAccessGuard, RolesGuard)
-  async inactivateVenue(@CurrentUser() user: User, @Param() venueId: string) {
-    return await this.venueService.deleteVenue(user.id, venueId);
+  async inactivateVenue(
+    @CurrentUser() user: User,
+    @Param('id') venueId: string,
+  ) {
+    return await this.venueService.deleteVenue(user.role, venueId);
   }
 }

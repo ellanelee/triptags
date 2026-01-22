@@ -13,6 +13,7 @@ import {
   VenueUpdateDtoUser,
 } from '@triptags/shared';
 import { VenuePaginationDto } from '@triptags/shared';
+import { UserRole } from '@prisma/client';
 
 @Injectable()
 export class VenueService {
@@ -251,10 +252,10 @@ export class VenueService {
     });
   }
 
-  async deleteVenue(userId: string, venueId: string) {
+  async deleteVenue(userRole: UserRole, venueId: string) {
     const targetVenue = await this.findActiveVenueById(venueId);
     if (!targetVenue) throw new NotFoundException('데이터가 존재하지 않습니다');
-    if (targetVenue.createdBy !== userId)
+    if (userRole !== 'ADMIN')
       throw new UnauthorizedException('수정 권한이 없습니다');
     return await this.prisma.client.venue.update({
       where: { id: venueId },
