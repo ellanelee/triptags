@@ -8,7 +8,6 @@ export class VenueUpdateDto {
     description: "언어별 장소이름",
     enum: ["ko", "en", "ja", "zh", "es", "fr", "de"],
   })
-  @IsString()
   @IsIn(["ko", "en", "ja", "zh", "es", "fr", "de"])
   name?: I18nText
 
@@ -34,7 +33,6 @@ export class VenueUpdateDto {
     description: "거주 국가명의 영문명(KR, UK, USA등등)",
   })
   @IsString()
-  @IsNotEmpty()
   country?: string
 
   @ApiProperty({
@@ -42,7 +40,6 @@ export class VenueUpdateDto {
     description: "행정구역(서울특별시/부산광역시/경기도)",
   })
   @IsString()
-  @IsNotEmpty()
   city?: string
 
   @ApiProperty({
@@ -50,7 +47,6 @@ export class VenueUpdateDto {
     description: "군/구",
   })
   @IsString()
-  @IsNotEmpty()
   district?: string
 
   @ApiProperty({
@@ -58,7 +54,6 @@ export class VenueUpdateDto {
     description: "상세 주소(건물명, 호수등 상세주소)",
   })
   @IsString()
-  @IsNotEmpty()
   details?: string
 
   @ApiProperty({
@@ -66,7 +61,6 @@ export class VenueUpdateDto {
     description: "사용자 위치(위도)",
   })
   @IsNumber()
-  @IsNotEmpty()
   latitude?: number
 
   @ApiProperty({
@@ -74,7 +68,6 @@ export class VenueUpdateDto {
     description: "사용자 위치(경도)",
   })
   @IsNumber()
-  @IsNotEmpty()
   longitude?: number
 
   @ApiProperty({
@@ -82,7 +75,6 @@ export class VenueUpdateDto {
     description: "사용자 위치(경도)",
   })
   @IsNumber()
-  @IsNotEmpty()
   googlePlaceId?: string
 
   @ApiProperty({

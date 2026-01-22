@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 
-type userValidated = { sub: string };
+type userValidated = { id: string };
 
 @Injectable()
 export class RolesGuard implements CanActivate {
@@ -28,7 +28,7 @@ export class RolesGuard implements CanActivate {
 
     //사용자 정보 가져오기
     const req = ctx.switchToHttp().getRequest<{ user?: userValidated }>();
-    const userId = req.user?.sub;
+    const userId = req.user?.id;
 
     if (!userId) throw new UnauthorizedException('인증 정보가 없습ㄴ다');
 

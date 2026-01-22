@@ -9,6 +9,7 @@ export * from "./dtos/user/userintroduction.dto"
 export * from "./dtos/venue/venuecreate.dto"
 export * from "./dtos/venue/venueupdate.dto"
 export * from "./dtos/venue/venueupdateuser.dto"
+export * from "./dtos/venue/venuepagination.dto"
 
 //Common
 export * from "./common/types"
