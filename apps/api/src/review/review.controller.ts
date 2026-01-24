@@ -15,7 +15,7 @@ import {
 } from '@triptags/shared';
 import { JwtAccessGuard } from '@/auth/jwt-auth.guard.ts/jwt-auth.access.guard';
 import { CurrentUser } from '@/common/decorator/current_user.decorator';
-import { User } from '@prisma/client';
+import { Review, User } from '@prisma/client';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
 @ApiBearerAuth('access-token')
@@ -56,5 +56,11 @@ export class ReviewController {
     @Body() reviewUpdateDto: ReviewUpdateDto,
   ) {
     return await this.reviewService.UpdateReview(reviewId, reviewUpdateDto);
+  }
+
+  @Post('/helpful')
+  @UseGuards(JwtAccessGuard)
+  async checkHelpful(@CurrentUser() user: User, @Param() review: Review) {
+    return await this.reviewService.createHelpful(review.id, user.id);
   }
 }

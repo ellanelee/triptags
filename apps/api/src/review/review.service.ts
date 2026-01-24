@@ -83,4 +83,21 @@ export class ReviewService {
       where: { id: reviewId, deletedAt: null },
     });
   }
+  //review에 대해 "도움이 됐어요"표시
+  async createHelpful(userId: string, reviewId: string) {
+    const targetHelpful = await this.prisma.client.reviewHelpful.findUnique({
+      where: { reviewId_userId: { reviewId, userId } },
+    });
+    if (targetHelpful) {
+      await this.prisma.client.reviewHelpful.delete({
+        where: { reviewId_userId: { reviewId, userId } },
+      });
+      return { reviewHelpful: false };
+    } else {
+      await this.prisma.client.reviewHelpful.create({
+        data: { userId, reviewId },
+      });
+      return { reviewHelpful: true };
+    }
+  }
 }
