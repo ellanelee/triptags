@@ -84,7 +84,7 @@ export class ReviewService {
     });
   }
   //review에 대해 "도움이 됐어요"표시
-  async createHelpful(userId: string, reviewId: string) {
+  async createHelpful(reviewId: string, userId: string) {
     const targetHelpful = await this.prisma.client.reviewHelpful.findUnique({
       where: { reviewId_userId: { reviewId, userId } },
     });

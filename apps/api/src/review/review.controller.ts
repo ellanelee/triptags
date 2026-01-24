@@ -58,9 +58,12 @@ export class ReviewController {
     return await this.reviewService.UpdateReview(reviewId, reviewUpdateDto);
   }
 
-  @Post('/helpful')
+  @Post(':reviewId/helpful')
   @UseGuards(JwtAccessGuard)
-  async checkHelpful(@CurrentUser() user: User, @Param() review: Review) {
-    return await this.reviewService.createHelpful(review.id, user.id);
+  async checkHelpful(
+    @CurrentUser() user: User,
+    @Param('reviewId') reviewId: string,
+  ) {
+    return await this.reviewService.createHelpful(reviewId, user.id);
   }
 }
