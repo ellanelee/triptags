@@ -10,6 +10,9 @@ export * from "./dtos/venue/venuecreate.dto"
 export * from "./dtos/venue/venueupdate.dto"
 export * from "./dtos/venue/venueupdateuser.dto"
 export * from "./dtos/venue/venuepagination.dto"
+export * from "./dtos/review/reviewcreate.dto"
+export * from "./dtos/review/reviewdetailcreate.dto"
+export * from "./dtos/review/reviewupdate.dto"
 
 //Common
 export * from "./common/types"
