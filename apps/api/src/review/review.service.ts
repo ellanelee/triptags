@@ -1,11 +1,16 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '@/prisma/prisma.service';
-import { ReviewCreateDto, VenuePaginationDto } from '@triptags/shared';
+import {
+  ReviewCreateDto,
+  ReviewUpdateDto,
+  VenuePaginationDto,
+} from '@triptags/shared';
 
 @Injectable()
 export class ReviewService {
   constructor(private prisma: PrismaService) {}
 
+  //review 받아오기
   async findReviewByVenueId(venueId: string, pageDto: VenuePaginationDto) {
     const page = Number(pageDto.page) || 1;
     const items = Number(pageDto.items) || 10;
@@ -49,6 +54,33 @@ export class ReviewService {
         venueId: venueId,
         userId: userId,
       },
+    });
+  }
+
+  //Update
+  async UpdateReview(reviewId: string, updateDto: ReviewUpdateDto) {
+    const targetReview = await this.prisma.client.review.findFirst({
+      where: { id: reviewId, deletedAt: null },
+      select: { rating: true, contents: true },
+    });
+    if (!targetReview)
+      throw new NotFoundException('Review가 존재하지 않습니다');
+
+    if (updateDto.rating) {
+      await this.prisma.client.review.update({
+        where: { id: reviewId },
+        data: { rating: updateDto.rating },
+      });
+    }
+
+    if (updateDto.contents) {
+      await this.prisma.client.review.update({
+        where: { id: reviewId },
+        data: { contents: updateDto.contents },
+      });
+    }
+    return await this.prisma.client.review.findFirst({
+      where: { id: reviewId, deletedAt: null },
     });
   }
 }

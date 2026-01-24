@@ -1,6 +1,18 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { ReviewService } from './review.service';
-import { ReviewCreateDto, VenuePaginationDto } from '@triptags/shared';
+import {
+  ReviewCreateDto,
+  ReviewUpdateDto,
+  VenuePaginationDto,
+} from '@triptags/shared';
 import { JwtAccessGuard } from '@/auth/jwt-auth.guard.ts/jwt-auth.access.guard';
 import { CurrentUser } from '@/common/decorator/current_user.decorator';
 import { User } from '@prisma/client';
@@ -20,6 +32,7 @@ export class ReviewController {
     return await this.reviewService.findReviewByVenueId(venueId, paginationDto);
   }
 
+  //사용자 Review생성
   @Post(':venueId')
   @UseGuards(JwtAccessGuard)
   async createReview(
@@ -32,5 +45,16 @@ export class ReviewController {
       user.id,
       reviewCreateDto,
     );
+  }
+
+  //사용자의 review수정 (평가점수, 평가내용수정)
+  @Patch(':reviewId')
+  @UseGuards(JwtAccessGuard)
+  async updateReview(
+    @CurrentUser() user: User,
+    @Param('reviewId') reviewId: string,
+    @Body() reviewUpdateDto: ReviewUpdateDto,
+  ) {
+    return await this.reviewService.UpdateReview(reviewId, reviewUpdateDto);
   }
 }
