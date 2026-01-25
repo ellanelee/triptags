@@ -36,15 +36,16 @@ export class VenueDetailService {
     });
     //Venue작성자이거나 Admin이 아니면 등록불가
     if (!targetVenue) throw new NotFoundException('데이터가 존재하지 않습니다');
-    if (targetVenue.createdBy !== user.id || user?.role !== 'ADMIN')
-      throw new UnauthorizedException('등록 권한이 없습니다');
-    return this.prisma.client.venueDetail.upsert({
-      where: { venueId },
-      update: { ...venueDetailDto },
-      create: {
-        ...venueDetailDto,
-        venue: { connect: { id: venueId } },
-      },
-    });
+    if (user?.role === 'ADMIN' || targetVenue.createdBy === user.id) {
+      return this.prisma.client.venueDetail.upsert({
+        where: { venueId },
+        update: { ...venueDetailDto },
+        create: {
+          ...venueDetailDto,
+          venue: { connect: { id: venueId } },
+        },
+      });
+    }
+    return { false: '생성 맟 수정실패' };
   }
 }

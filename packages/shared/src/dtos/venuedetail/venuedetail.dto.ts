@@ -35,5 +35,5 @@ export class VenueDetailDto {
     example: "{ko: 월~토 9:00 ~ 20:00, 일요일 휴무, 설/추석연휴 휴무}",
     description: "영업일과 영업시간에 대한 정보를 입력해주세요.",
   })
-  workHour?: I18nText
+  work_hour?: I18nText
 }
