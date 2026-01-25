@@ -4,13 +4,18 @@ import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { User } from '@prisma/client';
 import { VenueDetailService } from './venuedetail.service';
-import { VenueCreateDetailDto } from '@triptags/shared';
-
+import { VenueDetailDto } from '@triptags/shared';
 @Controller()
 @ApiTags('venueDetail')
 export class VenueDetailController {
   constructor(private venueDetailService: VenueDetailService) {}
 
+  @Get(':venueId')
+  async getVenueDetails(@Param('venueId') venueId: string) {
+    return await this.venueDetailService.getVenueDetailById(venueId);
+  }
+
+  //VenueDetail(관리자와 Venue등록자만 등록/수정 가능)
   @Post(':venueId')
   @ApiBearerAuth('access-token')
   @UseGuards(JwtAccessGuard)
@@ -18,16 +23,12 @@ export class VenueDetailController {
   async createVenueDetails(
     @CurrentUser() user: User,
     @Param('venueId') venueId: string,
-    @Body() venueCreateDto: VenueCreateDetailDto,
+    @Body() venueDetailDto: VenueDetailDto,
   ) {
     return await this.venueDetailService.createVenueDetail(
-      user.id,
+      user,
       venueId,
-      venueCreateDto,
+      venueDetailDto,
     );
-  }
-  @Get(':venueId')
-  async getVenueDetails(@Param('venueId') venueId: string) {
-    return await this.venueDetailService.getVenueDetailById(venueId);
   }
 }

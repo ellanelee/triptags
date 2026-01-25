@@ -13,7 +13,7 @@ export * from "./dtos/venue/venuepagination.dto"
 export * from "./dtos/review/reviewcreate.dto"
 export * from "./dtos/review/reviewdetailcreate.dto"
 export * from "./dtos/review/reviewupdate.dto"
-export * from "./dtos/venuedetail/venuedetailcreate.dto"
+export * from "./dtos/venuedetail/venuedetail.dto"
 
 //Common
 export * from "./common/types"
