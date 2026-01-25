@@ -34,7 +34,7 @@ export class UserController {
   @UseGuards(JwtAccessGuard)
   @Get('me')
   @HttpCode(200)
-  async getUserProfie(
+  async getUserProflie(
     @CurrentUser() user: User,
   ): Promise<ApiResponse<IUserResponse>> {
     console.log('UserId: ', user.id);
