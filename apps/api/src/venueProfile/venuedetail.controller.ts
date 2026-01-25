@@ -4,7 +4,7 @@ import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { User } from '@prisma/client';
 import { VenueDetailService } from './venuedetail.service';
-import { VenueCreateDetailDto, VenueCreateDto } from '@triptags/shared';
+import { VenueCreateDetailDto } from '@triptags/shared';
 
 @Controller()
 @ApiTags('venueDetail')
@@ -25,5 +25,9 @@ export class VenueDetailController {
       venueId,
       venueCreateDto,
     );
+  }
+  @Get(':venueId')
+  async getVenueDetails(@Param('venueId') venueId: string) {
+    return await this.venueDetailService.getVenueDetailById(venueId);
   }
 }
