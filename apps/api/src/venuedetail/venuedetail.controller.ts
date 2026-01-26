@@ -5,6 +5,7 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { User } from '@prisma/client';
 import { VenueDetailService } from './venuedetail.service';
 import { VenueDetailDto } from '@triptags/shared';
+
 @Controller()
 @ApiTags('venueDetail')
 export class VenueDetailController {
