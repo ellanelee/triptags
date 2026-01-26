@@ -17,3 +17,11 @@ export type VenueCategory =
   | "SHOPPING"
   | "NATURE"
   | "CULTURE"
+
+export type PointType =
+  | "REVIEW_WRITE"
+  | "VENUE_CREATE"
+  | "HELPFUL_RECEIVED"
+  | "LOCAL_VERIFIED"
+
+export type verificationMethod = "ADDRESS" | "GPS" | "ACTIVITY"

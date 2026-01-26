@@ -17,6 +17,15 @@ export interface IPointInput {
 export interface IUserPoint {
   userId: string;
   venueId?: string;
-  pointType?: PointType;
+  pointType: PointType;
   verificationMethod?: VerificationMethod;
+}
+
+export interface IPointCreateInput {
+  point: number;
+  pointActivity: PointType;
+  localVerified?: VerificationMethod;
+  userId: string;
+  venueId?: string;
+  localVerificationId?: string;
 }

@@ -190,7 +190,7 @@ export class UserService {
     });
   }
 
-  //User소개정보
+  //User주소정보 (userProfileUpdate, 지역정보, 위도/경도)
   async updateUserAddress(userId: string, userAddress: UserAddressDto) {
     const norm = (s: string) => s.trim().replace(/\s+/g, ' ');
     function normalize(userAddress: UserAddressDto) {
@@ -204,8 +204,7 @@ export class UserService {
     const normalizedAddress = normalize(userAddress);
     const { country, city, district, details } = normalizedAddress;
 
-    // if (!detailedAddress)
-    //   throw new ForbiddenException('상세 주소가 누락되었습니다.');
+    // 지역정보 등록
     const districtId = await this.region.getOrCreateRegionHistory(
       country,
       city,
@@ -218,6 +217,8 @@ export class UserService {
       },
       data: {
         detailedAddress: details,
+        longitude: userAddress.longitude,
+        latitude: userAddress.latitude,
         regionId: districtId,
       },
       include: {

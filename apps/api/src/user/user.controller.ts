@@ -31,6 +31,7 @@ import { User } from '@prisma/client';
 export class UserController {
   constructor(private userService: UserService) {}
 
+  //로그인한 사용자 정보 받아오기
   @UseGuards(JwtAccessGuard)
   @Get('me')
   @HttpCode(200)
@@ -119,6 +120,7 @@ export class UserController {
     return createResponse(true, updatedUserIntroduction, '회원 정보 수정완료');
   }
 
+  //사용자의 주소 update
   @UseGuards(JwtAccessGuard)
   @Post('address')
   @HttpCode(200)
@@ -134,6 +136,7 @@ export class UserController {
     return createResponse(true, updatedUserAddress, '회원 정보 수정완료');
   }
 
+  //사용자 탈퇴
   @UseGuards(JwtAccessGuard)
   @Post('withdraw')
   @HttpCode(204)
