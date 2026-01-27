@@ -9,6 +9,22 @@ export class TagService {
     private venueService: VenueService,
   ) {}
 
+  async findAllTags(venueId: string) {
+    const data = await this.prisma.client.venueTag.findMany({
+      where: { venueId: venueId },
+      select: {
+        tags: {
+          select: {
+            tagName: true,
+          },
+        },
+      },
+    });
+    const result = data.map((el) => el.tags.tagName);
+    console.log(result);
+    return result;
+  }
+
   async createTags(
     userId: string,
     venueId: string,

@@ -12,6 +12,11 @@ import { JwtAccessGuard } from '@/auth/jwt-auth.guard.ts/jwt-auth.access.guard';
 export class TagController {
   constructor(private tagService: TagService) {}
 
+  @Get(':venueId')
+  async getTags(@Param('venueId') venueId: string) {
+    return await this.tagService.findAllTags(venueId);
+  }
+
   @Post(':venueId')
   @UseGuards(JwtAccessGuard)
   async createTags(
