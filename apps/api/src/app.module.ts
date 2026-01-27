@@ -8,7 +8,9 @@ import { UserModule } from './user/user.module';
 import { ReviewModule } from './review/review.module';
 import { RedisModule } from './redis/redis.module';
 import { AuthModule } from './auth/auth.module';
-import { RegionModule } from './region/region.modue';
+import { RegionModule } from './region/region.module';
+import { VenueDetailModule } from './venuedetail/venuedetail.module';
+import { VenueTagModule } from './venueTag/venuetag.module';
 
 @Module({
   imports: [
@@ -29,6 +31,8 @@ import { RegionModule } from './region/region.modue';
     AuthModule,
     PrismaModule,
     VenueModule,
+    VenueDetailModule,
+    VenueTagModule,
     UserModule,
     ReviewModule,
     RedisModule,

@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger"
-import { I18nText, Language, VenueCategory } from "../../common/types"
+import { Language, VenueCategory } from "../../common/types"
 import { IsIn, IsNotEmpty, IsNumber, IsString } from "class-validator"
 
 export class VenueCreateDto {

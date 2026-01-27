@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger"
-import { I18nText, Language, VenueCategory } from "../../common/types"
-import { IsIn, IsNotEmpty, IsNumber, IsString } from "class-validator"
+import { I18nText } from "../../common/types"
+import { IsIn, IsString } from "class-validator"
 
 export class VenueUpdateDtoUser {
   @ApiPropertyOptional({
