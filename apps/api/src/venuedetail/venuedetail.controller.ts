@@ -20,7 +20,6 @@ export class VenueDetailController {
   @Post(':venueId')
   @ApiBearerAuth('access-token')
   @UseGuards(JwtAccessGuard)
-  @ApiBearerAuth('jwt-access')
   async createVenueDetails(
     @CurrentUser() user: User,
     @Param('venueId') venueId: string,

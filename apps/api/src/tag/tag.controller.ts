@@ -1,18 +1,19 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
-import { ApiBasicAuth, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { TagService } from './tag.service';
 import { TagCreateDto } from '@triptags/shared';
 import { User } from '@prisma/client';
 import { CurrentUser } from '@/common/decorator/current_user.decorator';
+import { JwtAccessGuard } from '@/auth/jwt-auth.guard.ts/jwt-auth.access.guard';
 
-@ApiBasicAuth('iwt-access')
-@ApiTags('venueTags')
-@Controller()
+@ApiTags('tags')
+@ApiBearerAuth('access-token')
+@Controller('tags')
 export class TagController {
   constructor(private tagService: TagService) {}
 
-  @Post(':venueId/user')
-  @ApiBasicAuth('jwt-access')
+  @Post(':venueId')
+  @UseGuards(JwtAccessGuard)
   async createTags(
     @CurrentUser() user: User,
     @Param('venueId') venueId: string,

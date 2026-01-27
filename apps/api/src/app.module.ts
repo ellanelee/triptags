@@ -10,7 +10,7 @@ import { RedisModule } from './redis/redis.module';
 import { AuthModule } from './auth/auth.module';
 import { RegionModule } from './region/region.module';
 import { VenueDetailModule } from './venuedetail/venuedetail.module';
-import { TagModule, VenueTagModule } from './tag/tag.module';
+import { TagModule } from './tag/tag.module';
 
 @Module({
   imports: [
