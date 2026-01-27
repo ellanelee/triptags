@@ -31,5 +31,6 @@ export class TagController {
       tagCreateDto.tags,
       systemTag,
     );
+    return { message: 'tags created' };
   }
 }
