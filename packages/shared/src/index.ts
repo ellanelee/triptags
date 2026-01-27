@@ -14,6 +14,7 @@ export * from "./dtos/review/reviewcreate.dto"
 export * from "./dtos/review/reviewdetailcreate.dto"
 export * from "./dtos/review/reviewupdate.dto"
 export * from "./dtos/venuedetail/venuedetail.dto"
+export * from "./dtos/tag/tagcreate.dto"
 
 //Common
 export * from "./common/types"

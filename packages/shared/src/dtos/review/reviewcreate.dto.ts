@@ -1,5 +1,5 @@
-import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger"
-import { IsInt, IsNotEmpty, IsString, Max, Min } from "class-validator"
+import { ApiProperty} from "@nestjs/swagger"
+import { IsInt, IsNotEmpty, Max, Min } from "class-validator"
 import { I18nText } from "../../common/types"
 
 export class ReviewCreateDto {
