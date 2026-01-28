@@ -138,6 +138,7 @@ export class VenueService {
     });
   }
 
+  //Venue생성
   async createVenue(userId: string, venueCreateDto: VenueCreateDto) {
     const newRegionId = await this.region.getOrCreateRegionHistory(
       venueCreateDto.country,

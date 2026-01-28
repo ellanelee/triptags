@@ -41,15 +41,20 @@ export class UserPointService {
       throw new BadRequestException('데이터 처리에 오류가 있습니다');
     }
   }
+
   async issuePoint(pointInput: IPointCreateInput) {
-    return await this.prisma.client.userPoint.create({
+    const points = await this.prisma.client.userPoint.create({
       data: { ...pointInput },
     });
+    console.log('포인트 발급완료: ', points);
+    return points;
   }
 
   //이벤트 처리
   @OnEvent('venue.created')
+  @OnEvent('review.created')
   async handleGrantPoint(userPoint: IUserPoint) {
+    console.log('이벤트 수신 성공:', userPoint.userId);
     const { userId, venueId, pointType, verificationMethod } = userPoint;
     const user = await this.prisma.client.user.findFirst({
       where: { id: userId },

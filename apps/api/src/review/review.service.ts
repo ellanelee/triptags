@@ -5,10 +5,16 @@ import {
   ReviewUpdateDto,
   VenuePaginationDto,
 } from '@triptags/shared';
+import { IUserPoint } from '@/common/type/types';
+import { PointType } from '@prisma/client';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class ReviewService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private readonly event: EventEmitter2,
+  ) {}
 
   //review 받아오기
   async findReviewByVenueId(venueId: string, pageDto: VenuePaginationDto) {
@@ -47,7 +53,7 @@ export class ReviewService {
     });
     if (!targetVenue)
       throw new NotFoundException('Review를 등록할 장소가 존재하지 않습니다');
-    await this.prisma.client.review.create({
+    const review = this.prisma.client.review.create({
       data: {
         rating: createDto.rating,
         contents: createDto.contents,
@@ -55,6 +61,15 @@ export class ReviewService {
         userId: userId,
       },
     });
+
+    const pointInput: IUserPoint = {
+      userId,
+      venueId: venueId,
+      pointType: PointType.REVIEW_WRITE,
+    };
+
+    this.event.emit('review.created', pointInput);
+    return review;
   }
 
   //Update
