@@ -13,13 +13,18 @@ import {
   VenueUpdateDtoUser,
 } from '@triptags/shared';
 import { VenuePaginationDto } from '@triptags/shared';
-import { UserRole } from '@prisma/client';
+import { PointType, UserRole } from '@prisma/client';
+import { UserPointService } from '@/userpoint/userpoint.service';
+import { IUserPoint } from '@/common/type/types';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class VenueService {
   constructor(
     private prisma: PrismaService,
     private region: RegionService,
+    private userPoint: UserPointService,
+    private readonly event: EventEmitter2,
   ) {}
 
   private findActiveVenueById(venueId: string) {
@@ -145,7 +150,7 @@ export class VenueService {
       ? { [lang]: venueCreateDto.description }
       : undefined;
 
-    return await this.prisma.client.venue.create({
+    const createdVenue = await this.prisma.client.venue.create({
       data: {
         name: venueNameJson,
         description: descriptionJson,
@@ -157,6 +162,17 @@ export class VenueService {
         createdBy: userId,
       },
     });
+    const pointInput: IUserPoint = {
+      userId,
+      venueId: createdVenue.id,
+      pointType: PointType.VENUE_CREATE,
+    };
+
+    //Venue생성에 대해 UserPoint로 알림
+    this.event.emit('venue.created', pointInput);
+
+    // await this.userPoint.grantPoint(pointInput);
+    return createdVenue;
   }
 
   //사용자 venue추가 (언어별 장소명칭 및 이름)

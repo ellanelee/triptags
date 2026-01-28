@@ -10,6 +10,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { PointType, VerificationMethod } from '@prisma/client';
+import { OnEvent } from '@nestjs/event-emitter';
 
 @Injectable()
 export class UserPointService {
@@ -46,7 +47,9 @@ export class UserPointService {
     });
   }
 
-  async grantPoint(userPoint: IUserPoint) {
+  //이벤트 처리
+  @OnEvent('venue.created')
+  async handleGrantPoint(userPoint: IUserPoint) {
     const { userId, venueId, pointType, verificationMethod } = userPoint;
     const user = await this.prisma.client.user.findFirst({
       where: { id: userId },
@@ -61,24 +64,29 @@ export class UserPointService {
       userId: userId,
     };
     //LOCAL VERIFIED의 경우 ADDRESS, GPS, ACTIVITY로 LocalVerification으로 작동
-    if (pointType === PointType.LOCAL_VERIFIED) {
-      const data = {
-        ...baseData,
-        pointActivity: PointType.LOCAL_VERIFIED,
-        localVerified: verificationMethod,
-      };
-      await this.issuePoint(data);
-    } else {
-      const venue = await this.prisma.client.venue.findFirst({
-        where: { id: userPoint.venueId },
-      });
-      if (!venue) throw new BadRequestException('관련 Venue를 찾을수 없습니다');
-      const data = {
-        ...baseData,
-        pointActivity: pointType,
-        venueId: venueId,
-      };
-      await this.issuePoint(data);
+    try {
+      if (pointType === PointType.LOCAL_VERIFIED) {
+        const data = {
+          ...baseData,
+          pointActivity: PointType.LOCAL_VERIFIED,
+          localVerified: verificationMethod,
+        };
+        await this.issuePoint(data);
+      } else {
+        const venue = await this.prisma.client.venue.findFirst({
+          where: { id: userPoint.venueId },
+        });
+        if (!venue)
+          throw new BadRequestException('관련 Venue를 찾을수 없습니다');
+        const data = {
+          ...baseData,
+          pointActivity: pointType,
+          venueId: venueId,
+        };
+        await this.issuePoint(data);
+      }
+    } catch (error) {
+      console.error('포인트 지급 실패:', error);
     }
   }
 }
