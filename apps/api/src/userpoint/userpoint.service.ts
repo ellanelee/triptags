@@ -53,6 +53,7 @@ export class UserPointService {
   //이벤트 처리
   @OnEvent('venue.created')
   @OnEvent('review.created')
+  @OnEvent('helpful.received')
   async handleGrantPoint(userPoint: IUserPoint) {
     console.log('이벤트 수신 성공:', userPoint.userId);
     const { userId, venueId, pointType, verificationMethod } = userPoint;
@@ -77,6 +78,12 @@ export class UserPointService {
           localVerified: verificationMethod,
         };
         await this.issuePoint(data);
+      } else if (pointType === PointType.HELPFUL_RECEIVED) {
+        const data = {
+          ...baseData,
+          pointActivity: PointType.HELPFUL_RECEIVED,
+        };
+        await this.issuePoint(data);
       } else {
         const venue = await this.prisma.client.venue.findFirst({
           where: { id: userPoint.venueId },
@@ -89,9 +96,30 @@ export class UserPointService {
           venueId: venueId,
         };
         await this.issuePoint(data);
+        console.log('포인트 발급완료');
       }
     } catch (error) {
       console.error('포인트 지급 실패:', error);
     }
+  }
+
+  @OnEvent('helpful.removed')
+  async revokePoint(userPoint: IUserPoint) {
+    console.log('삭제이벤트 수신성공:', userPoint.userId);
+    const user = await this.prisma.client.user.findFirst({
+      where: { id: userPoint.userId },
+    });
+    if (!user) throw new NotFoundException('사용자를 찾을수 없습니다');
+
+    const pointDown = this.evaluatePoint({
+      pointType: userPoint.pointType,
+      verificationMethod: userPoint.verificationMethod,
+    });
+    await this.issuePoint({
+      point: pointDown,
+      pointActivity: userPoint.pointType,
+      userId: userPoint.userId,
+    });
+    console.log('포인트 발급완료: ', pointDown);
   }
 }
