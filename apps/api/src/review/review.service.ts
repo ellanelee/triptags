@@ -5,10 +5,16 @@ import {
   ReviewUpdateDto,
   VenuePaginationDto,
 } from '@triptags/shared';
+import { IUserPoint } from '@/common/type/types';
+import { PointType } from '@prisma/client';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class ReviewService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private readonly event: EventEmitter2,
+  ) {}
 
   //review 받아오기
   async findReviewByVenueId(venueId: string, pageDto: VenuePaginationDto) {
@@ -47,7 +53,7 @@ export class ReviewService {
     });
     if (!targetVenue)
       throw new NotFoundException('Review를 등록할 장소가 존재하지 않습니다');
-    await this.prisma.client.review.create({
+    const review = this.prisma.client.review.create({
       data: {
         rating: createDto.rating,
         contents: createDto.contents,
@@ -55,6 +61,15 @@ export class ReviewService {
         userId: userId,
       },
     });
+
+    const pointInput: IUserPoint = {
+      userId,
+      venueId: venueId,
+      pointType: PointType.REVIEW_WRITE,
+    };
+
+    this.event.emit('review.created', pointInput);
+    return review;
   }
 
   //Update
@@ -83,20 +98,31 @@ export class ReviewService {
       where: { id: reviewId, deletedAt: null },
     });
   }
-  //review에 대해 "도움이 됐어요"표시
+  //review에 대해 "도움이 됐어요"표시 (토글)
   async createHelpful(reviewId: string, userId: string) {
     const targetHelpful = await this.prisma.client.reviewHelpful.findUnique({
       where: { reviewId_userId: { reviewId, userId } },
     });
+    //Event의 Input설정
+    const pointInput: IUserPoint = {
+      userId,
+      pointType: PointType.HELPFUL_RECEIVED,
+    };
+    //도움이 되어요가 기존에 있는 경우 삭제 토글 및 포인트 차감
     if (targetHelpful) {
       await this.prisma.client.reviewHelpful.delete({
         where: { reviewId_userId: { reviewId, userId } },
       });
+      //포인트 삭제
+      this.event.emit('helpful.removed', pointInput);
       return { reviewHelpful: false };
+      //도움이 되어요가 기존에 없는 경우 생성 후 포인트 부여
     } else {
       await this.prisma.client.reviewHelpful.create({
         data: { userId, reviewId },
       });
+      //포인트 생성
+      this.event.emit('helpful.received', pointInput);
       return { reviewHelpful: true };
     }
   }

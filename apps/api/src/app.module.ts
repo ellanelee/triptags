@@ -11,6 +11,8 @@ import { AuthModule } from './auth/auth.module';
 import { RegionModule } from './region/region.module';
 import { VenueDetailModule } from './venuedetail/venuedetail.module';
 import { TagModule } from './tag/tag.module';
+import { UserPointModule } from './userpoint/userpoint.module';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 @Module({
   imports: [
@@ -28,6 +30,10 @@ import { TagModule } from './tag/tag.module';
         limit: 10, //요청횟수
       },
     ]),
+    EventEmitterModule.forRoot({
+      wildcard: false,
+      delimiter: '.',
+    }),
     AuthModule,
     PrismaModule,
     VenueModule,
@@ -37,6 +43,7 @@ import { TagModule } from './tag/tag.module';
     ReviewModule,
     RedisModule,
     RegionModule,
+    UserPointModule,
   ],
 })
 export class AppModule {}
