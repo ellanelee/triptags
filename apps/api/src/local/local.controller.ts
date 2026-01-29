@@ -4,19 +4,26 @@ import { Body, Controller, Param, Post, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { LocalVerificationCreateDto } from '@triptags/shared';
 import { create } from 'domain';
+import { LocalVerificationService } from './local.service';
+import { User } from '@prisma/client';
 
 @Controller('local_verification')
 @ApiBearerAuth('access-token')
 @ApiTags('local_verification')
 export class LocalVerificationController {
+  constructor(private localVerificationService: LocalVerificationService) {}
+
   @Post(':venueId')
   @UseGuards(JwtAccessGuard)
-  handleCreateLocalVerification(
+  async handleCreateLocalVerification(
     @CurrentUser() user: User,
     @Param('venueId') venueId: string,
     @Body() createDto: LocalVerificationCreateDto,
   ) {
-    this.handleCreateLocalVerification(user.id, venueId, createDto){
-    }
+    await this.localVerificationService.createVerification(
+      user.id,
+      venueId,
+      createDto,
+    );
   }
 }
