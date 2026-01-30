@@ -1,6 +1,7 @@
 import { PrismaService } from '@/prisma/prisma.service';
 import { calculateDistance } from '@/utils/location.utils';
 import { BadRequestException, Injectable } from '@nestjs/common';
+import { VerificationMethod } from '@prisma/client';
 import { LocalVerificationCreateDto } from '@triptags/shared';
 
 @Injectable()
@@ -21,6 +22,11 @@ export class LocalVerificationService {
       throw new BadRequestException('사용자의 주소가 필요합니다');
     }
 
+    const venue = await this.prisma.client.venue.findFirst({
+      where: { id: venueId, deletedAt: null },
+      select: { regionId: true },
+    });
+
     const distance = calculateDistance(
       { lat: profile.latitude, lng: profile.longitude },
       { lat: createDto.latitude, lng: createDto.longitude },
@@ -30,13 +36,16 @@ export class LocalVerificationService {
     if (distance > 15000) {
       throw new BadRequestException('허용된 거리범위를 벗어납니다');
     }
+    if (!venue?.regionId)
+      throw new BadRequestException('데이터를 불러오지 못했습니다');
+
     return await this.prisma.client.localVerification.create({
       data: {
         userId,
-        regionId: profile.regionId,
+        regionId: venue.regionId,
         longitude: createDto.longitude,
         latitude: createDto.latitude,
-        verificationMethod: createDto.verificationMethod,
+        verificationMethod: createDto.verificationMethod as VerificationMethod,
       },
     });
   }
