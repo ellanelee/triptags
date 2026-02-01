@@ -28,7 +28,7 @@ export class LocalVerificationController {
 
   @Get()
   @UseGuards(JwtAccessGuard)
-  async handleLocalVerification(){
-    await this.localVerificationService.
+  async handleGetLocalVerification(@CurrentUser() user: User) {
+    await this.localVerificationService.getVerification(user.id);
   }
 }

@@ -49,4 +49,9 @@ export class LocalVerificationService {
       },
     });
   }
+  async getVerification(userId: string) {
+    await this.prisma.client.localVerification.findMany({
+      where: { userId: userId, deletedAt: null },
+    });
+  }
 }
