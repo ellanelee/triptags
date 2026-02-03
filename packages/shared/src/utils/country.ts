@@ -15,7 +15,7 @@ countries.registerLocale(es)
 countries.registerLocale(fr)
 countries.registerLocale(de)
 
-export const LocationUtils = {
+export const CountryUtils = {
   // ISO 3166-1 alpha-2를 이용한 국가 코드검증
   isValidCountryCode(countryCode: string): boolean {
     return countries.isValid(countryCode)
