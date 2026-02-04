@@ -1,11 +1,25 @@
 import { PrismaService } from '@/prisma/prisma.service';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { RegionService } from '@/region/region.service';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { DestinationCreateDto } from '@triptags/shared';
 
 @Injectable()
 export class DestinationService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private regionService: RegionService,
+  ) {}
 
+  async getDestination(code: string) {
+    const targetCountryId = await this.regionService.getCountryIdByCode(code);
+    if (!targetCountryId)
+      throw new NotFoundException('국가 코드가 조회되지 않습니다');
+    return await this.regionService.getSubRegion(targetCountryId);
+  }
   //선호 여행지 등록
   async createDestination(userId: string, createDto: DestinationCreateDto) {
     const targetRegion = await this.prisma.client.region.findFirst({
@@ -21,7 +35,16 @@ export class DestinationService {
     });
     if (!targetRegion?.id)
       throw new NotFoundException('등록할수 있는 region이 없습니다');
-    await this.prisma.client.destination.create({
+    const alreadyExisted = await this.prisma.client.destination.findUnique({
+      where: {
+        userId_regionId: {
+          userId: userId,
+          regionId: targetRegion.id,
+        },
+      },
+    });
+    if (alreadyExisted) throw new BadRequestException('이미 등록된 지역입니다');
+    return await this.prisma.client.destination.create({
       data: {
         userId: userId,
         regionId: targetRegion.id,

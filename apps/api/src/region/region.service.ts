@@ -1,5 +1,5 @@
 import { PrismaService } from '@/prisma/prisma.service';
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 
 @Injectable()
 export class RegionService {
@@ -55,5 +55,23 @@ export class RegionService {
       create: { name: normalizedDistrict, level: 3, parentId: cityNode.id },
     });
     return districtNode.id;
+  }
+
+  async getCountryIdByCode(countryCode: string) {
+    const targetCountryCode = this.norm(countryCode, true);
+    const targetCountry = await this.prisma.client.region.findFirst({
+      where: { name: targetCountryCode, level: 1 },
+      select: { id: true },
+    });
+    if (!targetCountry)
+      throw new BadRequestException('국가 코드가 적절하지 않습니다');
+    return targetCountry.id;
+  }
+  async getSubRegion(parentId: string) {
+    return this.prisma.client.region.findMany({
+      where: { parentId: parentId },
+      orderBy: { name: 'asc' },
+      select: { id: true, name: true, level: true },
+    });
   }
 }
