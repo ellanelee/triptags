@@ -14,11 +14,15 @@ export class DestinationService {
     private regionService: RegionService,
   ) {}
 
-  async getDestination(code: string) {
-    const targetCountryId = await this.regionService.getCountryIdByCode(code);
-    if (!targetCountryId)
+  async getDestination(code: string, parentId: string) {
+    //국가 코드인지 여부를 확인
+    const targetRegionId = await this.regionService.getCountryIdByCode(
+      code,
+      parentId,
+    );
+    if (!targetRegionId)
       throw new NotFoundException('국가 코드가 조회되지 않습니다');
-    return await this.regionService.getSubRegion(targetCountryId);
+    return await this.regionService.getSubRegion(targetRegionId);
   }
   //선호 여행지 등록
   async createDestination(userId: string, createDto: DestinationCreateDto) {

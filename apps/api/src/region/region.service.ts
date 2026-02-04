@@ -1,5 +1,11 @@
 import { PrismaService } from '@/prisma/prisma.service';
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { CountryUtils } from '@triptags/shared';
+import { NotFoundError } from 'rxjs';
 
 @Injectable()
 export class RegionService {
@@ -57,16 +63,24 @@ export class RegionService {
     return districtNode.id;
   }
 
-  async getCountryIdByCode(countryCode: string) {
-    const targetCountryCode = this.norm(countryCode, true);
-    const targetCountry = await this.prisma.client.region.findFirst({
-      where: { name: targetCountryCode, level: 1 },
+  async getCountryIdByCode(code: string, parentId: string) {
+    //정규화하여 국가코드 여부를 검증한후 Id추출
+    const targetCode = this.norm(code, true);
+    const isCountry = CountryUtils.isValidCountryCode(targetCode);
+
+    //국가 코드인 경우 1level로 검색
+    const targetRegion = await this.prisma.client.region.findFirst({
+      where: {
+        name: targetCode,
+        level: isCountry ? 1 : 2,
+        parentId: isCountry ? null : parentId,
+      },
       select: { id: true },
     });
-    if (!targetCountry)
-      throw new BadRequestException('국가 코드가 적절하지 않습니다');
-    return targetCountry.id;
+    if (!targetRegion) throw new NotFoundException('지역을 검색할수 없습니다');
+    return targetRegion.id;
   }
+
   async getSubRegion(parentId: string) {
     return this.prisma.client.region.findMany({
       where: { parentId: parentId },

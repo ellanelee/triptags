@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { DestinationService } from './destination.service';
 import { JwtAccessGuard } from '@/auth/jwt-auth.guard.ts/jwt-auth.access.guard';
@@ -14,8 +14,11 @@ export class DestinationController {
 
   //국가 코드는 i18n iso사용, city/district검색 (사용자 선호 여행지 등록을 위해)
   @Get(':countryCode')
-  async handleSearchRegion(@Param('countryCode') code: string) {
-    await this.destinationService.getDestination(code);
+  async handleSearchRegion(
+    @Query('code') code: string,
+    @Query('parentId') parentId: string,
+  ) {
+    await this.destinationService.getDestination(code, parentId);
   }
 
   @Post()
