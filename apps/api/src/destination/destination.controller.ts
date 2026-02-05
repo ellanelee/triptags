@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { DestinationService } from './destination.service';
 import { JwtAccessGuard } from '@/auth/jwt-auth.guard.ts/jwt-auth.access.guard';
@@ -13,7 +21,7 @@ export class DestinationController {
   constructor(private destinationService: DestinationService) {}
 
   //개인의 선호 여행지 검색
-  @Get()
+  @Get('my')
   @UseGuards(JwtAccessGuard)
   async handleSearchRegion(@CurrentUser() user: User) {
     await this.destinationService.getDestination(user.id);
@@ -27,5 +35,14 @@ export class DestinationController {
     @Body() destinationDto: DestinationCreateDto,
   ) {
     return this.destinationService.createDestination(user.id, destinationDto);
+  }
+
+  @Delete()
+  @UseGuards(JwtAccessGuard)
+  async handleRemoveDestination(
+    @CurrentUser() user: User,
+    @Query() regionId: string,
+  ) {
+    return this.destinationService.deleteDestination(user.id, regionId);
   }
 }
