@@ -12,15 +12,14 @@ import { DestinationCreateDto } from '@triptags/shared';
 export class DestinationController {
   constructor(private destinationService: DestinationService) {}
 
-  //국가 코드는 i18n iso사용, city/district검색 (사용자 선호 여행지 등록을 위해)
-  @Get(':countryCode')
-  async handleSearchRegion(
-    @Query('code') code: string,
-    @Query('parentId') parentId: string,
-  ) {
-    await this.destinationService.getDestination(code, parentId);
+  //개인의 선호 여행지 검색
+  @Get()
+  @UseGuards(JwtAccessGuard)
+  async handleSearchRegion(@CurrentUser() user: User) {
+    await this.destinationService.getDestination(user.id);
   }
 
+  //국가 코드는 i18n iso사용, city/district검색 (사용자 선호 여행지 등록을 위해)
   @Post()
   @UseGuards(JwtAccessGuard)
   async handleCreateDestination(

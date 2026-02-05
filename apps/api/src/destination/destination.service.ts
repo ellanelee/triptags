@@ -14,16 +14,16 @@ export class DestinationService {
     private regionService: RegionService,
   ) {}
 
-  async getDestination(code: string, parentId: string) {
-    //국가 코드인지 여부를 확인
-    const targetRegionId = await this.regionService.getCountryIdByCode(
-      code,
-      parentId,
-    );
-    if (!targetRegionId)
-      throw new NotFoundException('국가 코드가 조회되지 않습니다');
-    return await this.regionService.getSubRegion(targetRegionId);
+  async getDestination(userId: string) {
+    const user = await this.prisma.client.user.findFirst({
+      where: { id: userId, deletedAt: null },
+    });
+    if (!user) throw new NotFoundException('사용자가 존재하지 않습니다');
+    return await this.prisma.client.destination.findMany({
+      where: { userId: userId },
+    });
   }
+
   //선호 여행지 등록
   async createDestination(userId: string, createDto: DestinationCreateDto) {
     const targetRegion = await this.prisma.client.region.findFirst({
