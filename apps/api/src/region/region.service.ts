@@ -63,7 +63,7 @@ export class RegionService {
     return districtNode.id;
   }
 
-  async getCountryIdByCode(code: string, parentId: string) {
+  async getRegionId(code: string, parentId: string) {
     //정규화하여 국가코드 여부를 검증한후 Id추출
     const targetCode = this.norm(code, true);
     const isCountry = CountryUtils.isValidCountryCode(targetCode);
