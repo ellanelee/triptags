@@ -80,6 +80,7 @@ model User {
   reviews               Review[]
   businessVerifications BusinessVerification[]
   reviewHelpfuls        ReviewHelpful[]
+  destinations          Destination[]
 
   @@unique([provider, providerId])
   @@map("users")
@@ -116,8 +117,8 @@ model LocalVerification {
   user               User               @relation(fields: [userId], references: [id], onDelete: Cascade)
   venueId            String?            @map("venue_id") @db.Uuid
   venue              Venue?             @relation(fields: [venueId], references: [id])
-  regionId           String             @map("region_id") @db.Uuid
-  region             Region             @relation(fields: [regionId], references: [id], onDelete: Cascade)
+  regionId           String?            @map("region_id") @db.Uuid
+  region             Region?            @relation(fields: [regionId], references: [id], onDelete: Cascade)
   userPoint          UserPoint[]
 
   @@map("local_verifications")
@@ -169,6 +170,7 @@ model Region {
    userProfiles       UserProfile[]
    localVerifications LocalVerification[]
    venues             Venue[]
+   destinations       Destination[]
 
   @@unique([parentId, name, level], name:"region_depth")
   @@map("regions")
@@ -343,4 +345,17 @@ model ReviewImage {
   review    Review  @relation(fields: [reviewId], references: [id])
 
   @@map("review_images")
+}
+
+model Destination {
+  id         String    @id @default(uuid()) @db.Uuid
+  userId     String    @map("user_id") @db.Uuid
+  regionId   String    @map("region_id") @db.Uuid
+  priority   Int       @default(0) 
+  createdAt  DateTime  @default(now()) @map("created_at")
+  user       User      @relation(fields: [userId], references: [id])
+  region     Region    @relation(fields: [regionId], references: [id])
+
+  @@unique([userId, regionId])
+  @@map("destination")
 }

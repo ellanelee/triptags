@@ -13,6 +13,7 @@ import { VenueDetailModule } from './venuedetail/venuedetail.module';
 import { TagModule } from './tag/tag.module';
 import { UserPointModule } from './userpoint/userpoint.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { DestinationModule } from './destination/destination.module';
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
     RedisModule,
     RegionModule,
     UserPointModule,
+    DestinationModule,
   ],
 })
 export class AppModule {}

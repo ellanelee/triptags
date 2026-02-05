@@ -16,6 +16,8 @@ export * from "./dtos/review/reviewupdate.dto"
 export * from "./dtos/venuedetail/venuedetail.dto"
 export * from "./dtos/tag/tagcreate.dto"
 export * from "./dtos/localverficiation/localverficationcreated.dto"
+export * from "./utils/country"
+export * from "./dtos/destination/destinationcreate.dto"
 
 //Common
 export * from "./common/types"
