@@ -100,7 +100,17 @@ export class RegionService {
   }
 
   async getSubRegion(parentId: string) {
-    return this.prisma.client.region.findMany({
+    const parentNode = await this.prisma.client.region.findUnique({
+      where: { id: parentId },
+      select: { id: true, name: true, level: true },
+    });
+    if (!parentNode)
+      throw new BadRequestException('지역 정보가 존재하지 않습니다');
+    if (parentNode?.level >= 3) {
+      return [];
+    }
+
+    return await this.prisma.client.region.findMany({
       where: { parentId: parentId },
       orderBy: { name: 'asc' },
       select: { id: true, name: true, level: true },
