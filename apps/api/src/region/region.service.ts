@@ -1,5 +1,9 @@
 import { PrismaService } from '@/prisma/prisma.service';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CountryUtils } from '@triptags/shared';
 
 @Injectable()
@@ -58,16 +62,35 @@ export class RegionService {
     return districtNode.id;
   }
 
-  async getRegionId(code: string, parentId: string) {
+  async getRegionId(code: string, parentId: string | null) {
     //정규화하여 국가코드 여부를 검증한후 Id추출
-    const targetCode = this.norm(code, true);
-    const isCountry = CountryUtils.isValidCountryCode(targetCode);
+    let isCountry = false;
+    let currentLevel = 1; //국가코드로 기본 옵션 설정
+    let targetCode = code;
+    //국가 코드 옵션으로 요청되는 경우
+    if (parentId === null) {
+      isCountry = true;
+      targetCode = this.norm(code, isCountry);
+      const isValidCountry = CountryUtils.isValidCountryCode(targetCode);
+      if (!isValidCountry)
+        throw new BadRequestException('국가 코드 입력값이 적절하지 않습니다');
+    } else {
+      //광역시/도 혹은 시/군/구로 요청되는 경우
+      const parentNode = await this.prisma.client.region.findFirst({
+        where: { parentId: parentId },
+        select: { level: true },
+      });
+      if (!parentNode)
+        throw new BadRequestException('입력값이 적절하지 않습니다');
+      currentLevel = parentNode.level == 1 ? 2 : 3;
+      targetCode = this.norm(code, isCountry);
+    }
 
-    //국가 코드인 경우 1level로 검색
+    //국가 코드인 경우 1level로 검색, 도시코드인 경우2, 지역코드인 경우3으로 검색
     const targetRegion = await this.prisma.client.region.findFirst({
       where: {
         name: targetCode,
-        level: isCountry ? 1 : 2,
+        level: currentLevel,
         parentId: isCountry ? null : parentId,
       },
       select: { id: true },
@@ -76,11 +99,41 @@ export class RegionService {
     return targetRegion.id;
   }
 
-  async getSubRegion(parentId: string) {
-    return this.prisma.client.region.findMany({
-      where: { parentId: parentId },
+  async getSubRegion(regionId: string) {
+    const parentNode = await this.prisma.client.region.findUnique({
+      where: { id: regionId },
+      select: { id: true, name: true, level: true },
+    });
+    if (!parentNode)
+      throw new BadRequestException('지역 정보가 존재하지 않습니다');
+    if (parentNode?.level >= 3) {
+      return [];
+    }
+
+    return await this.prisma.client.region.findMany({
+      where: { parentId: regionId },
       orderBy: { name: 'asc' },
       select: { id: true, name: true, level: true },
+    });
+  }
+
+  async getAllSubRegionIds(regionId: string) {
+    const children = await this.getSubRegion(regionId);
+    let subRegionIds: string[] = [regionId];
+    for (const child of children) {
+      const subIds = await this.getAllSubRegionIds(child.id);
+      subRegionIds = [...subRegionIds, ...subIds];
+    }
+    return subRegionIds;
+  }
+
+  async getVenueByRegion(code: string, parentId: string | null) {
+    const regionId = await this.getRegionId(code, parentId);
+    const subRegionIds = await this.getAllSubRegionIds(regionId);
+
+    return this.prisma.client.venue.findMany({
+      where: { regionId: { in: subRegionIds } },
+      include: { region: true },
     });
   }
 }

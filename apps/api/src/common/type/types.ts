@@ -29,3 +29,8 @@ export interface IPointCreateInput {
   venueId?: string;
   localVerificationId?: string;
 }
+
+export interface IVenueSearch {
+  code: string;
+  parentId?: string;
+}

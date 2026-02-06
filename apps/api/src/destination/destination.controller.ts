@@ -23,20 +23,21 @@ export class DestinationController {
   //개인의 선호 여행지 검색
   @Get('my')
   @UseGuards(JwtAccessGuard)
-  async handleSearchRegion(@CurrentUser() user: User) {
+  async handleSearchFavorite(@CurrentUser() user: User) {
     await this.destinationService.getDestination(user.id);
   }
 
   //국가 코드는 i18n iso사용, city/district검색 (사용자 선호 여행지 등록을 위해)
   @Post()
   @UseGuards(JwtAccessGuard)
-  async handleCreateDestination(
+  async handleCreateFavorite(
     @CurrentUser() user: User,
     @Body() destinationDto: DestinationCreateDto,
   ) {
     return this.destinationService.createDestination(user.id, destinationDto);
   }
 
+  //선호여행지 제거
   @Delete()
   @UseGuards(JwtAccessGuard)
   async handleRemoveDestination(

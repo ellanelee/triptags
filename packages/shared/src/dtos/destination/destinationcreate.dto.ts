@@ -6,7 +6,7 @@ export class DestinationCreateDto {
     example: "KR",
     description: "국가코드(ISO 3166-1 alpha-2, KR/US등으로 입력",
   })
-  country!: String
+  country!: string
 
   @ApiProperty({
     example: "경상북도",
