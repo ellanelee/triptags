@@ -6,7 +6,7 @@ import { User } from '@prisma/client';
 import { VenueDetailService } from './venuedetail.service';
 import { VenueDetailDto } from '@triptags/shared';
 
-@Controller()
+@Controller('venueDetail')
 @ApiTags('venueDetail')
 export class VenueDetailController {
   constructor(private venueDetailService: VenueDetailService) {}
