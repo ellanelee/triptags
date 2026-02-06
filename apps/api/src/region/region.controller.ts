@@ -19,7 +19,7 @@ export class RegionController {
 
   //regionId로 하위 region검색
   @Get('regions')
-  async handleSearchRegion(@Param('regionId') regionId: string) {
+  async handleSearchSubRegion(@Param('regionId') regionId: string) {
     await this.regionService.getSubRegion(regionId);
   }
 

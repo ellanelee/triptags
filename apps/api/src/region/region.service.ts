@@ -99,9 +99,9 @@ export class RegionService {
     return targetRegion.id;
   }
 
-  async getSubRegion(parentId: string) {
+  async getSubRegion(regionId: string) {
     const parentNode = await this.prisma.client.region.findUnique({
-      where: { id: parentId },
+      where: { id: regionId },
       select: { id: true, name: true, level: true },
     });
     if (!parentNode)
@@ -111,16 +111,29 @@ export class RegionService {
     }
 
     return await this.prisma.client.region.findMany({
-      where: { parentId: parentId },
+      where: { parentId: regionId },
       orderBy: { name: 'asc' },
       select: { id: true, name: true, level: true },
     });
   }
 
+  async getAllSubRegionIds(regionId: string) {
+    const children = await this.getSubRegion(regionId);
+    let subRegionIds: string[] = [regionId];
+    for (const child of children) {
+      const subIds = await this.getAllSubRegionIds(child.id);
+      subRegionIds = [...subRegionIds, ...subIds];
+    }
+    return subRegionIds;
+  }
+
   async getVenueByRegion(code: string, parentId: string | null) {
     const regionId = await this.getRegionId(code, parentId);
+    const subRegionIds = await this.getAllSubRegionIds(regionId);
+
     return this.prisma.client.venue.findMany({
-      where: { regionId: regionId },
+      where: { regionId: { in: subRegionIds } },
+      include: { region: true },
     });
   }
 }
