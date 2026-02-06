@@ -30,7 +30,7 @@ export class RegisterDto {
   password!: string
 
   @ApiProperty({
-    example: "1234Abcd!",
+    example: "User1234!",
     description:
       "로그인 패스워드 재확인(영문대소문자,숫자,특수문자포함 8자 이상",
     required: true,
@@ -39,7 +39,7 @@ export class RegisterDto {
   passwordConfirm!: string
 
   @ApiProperty({
-    example: "홍길동!",
+    example: "홍길동",
     description:
       "로그인 패스워드 재확인(영문대소문자,숫자,특수문자포함 8자 이상",
     required: true,

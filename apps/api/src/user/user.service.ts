@@ -204,7 +204,7 @@ export class UserService {
     const normalizedAddress = normalize(userAddress);
     const { country, city, district, details } = normalizedAddress;
 
-    // 지역정보 등록
+    // 지역정보 조회 혹은 등록
     const districtId = await this.region.getOrCreateRegionHistory(
       country,
       city,
