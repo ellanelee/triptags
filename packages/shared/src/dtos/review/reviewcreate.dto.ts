@@ -1,4 +1,4 @@
-import { ApiProperty} from "@nestjs/swagger"
+import { ApiProperty } from "@nestjs/swagger"
 import { IsInt, IsNotEmpty, Max, Min } from "class-validator"
 import { I18nText } from "../../common/types"
 
@@ -14,7 +14,7 @@ export class ReviewCreateDto {
   rating!: number
 
   @ApiProperty({
-    example: "{'ko':음식이 맛있지만 줄을 많이 서야해요.}",
+    example: { ko: "음식이 맛있지만 줄을 많이 서야해요." },
     description:
       "장소에 대한 선호도 평가, 언어는 ko/en/ja/zh/es/fr/de중에 선택",
   })

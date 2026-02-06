@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '@/prisma/prisma.service';
 import {
+  Language,
   ReviewCreateDto,
   ReviewUpdateDto,
   VenuePaginationDto,
@@ -89,9 +90,19 @@ export class ReviewService {
     }
 
     if (updateDto.contents) {
+      const existingContents = (
+        typeof targetReview.contents === 'string'
+          ? JSON.parse(targetReview.contents) // 문자열이면 객체로 변환
+          : targetReview.contents
+      ) as Record<Language, string>;
       await this.prisma.client.review.update({
         where: { id: reviewId },
-        data: { contents: updateDto.contents },
+        data: {
+          contents: {
+            ...existingContents,
+            ...updateDto.contents,
+          },
+        },
       });
     }
     return await this.prisma.client.review.findFirst({

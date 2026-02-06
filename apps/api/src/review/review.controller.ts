@@ -5,6 +5,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { ReviewService } from './review.service';
@@ -24,10 +25,10 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 export class ReviewController {
   constructor(private reviewService: ReviewService) {}
 
-  @Get()
+  @Get(':venueId')
   async getReviewByVenueId(
-    @Param() venueId: string,
-    paginationDto: VenuePaginationDto,
+    @Param('venueId') venueId: string,
+    @Query() paginationDto: VenuePaginationDto,
   ) {
     return await this.reviewService.findReviewByVenueId(venueId, paginationDto);
   }
