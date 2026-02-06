@@ -27,7 +27,7 @@ export class DestinationController {
     return await this.destinationService.getDestination(user.id);
   }
 
-  //국가 코드는 i18n iso사용, city/district검색 (사용자 선호 여행지 등록을 위해)
+  //국가 코드는 i18n iso, city/district검색 (사용자 선호 여행지 등록을 위해)
   @Post()
   @UseGuards(JwtAccessGuard)
   async handleCreateFavorite(
