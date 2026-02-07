@@ -11,9 +11,11 @@ export class LocalVerificationService {
   async createVerification(
     userId: string,
     venueId: string,
-    createDto: LocalVerificationCreateDto,
+    createDto?: LocalVerificationCreateDto,
   ) {
-    //주소 정보로 인증
+    //위치 기반인증 정보
+
+    //사용자의 주소 정보로 인증
     const profile = await this.prisma.client.userProfile.findFirst({
       where: { id: userId, deletedAt: null },
       select: { regionId: true, longitude: true, latitude: true },

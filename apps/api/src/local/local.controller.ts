@@ -5,6 +5,7 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { LocalVerificationCreateDto } from '@triptags/shared';
 import { LocalVerificationService } from './local.service';
 import { User } from '@prisma/client';
+import { ILocalInput } from '@/common/type/types';
 
 @Controller('local_verification')
 @ApiBearerAuth('access-token')
@@ -17,7 +18,7 @@ export class LocalVerificationController {
   async handleCreateLocalVerification(
     @CurrentUser() user: User,
     @Param('venueId') venueId: string,
-    @Body() createDto: LocalVerificationCreateDto,
+    @Body() createDto?: LocalVerificationCreateDto,
   ) {
     await this.localVerificationService.createVerification(
       user.id,

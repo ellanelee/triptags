@@ -52,8 +52,13 @@ export class ReviewService {
     const targetVenue = await this.prisma.client.venue.findFirst({
       where: { id: venueId, deletedAt: null },
     });
+
+    const targetUser = await this.prisma.client.user.findFirst({
+      where: { id: userId, deletedAt: null },
+    });
     if (!targetVenue)
-      throw new NotFoundException('Review를 등록할 장소가 존재하지 않습니다');
+      throw new NotFoundException('Review를 등록할 장소를 찾을수 없습니다');
+    if (!targetUser) throw new NotFoundException('사용자를 찾을수 없습니다');
     const review = this.prisma.client.review.create({
       data: {
         rating: createDto.rating,
