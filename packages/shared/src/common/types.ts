@@ -24,4 +24,4 @@ export type PointType =
   | "HELPFUL_RECEIVED"
   | "LOCAL_VERIFIED"
 
-export type verificationMethod = "ADDRESS" | "GPS" | "ACTIVITY"
+export type VerificationMethod = "ADDRESS" | "GPS" | "ACTIVITY"

@@ -19,7 +19,7 @@ export class VenueDetailService {
     const targetVenue = await this.prisma.client.venue.findFirst({
       where: { id: venueId, deletedAt: null },
     });
-    if (targetVenue)
+    if (!targetVenue)
       throw new UnauthorizedException('데이터를 찾을수 없습니다');
     return this.prisma.client.venueDetail.findFirst({
       where: { venueId },

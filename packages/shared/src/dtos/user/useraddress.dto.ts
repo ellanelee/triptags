@@ -12,8 +12,8 @@ export class UserAddressDto {
   country!: string
 
   @ApiProperty({
-    example: "서울시",
-    description: "도시명",
+    example: "서울특별시",
+    description: "도/특별시/광역시(특별시,광역시등의 명칭 반드시 표기",
   })
   @IsString()
   @IsNotEmpty()

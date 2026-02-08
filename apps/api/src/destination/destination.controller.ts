@@ -15,7 +15,7 @@ import { User } from '@prisma/client';
 import { DestinationCreateDto } from '@triptags/shared';
 
 @ApiBearerAuth('access-token')
-@Controller()
+@Controller('destination')
 @ApiTags('destination')
 export class DestinationController {
   constructor(private destinationService: DestinationService) {}
@@ -24,10 +24,10 @@ export class DestinationController {
   @Get('my')
   @UseGuards(JwtAccessGuard)
   async handleSearchFavorite(@CurrentUser() user: User) {
-    await this.destinationService.getDestination(user.id);
+    return await this.destinationService.getDestination(user.id);
   }
 
-  //국가 코드는 i18n iso사용, city/district검색 (사용자 선호 여행지 등록을 위해)
+  //국가 코드는 i18n iso, city/district검색 (사용자 선호 여행지 등록을 위해)
   @Post()
   @UseGuards(JwtAccessGuard)
   async handleCreateFavorite(

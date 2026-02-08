@@ -39,30 +39,32 @@ export class TagService {
   ) {
     for (const tagName of tags) {
       const normalizeTagName = tagName.trim();
-      const alreadyRegistered = await this.getTagByName(normalizeTagName);
-      if (!alreadyRegistered) {
+      let tag = await this.getTagByName(normalizeTagName);
+      //기존에 등록된 tag가 아닌경우 태그를 등록하여 id반환
+      if (!tag) {
         const data = {
           tagName: normalizeTagName,
           systemTag: isSystemTag,
           creatorId: userId,
         };
-        const tag = await this.prisma.client.tag.create({
+        tag = await this.prisma.client.tag.create({
           data: { ...data },
         });
-        await this.prisma.client.venueTag.upsert({
-          where: {
-            venueId_tagId: {
-              venueId: venueId,
-              tagId: tag.id,
-            },
-          },
-          update: {},
-          create: {
-            venueId,
+      }
+      //venueTag테이블(중간 테이블)에 생성 혹은 update
+      await this.prisma.client.venueTag.upsert({
+        where: {
+          venueId_tagId: {
+            venueId: venueId,
             tagId: tag.id,
           },
-        });
-      }
+        },
+        update: {},
+        create: {
+          venueId,
+          tagId: tag.id,
+        },
+      });
     }
   }
 }

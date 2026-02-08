@@ -17,7 +17,7 @@ export class LocalVerificationController {
   async handleCreateLocalVerification(
     @CurrentUser() user: User,
     @Param('venueId') venueId: string,
-    @Body() createDto: LocalVerificationCreateDto,
+    @Body() createDto?: LocalVerificationCreateDto,
   ) {
     await this.localVerificationService.createVerification(
       user.id,

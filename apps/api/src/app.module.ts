@@ -14,6 +14,7 @@ import { TagModule } from './tag/tag.module';
 import { UserPointModule } from './userpoint/userpoint.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { DestinationModule } from './destination/destination.module';
+import { LocalVerificationModule } from './local/local.module';
 
 @Module({
   imports: [
@@ -46,6 +47,7 @@ import { DestinationModule } from './destination/destination.module';
     RegionModule,
     UserPointModule,
     DestinationModule,
+    LocalVerificationModule,
   ],
 })
 export class AppModule {}

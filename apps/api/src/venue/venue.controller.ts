@@ -29,13 +29,13 @@ import { RolesGuard } from '@/auth/jwt-auth.guard.ts/roels.guard';
 export class VenueController {
   constructor(private venueService: VenueService) {}
 
-  @Get()
+  @Get('all')
   async getAllVenues(@Query() paginationDto: VenuePaginationDto) {
     console.log(paginationDto);
     return await this.venueService.findAll(paginationDto);
   }
 
-  @Get()
+  @Get(':venueId')
   async getVenueById(venueId: string) {
     return await this.venueService.findVenueById(venueId);
   }

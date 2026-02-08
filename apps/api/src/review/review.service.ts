@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '@/prisma/prisma.service';
 import {
+  Language,
   ReviewCreateDto,
   ReviewUpdateDto,
   VenuePaginationDto,
@@ -51,8 +52,13 @@ export class ReviewService {
     const targetVenue = await this.prisma.client.venue.findFirst({
       where: { id: venueId, deletedAt: null },
     });
+
+    const targetUser = await this.prisma.client.user.findFirst({
+      where: { id: userId, deletedAt: null },
+    });
     if (!targetVenue)
-      throw new NotFoundException('Review를 등록할 장소가 존재하지 않습니다');
+      throw new NotFoundException('Review를 등록할 장소를 찾을수 없습니다');
+    if (!targetUser) throw new NotFoundException('사용자를 찾을수 없습니다');
     const review = this.prisma.client.review.create({
       data: {
         rating: createDto.rating,
@@ -89,9 +95,19 @@ export class ReviewService {
     }
 
     if (updateDto.contents) {
+      const existingContents = (
+        typeof targetReview.contents === 'string'
+          ? JSON.parse(targetReview.contents) // 문자열이면 객체로 변환
+          : targetReview.contents
+      ) as Record<Language, string>;
       await this.prisma.client.review.update({
         where: { id: reviewId },
-        data: { contents: updateDto.contents },
+        data: {
+          contents: {
+            ...existingContents,
+            ...updateDto.contents,
+          },
+        },
       });
     }
     return await this.prisma.client.review.findFirst({
