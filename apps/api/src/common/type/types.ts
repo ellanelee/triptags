@@ -1,5 +1,5 @@
 import { PointType, VerificationMethod } from '@prisma/client';
-import { LocalVerificationCreateDto, VenueCreateDto } from '@triptags/shared';
+import { LocalVerificationCreateDto } from '@triptags/shared';
 import { Request } from 'express';
 
 export interface RequestWithUser extends Request {
@@ -40,4 +40,11 @@ export interface ILocalInput {
   userId: string;
   venueId: string;
   localVerificationCreateDto?: LocalVerificationCreateDto;
+}
+
+export interface IDistance {
+  baseLat: number;
+  baseLng: number;
+  localLat: number;
+  localLng: number;
 }

@@ -1,12 +1,12 @@
-export function calculateDistance(
-  position1: { lat: number; lng: number },
-  position2: { lat: number; lng: number },
-): number {
+import { IDistance } from '@/common/type/types';
+
+export function calculateDistance(distanceInput: IDistance): number {
+  const { baseLat, baseLng, localLat, localLng } = distanceInput;
   const R = 6371e3;
-  const lat1Rad = (position1.lat * Math.PI) / 180;
-  const lat2Rad = (position2.lat * Math.PI) / 180;
-  const deltaLat = ((position2.lat - position1.lat) * Math.PI) / 180;
-  const deltaLng = ((position2.lng - position1.lng) * Math.PI) / 180;
+  const lat1Rad = (baseLat * Math.PI) / 180;
+  const lat2Rad = (localLat * Math.PI) / 180;
+  const deltaLat = ((localLat - baseLat) * Math.PI) / 180;
+  const deltaLng = ((localLng - baseLng) * Math.PI) / 180;
 
   //Haversine Formula
   const hValue =
