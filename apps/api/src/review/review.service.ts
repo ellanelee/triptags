@@ -75,6 +75,7 @@ export class ReviewService {
     };
 
     this.event.emit('review.created', pointInput);
+    this.event.emit('reviewrating.created', venueId);
     return review;
   }
 
@@ -82,7 +83,7 @@ export class ReviewService {
   async UpdateReview(reviewId: string, updateDto: ReviewUpdateDto) {
     const targetReview = await this.prisma.client.review.findFirst({
       where: { id: reviewId, deletedAt: null },
-      select: { rating: true, contents: true },
+      select: { rating: true, contents: true, venueId: true },
     });
     if (!targetReview)
       throw new NotFoundException('Review가 존재하지 않습니다');
@@ -92,6 +93,8 @@ export class ReviewService {
         where: { id: reviewId },
         data: { rating: updateDto.rating },
       });
+      //review rating변경에 대한 재집계
+      this.event.emit('reviewrating.updated', targetReview.venueId);
     }
 
     if (updateDto.contents) {

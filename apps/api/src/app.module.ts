@@ -15,6 +15,7 @@ import { UserPointModule } from './userpoint/userpoint.module';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { DestinationModule } from './destination/destination.module';
 import { LocalVerificationModule } from './local/local.module';
+import { VenueStatsModule } from './venuestats/venuestats.module';
 
 @Module({
   imports: [
@@ -48,6 +49,7 @@ import { LocalVerificationModule } from './local/local.module';
     UserPointModule,
     DestinationModule,
     LocalVerificationModule,
+    VenueStatsModule,
   ],
 })
 export class AppModule {}
