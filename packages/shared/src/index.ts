@@ -19,6 +19,7 @@ export * from "./dtos/localverficiation/localverficationcreated.dto"
 export * from "./utils/country"
 export * from "./dtos/destination/destinationcreate.dto"
 export * from "./dtos/region/regionsearch.dto"
+export * from "./dtos/reviewdetail/reviewdetailcreate.dto"
 
 //Common
 export * from "./common/types"
