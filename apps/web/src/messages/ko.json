@@ -1,0 +1,16 @@
+{
+  "HomePage": {
+    "title": "TripTags - 진짜 여행, 현지의 목소리",
+    "description": "현지인과 여행자의 경험을 구분하여 진정한 여행 정보를 제공합니다",
+    "exploreVenues": "장소 둘러보기",
+    "getStarted": "시작하기",
+    "localSection": {
+      "title": "로컬의 추천",
+      "description": "그 지역에 실제로 살고 있는 주민들의 진짜 추천"
+    },
+    "travelerSection": {
+      "title": "여행자의 경험",
+      "description": "여행자 관점에서 본 실제 방문 후기"
+    }
+  }
+}
