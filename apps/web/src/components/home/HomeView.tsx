@@ -3,7 +3,7 @@ import { useTranslations } from "next-intl"
 
 export default function HomeView() {
   //next-intl, message에서 locale에 관련된 항목을 추출 
-  const tr = useTranslations('HomePage')
+  const tr = useTranslations("HomePage")
   
   //로그인 상태에서 보여줄 component구성 
 
