@@ -31,3 +31,15 @@ export * from "./utils/match.decorator"
 
 //Types
 export * from "./types/user.interface"
+
+//Model
+export type {
+  User,
+  UserProfile,
+  Venue,
+  VenueDetail,
+  VenueImage,
+  VenueCategory,
+  VenueStats,
+  Review,
+} from "@triptags/database"
