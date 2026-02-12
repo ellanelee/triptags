@@ -7,7 +7,8 @@ export const useAuthStore = create<IAuthState>()(
     (set, get) => ({
       token: null,
       user: null,
-      isAuthenticated: () => !!get().token,
+      isAuthenticated: false,
+      setUser: (user) => set({ user, isAuthenticated: !!user }),
       setAuth: (token, user) => set({ token, user }),
       clearAuth: () => set({ token: null, user: null }),
     }),
