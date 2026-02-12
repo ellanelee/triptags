@@ -12,5 +12,43 @@
       "title": "여행자의 경험",
       "description": "여행자 관점에서 본 실제 방문 후기"
     }
+  },
+  "LoginPage": {
+    "title": "로그인",
+    "backToHome": "홈으로",
+    "kakaoLogin": "카카오로 시작하기",
+    "googleLogin": "구글로 시작하기",
+    "naverLogin": "네이버로 시작하기",
+    "orDivider": "또는",
+    "emailLogin": "이메일로 로그인하기",
+    "noAccount": "아직 회원이 아니신가요?",
+    "registerLink": "회원가입하기"
+  },
+  "RegisterPage": {
+    "title": "회원가입",
+    "backToLogin": "로그인으로",
+    "email": "이메일",
+    "nickname": "닉네임",
+    "password": "비밀번호",
+    "confirmPassword": "비밀번호 확인",
+    "agreeAll": "전체 동의합니다",
+    "agreeTerms": "이용약관 동의",
+    "agreePrivacy": "개인정보 처리방침 동의",
+    "agreeMarketing": "마케팅 정보 수신 동의",
+    "agreeAge": "만 14세 이상입니다",
+    "required": "(필수)",
+    "optional": "(선택)",
+    "termsRequired": "필수 약관에 동의해주세요.",
+    "submit": "가입하기",
+    "loading": "가입 중...",
+    "error": "회원가입에 실패했습니다.",
+    "passwordMismatch": "비밀번호가 일치하지 않습니다.",
+    "hasAccount": "이미 계정이 있으신가요?",
+    "loginLink": "로그인",
+    "agreementsTitle": "약관 동의",
+    "requireTerms": true,
+    "requirePrivacy": true,
+    "requireAge": true,
+    "showMarketing": true
   }
 }
