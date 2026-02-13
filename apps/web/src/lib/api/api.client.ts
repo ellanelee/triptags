@@ -1,8 +1,7 @@
 import axios from "axios"
-import { getLocale } from "next-intl/server"
 
 const apiClient = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000",
+  baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api",
   headers: {
     "Content-Type": "application/json",
   },
@@ -12,20 +11,13 @@ apiClient.interceptors.request.use(
   async (config) => {
     try {
       const authStorage = localStorage.getItem("auth_storage")
-      let locale = "ko" //locale default값 설정
-      try {
-        const fetchedLocale = await getLocale()
-        if (fetchedLocale) {
-          locale = fetchedLocale
-        }
-      } catch (error) {
-        console.warn("Locale fetch failed, using default")
-      }
-      config.headers["Accept-Language"] = locale
+      const lang = "ko"
 
       if (authStorage) {
         const parsed = JSON.parse(authStorage)
+        const locale = parsed?.state?.user?.language ?? lang
         const token = parsed?.state?.token
+        config.headers["Accept-Language"] = locale; 
         if (token) {
           config.headers.Authorization = `Bearer ${token}`
         }
@@ -50,7 +42,7 @@ apiClient.interceptors.response.use(
       switch (response.status) {
         case 401:
           console.error("인증이 필요합니다")
-          if (typeof window != undefined) {
+          if (typeof window !== undefined) {
             localStorage.removeItem("auth_storage") //토큰 삭제
             window.location.href = "/login"
           }

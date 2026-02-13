@@ -27,13 +27,11 @@ export default function EmailLoginPage() {
 
     try {
       const response: IAuthResponse = await authApi.login(formData)
-
+      console.log(response)
       localStorage.setItem("accessToken", response.accessToken)
-      localStorage.setItem("refreshToken", response.refreshToken)
-
       setUser(response.user)
 
-      router.push("/")
+      router.replace(`/${response.user?.language}`)
     } catch (error) {
       const axiosError = error as any
       const errorMsg = (axiosError.response?.data?.message ||
