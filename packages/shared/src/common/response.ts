@@ -4,10 +4,10 @@ export const createResponse = <T>(
   success: true,
   data?: T,
   message?: string,
-  error?: string
+  error?: string,
 ): ApiResponse<T> => ({
+  success,
   data,
   message,
-  success,
   error,
 })
