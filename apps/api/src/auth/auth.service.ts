@@ -90,7 +90,19 @@ export class AuthService {
     if (!checkCredentials)
       throw new UnauthorizedException('비밀번호가 정확하지 않습니다');
 
-    return this.generateToken(user.id);
+    const tokens = await this.generateToken(user.id);
+    return {
+      ...tokens,
+      user: {
+        id: user.id,
+        email: user.email,
+        nickname: user.nickname,
+        language: user.language,
+        profileImage: user.profileImage,
+        role: user.role,
+        createdAt: user.createdAt,
+      },
+    };
   }
 
   async issueNewToken(userId: string, incomingToken: string) {
