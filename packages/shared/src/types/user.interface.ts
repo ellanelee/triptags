@@ -5,6 +5,7 @@ export interface IUserResponse {
   email: string
   nickname: string
   role: UserRole
+  language: string
   profileImage: string | null
   provider: Provider
   providerId: string | null
@@ -21,8 +22,10 @@ export interface IUserResponse {
 }
 
 export interface IUserPublicResponse {
+  id: string
   nickname: string
   profileImage: string | null
+  language: string
   role: UserRole
   createdAt: Date
   profile: {

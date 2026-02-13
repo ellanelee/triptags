@@ -1,4 +1,4 @@
-import { User } from "@triptags/shared"
+import { IUserPublicResponse, User, UserRole } from "@triptags/shared"
 
 export interface IAuthState {
   token: string | null
@@ -7,4 +7,10 @@ export interface IAuthState {
   setUser: (user: User | null) => void
   setAuth: (token: string, user: User) => void
   clearAuth: () => void
+}
+
+export interface IAuthResponse {
+  accessToken: string
+  refreshToken: string
+  user: IUserPublicResponse
 }
