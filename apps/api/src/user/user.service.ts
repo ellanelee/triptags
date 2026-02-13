@@ -5,10 +5,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { PrismaService } from '@/prisma/prisma.service';
-import {
-  USER_PERSONAL_SELECT,
-  USER_PUBLIC_SELECT,
-} from '@/common/const/user.select';
+import { USER_PERSONAL_SELECT } from '@/common/const/user.select';
 import {
   UpdateNicknameDto,
   UpdatePasswordDto,
@@ -88,7 +85,7 @@ export class UserService {
         id,
         deletedAt: null,
       },
-      select: USER_PUBLIC_SELECT,
+      select: USER_PERSONAL_SELECT,
     });
     if (!user) throw new UnauthorizedException('사용자가 없습니다');
     return user;
