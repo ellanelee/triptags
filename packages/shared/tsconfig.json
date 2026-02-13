@@ -9,10 +9,14 @@
     "declarationMap": true,
     "strict": true,
     "skipLibCheck": true,
-    "rootDir": "./src",
+    // "rootDir": "./src",
     "outDir": "./dist", //scripts에서 조정
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true
+    "emitDecoratorMetadata": true,
+    "baseUrl": ".",
+    "paths": {
+      "@triptags/database": ["../database/src/index.ts"]
+    }
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*", "../database/src/index.ts"]
 }
