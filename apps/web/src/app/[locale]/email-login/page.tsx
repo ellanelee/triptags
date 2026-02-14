@@ -28,6 +28,7 @@ export default function EmailLoginPage() {
     try {
       const response: IAuthResponse = await authApi.login(formData)
       console.log(response)
+      console.log(response.user)
       localStorage.setItem("accessToken", response.accessToken)
       setUser(response.user)
 
