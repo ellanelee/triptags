@@ -35,16 +35,21 @@ export class AuthController {
     @Body() loginDto: LoginDto,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const tokens = await this.authService.userLogin(loginDto);
+    const data = await this.authService.userLogin(loginDto);
+    const { refreshToken, accessToken, userPublic } = data;
 
-    res.cookie('refreshToken', tokens.refreshToken, {
+    res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
-      secure: true,
-      sameSite: 'strict',
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
       maxAge: 1209600,
     });
 
-    return createResponse(true, tokens.accessToken, '로그인 및 토큰 발행 완료');
+    return createResponse(
+      true,
+      { accessToken, user: userPublic },
+      '로그인 및 토큰 발행 완료',
+    );
   }
 
   //refresh, Cookie의 refresh Token검증 및 redis비교후 Issue
@@ -62,7 +67,7 @@ export class AuthController {
       httpOnly: true,
       secure: true,
       sameSite: 'strict',
-      maxAge: 1209600,
+      maxAge: 1000 * 60 * 60 * 24 * 14,
     });
 
     return createResponse(true, tokens.accessToken, '토큰 재발행완료');

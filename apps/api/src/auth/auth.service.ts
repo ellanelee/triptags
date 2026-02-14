@@ -76,7 +76,7 @@ export class AuthService {
   async userLogin(loginDto: LoginDto) {
     const user = await this.userService.findByEmail(loginDto.email);
     if (!user) throw new UnauthorizedException('이메일이 존재하지 않습니다');
-    if (!user.password)
+    if (!user.password || typeof user.password !== 'string')
       throw new UnauthorizedException('비밀번호가 존재하지 않습니다.');
     if (user.provider !== 'LOCAL')
       throw new UnauthorizedException(
@@ -90,7 +90,13 @@ export class AuthService {
     if (!checkCredentials)
       throw new UnauthorizedException('비밀번호가 정확하지 않습니다');
 
-    return this.generateToken(user.id);
+    const userPublic = await this.userService.findPubicInfoById(user.id);
+    const tokens = await this.generateToken(user.id);
+    console.log(tokens);
+    return {
+      ...tokens,
+      userPublic,
+    };
   }
 
   async issueNewToken(userId: string, incomingToken: string) {

@@ -13,9 +13,10 @@
     }
   },
   "scripts": {
+    "clean": "rm -rf dist",
     "build:cjs": "tsc -p tsconfig.cjs.json",
     "build:esm": "tsc -p tsconfig.esm.json",
-    "build": "sh -c 'pnpm build:cjs && pnpm build:esm'",
+    "build": "pnpm clean && pnpm build:cjs && pnpm build:esm",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
