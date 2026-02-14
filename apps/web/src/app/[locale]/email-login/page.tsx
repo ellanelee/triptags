@@ -12,6 +12,7 @@ export default function EmailLoginPage() {
   const tr = useTranslations("EmailLoginPage")
   const router = useRouter()
   const setUser = useAuthStore((state) => state.setUser)
+  const setAuth = useAuthStore((state) => state.setAuth)
 
   const [formData, setFormData] = useState({
     email: "",
@@ -28,9 +29,11 @@ export default function EmailLoginPage() {
     try {
       const response: IAuthResponse = await authApi.login(formData)
       console.log(response)
-      console.log(response.user)
+      const { accessToken, user } = response
+
       localStorage.setItem("accessToken", response.accessToken)
-      setUser(response.user)
+      setAuth(accessToken, user)
+      setUser(user)
 
       router.replace(`/${response.user?.language}`)
     } catch (error) {
