@@ -35,7 +35,7 @@ export default function EmailLoginPage() {
       setAuth(accessToken, user)
       setUser(user)
 
-      router.replace(`/${response.user?.language}`)
+      router.replace(`/${response.user?.language}/mypage`)
     } catch (error) {
       const axiosError = error as any
       const errorMsg = (axiosError.response?.data?.message ||

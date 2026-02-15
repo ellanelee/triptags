@@ -11,4 +11,3 @@ export type LocaleConfigType = {
   legalBasis: string
 }
 
-export type RegisterType = RegisterDto

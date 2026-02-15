@@ -30,7 +30,17 @@
     "email": "이메일",
     "nickname": "닉네임",
     "password": "비밀번호",
-    "confirmPassword": "비밀번호 확인",
+    "passwordConfirm": "비밀번호 확인",
+    "language": "언어 선택",
+    "languages": {
+      "ko": "한국어",
+      "en": "English",
+      "ja": "日本語",
+      "zh": "中文",
+      "de": "Deutsch",
+      "fr": "Français",
+      "es": "Español"
+    },
     "agreeAll": "전체 동의합니다",
     "agreeTerms": "이용약관 동의",
     "agreePrivacy": "개인정보 처리방침 동의",
