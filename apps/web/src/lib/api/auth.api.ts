@@ -1,11 +1,14 @@
-import { RegisterDto, LoginDto } from "@triptags/shared"
+import { RegisterDto, LoginDto, ApiResponse } from "@triptags/shared"
 import apiClient from "./api.client"
 
 export const authApi = {
   register: async (data: RegisterDto) => {
-    const response = await apiClient.post("auth/register", data)
-    console.log(response.data.data)
-    return response.data.data
+    const response = await apiClient.post<ApiResponse<null>>(
+      "auth/register",
+      data,
+    )
+    console.log(response.data)
+    return response.data
   },
 
   login: async (data: LoginDto) => {
