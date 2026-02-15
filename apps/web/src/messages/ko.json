@@ -71,5 +71,14 @@
     "submit": "로그인",
     "loading": "로그인 중...",
     "error": "로그인에 실패했습니다."
+  },
+  "MyPage": {
+    "title": "마이페이지",
+    "welcome": "{nickname}님, 환영합니다!",
+    "interestedDestinations": "관심 여행지",
+    "addDestination": "+ 여행지 추가",
+    "noDestinations": "아직 관심 여행지가 없습니다.",
+    "noDestinationsHint": "여행지를 추가하면 맞춤형 추천을 받을 수 있습니다.",
+    "loading": "로딩 중..."
   }
 }

@@ -13,6 +13,7 @@ export const USER_PERSONAL_SELECT = Prisma.validator<Prisma.UserSelect>()({
   profile: {
     select: {
       detailedAddress: true,
+      regionId: true,
       latitude: true,
       longitude: true,
       introduction: true,
