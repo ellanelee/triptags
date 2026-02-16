@@ -11,3 +11,9 @@ export type LocaleConfigType = {
   legalBasis: string
 }
 
+export type RegionType = {
+  country: string
+  city: string
+  district: string
+}
+

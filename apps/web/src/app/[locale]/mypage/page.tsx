@@ -27,11 +27,11 @@ export default function MyPage() {
     helpfulCount: 0,
   })
   const [destination, setDestinations] = useState({
-    id: "", 
-    country:"",
-    city: "", 
-    district:"", 
-    details:""
+    id: "",
+    country: "",
+    city: "",
+    district: "",
+    details: "",
   })
   const [point, userPoint] = useState(0)
   const [country, setCountry] = useState("")
@@ -47,4 +47,7 @@ export default function MyPage() {
     } else {
     }
   }, [isAuthenticated, router])
+
+  const handleDAddress = () => {}
+  
 }
