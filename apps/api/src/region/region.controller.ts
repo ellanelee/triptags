@@ -1,7 +1,17 @@
 import { ApiTags } from '@nestjs/swagger';
 import { RegionService } from './region.service';
-import { Controller, Get, Param, Query } from '@nestjs/common';
-import { RegionSearchDto } from '@triptags/shared';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
+import { RegionCreateDto, RegionSearchDto } from '@triptags/shared';
+import { JwtAccessGuard } from '@/auth/jwt-auth.guard.ts/jwt-auth.access.guard';
+import { RolesGuard } from '@/auth/jwt-auth.guard.ts/roels.guard';
 
 @Controller('regions')
 @ApiTags('regions')
@@ -28,5 +38,16 @@ export class RegionController {
   async handleGetVenueByRegion(@Query() searchDto: RegionSearchDto) {
     const parentId = searchDto.parentId ?? null;
     return await this.regionService.getVenueByRegion(searchDto.code, parentId);
+  }
+
+  //regionId(district Id를 가져옴)
+  @Post()
+  @UseGuards(JwtAccessGuard, RolesGuard)
+  async handlecreateRegion(@Body() createDto: RegionCreateDto) {
+    return await this.regionService.getOrCreateRegionHistory(
+      createDto.country,
+      createDto.city,
+      createDto.district,
+    );
   }
 }

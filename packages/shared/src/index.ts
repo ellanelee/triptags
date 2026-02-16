@@ -18,6 +18,7 @@ export * from "./dtos/tag/tagcreate.dto"
 export * from "./dtos/localverficiation/localverficationcreated.dto"
 export * from "./utils/country"
 export * from "./dtos/destination/destinationcreate.dto"
+export * from "./dtos/region/regioncreate.dto"
 export * from "./dtos/region/regionsearch.dto"
 export * from "./dtos/reviewdetail/reviewdetailcreate.dto"
 
