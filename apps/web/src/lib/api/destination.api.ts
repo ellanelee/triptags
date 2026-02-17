@@ -3,7 +3,9 @@ import apiClient from "./api.client"
 
 export const destinationApi = {
   get: async () => {
-    const response = await apiClient.get("destination/my")
+    const response = await apiClient.get("destination/my", {
+      withCredentials: true,
+    })
     console.log(response.data)
     return response.data
   },

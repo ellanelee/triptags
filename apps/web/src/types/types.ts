@@ -17,3 +17,10 @@ export type RegionType = {
   district: string
 }
 
+export type DestinationWithRegion = {
+  id: string
+  regionId: string
+  priority: number
+  region: { id: string; name: string; level: number; parentId: string | null }
+}
+
