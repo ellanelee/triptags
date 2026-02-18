@@ -1,6 +1,7 @@
 "use client"
 import apiClient from "@/lib/api/api.client"
 import { destinationApi } from "@/lib/api/destination.api"
+import { destinationInfo } from "@/lib/utils/format.region"
 import { useAuthStore } from "@/store/auth-store"
 import { DestinationWithRegion } from "@/types/types"
 import { ApiResponse } from "@triptags/shared"
@@ -42,19 +43,12 @@ export default function MyPage() {
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    if (!isAuthenticated) {
-      router.push(`/${locale}`)
-    } else {
-    }
-  }, [isAuthenticated, router])
-
-  useEffect(() => {
     const fetchDestination = async () => {
       setLoading(true)
       setError(null)
       try {
-        const response = await destinationApi.get()
-        if (response.suceess && response.data) {
+        const response = await destinationApi.getInfo()
+        if (response.success && response.data) {
           setDestinations(response.data)
         } else {
           setError(response.data.message ?? response.data.error ?? "조회 실패")
@@ -70,7 +64,6 @@ export default function MyPage() {
 
   const handleDAddress = () => {}
 
-
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -84,9 +77,7 @@ export default function MyPage() {
         <div className="bg-white rounded-lg shadow-sm p-6">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-2xl font-bold text-gray-900">관심 여행지</h2>
-            <button
-              className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
-            >
+            <button className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors">
               + 여행지 추가
             </button>
           </div>
@@ -114,25 +105,13 @@ export default function MyPage() {
             </div>
           ) : (
             <div className="grid gap-4">
-              {destinations.map(destinations => (
+              {destinations.map((destination) => (
                 <div
-                  key={destinations.id}
+                  key={destination.id}
                   className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
                 >
                   <div className="flex justify-between items-start">
-                    <div>
-                      <h3 className="text-lg font-semibold text-gray-900">{destinations.displayName}</h3>
-                      <p className="text-sm text-gray-600 mt-1">
-                        {destinations.city} {destinations.district && `· ${destinations.district}`}
-                      </p>
-                      <div className="mt-2">
-                        <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-primary-100 text-primary-800">
-                          {destinations.sortPreference === 'rating' && '⭐ 평점 높은 순'}
-                          {destinations.sortPreference === 'reviews' && '💬 리뷰 많은 순'}
-                          {destinations.sortPreference === 'local' && '🏠 로컬 추천순'}
-                        </span>
-                      </div>
-                    </div>
+                    <div>{destinationInfo(destination.region)}</div>
                   </div>
                 </div>
               ))}
