@@ -21,6 +21,12 @@ export type DestinationWithRegion = {
   id: string
   regionId: string
   priority: number
-  region: { id: string; name: string; level: number; parentId: string | null }
+  region: RegionInfo
 }
 
+export type RegionInfo = {
+  id: string
+  name: string
+  level: number
+  parent?: RegionInfo | null
+}

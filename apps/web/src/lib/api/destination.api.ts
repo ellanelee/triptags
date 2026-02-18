@@ -10,6 +10,14 @@ export const destinationApi = {
     return response.data
   },
 
+  getInfo: async () => {
+    const response = await apiClient.get("destination/info", {
+      withCredentials: true,
+    })
+    console.log(response.data)
+    return response.data
+  },
+
   create: async (data: DestinationCreateDto) => {
     const response = await apiClient.post("destination", data)
     console.log(response.data)
