@@ -28,6 +28,14 @@ export class DestinationController {
     return createResponse(true, data);
   }
 
+  //destination에 대한 내용파악
+  @Get('info')
+  @UseGuards(JwtAccessGuard)
+  async handleRegionInfo(@CurrentUser() user: User) {
+    const data = await this.destinationService.getRegionInfo(user.id);
+    return createResponse(true, data);
+  }
+
   //국가 코드는 i18n iso, city/district검색 (사용자 선호 여행지 등록을 위해)
   @Post()
   @UseGuards(JwtAccessGuard)

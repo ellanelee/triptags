@@ -14,6 +14,7 @@ export class DestinationService {
     private regionService: RegionService,
   ) {}
 
+  //개인별 Destination검색
   async getDestination(userId: string) {
     const user = await this.prisma.client.user.findFirst({
       where: { id: userId, deletedAt: null },
@@ -21,6 +22,37 @@ export class DestinationService {
     if (!user) throw new NotFoundException('사용자가 존재하지 않습니다');
     return await this.prisma.client.destination.findMany({
       where: { userId: userId },
+    });
+  }
+
+  //destination의 regionId에 대해 내용 파악
+  async getRegionInfo(userId: string) {
+    return await this.prisma.client.destination.findMany({
+      where: { userId },
+      include: {
+        region: {
+          select: {
+            id: true,
+            name: true,
+            level: true,
+            parent: {
+              select: {
+                id: true,
+                name: true,
+                level: true,
+                parent: {
+                  select: {
+                    id: true,
+                    name: true,
+                    level: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      orderBy: [{ priority: 'desc' }, { createdAt: 'desc' }],
     });
   }
 
