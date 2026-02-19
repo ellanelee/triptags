@@ -1,4 +1,5 @@
 "use client"
+import { LanguageSelect } from "@/components/common/LanguageSelect"
 import apiClient from "@/lib/api/api.client"
 import { destinationApi } from "@/lib/api/destination.api"
 import { destinationInfo } from "@/lib/utils/format.region"
@@ -64,21 +65,87 @@ export default function MyPage() {
 
   const handleDAddress = () => {}
 
+  const handleLanguage = () => {
+    
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* 헤더 */}
         <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
-          <h1 className="text-3xl font-bold text-gray-900">마이페이지</h1>
-          <p className="mt-2 text-gray-600">{user?.nickname}님, 환영합니다!</p>
+          <h1 className="text-3xl font-bold text-gray-900 mb-6">My</h1>
+          <div className="flex items-center">
+            {/*Profile Image */}
+            <div className="relative group">
+              <div className="w-30 h-30 bg-gray-100 border-2 border-dashed border-gray-300 rounded-lg overflow-hidden flex items-center justify-center hover:border-blue-400 transition-colors cursor-pointer">
+                {user?.profileImage ? (
+                  // 이미지가 있을 때
+                  <img
+                    src={user.profileImage}
+                    alt="Profile"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  // 이미지가 없을 때 (업로드 아이콘 대용)
+                  <div className="text-center">
+                    <svg
+                      className="mx-auto h-8 w-8 text-gray-400"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 4v16m8-8H4"
+                      />
+                    </svg>
+                    <span className="text-[10px] text-gray-400 mt-1 block">
+                      이미지 등록/변경
+                    </span>
+                  </div>
+                )}
+              </div>
+            </div>
+            <div className="flex flex-col w-full mx-4">
+              <div className="flex justify-between pb-1 px-6">
+                <div className="flex">
+                  <p className="text-gray-600 pr-10">
+                    {tr("welcome", { nickname: user?.nickname || "guest" })}
+                  </p>
+                  <p className="text-gray-600 pr-10">
+                    {tr("language")}: {user?.language}
+                  </p>
+                </div>
+                <LanguageSelect label={tr("language")} value={value}
+                onChange={(val)=> }
+
+                 />
+              </div>
+              <div className="flex items-center px-6 pb-1">
+                <p className="text-gray-600 pr-10">주소</p>
+                <button className="px-2 py-2 bg-gray-100 text-gray-800 rounded-lg hover:bg-primary-700 transition-colors">
+                  + 주소 등록 / 변경
+                </button>
+              </div>
+              <p className="mt-2 px-6 text-gray-600">
+                회원 가입일:{" "}
+                {user?.createdAt
+                  ? new Date(user.createdAt).toLocaleDateString()
+                  : ""}
+              </p>
+            </div>
+          </div>
         </div>
 
         {/* 관심 여행지 섹션 */}
-        <div className="bg-white rounded-lg shadow-sm p-6">
+        <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-2xl font-bold text-gray-900">관심 여행지</h2>
             <button className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors">
-              + 여행지 추가
+              + 관심 여행지 수정
             </button>
           </div>
 
@@ -117,6 +184,15 @@ export default function MyPage() {
               ))}
             </div>
           )}
+        </div>
+        {/* UserPoint */}
+        <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-2xl font-bold text-gray-900">사용자 포인트</h2>
+            <button className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors">
+              + 포인트 이력조회
+            </button>
+          </div>
         </div>
       </div>
     </div>
