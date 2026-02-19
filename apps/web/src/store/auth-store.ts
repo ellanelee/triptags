@@ -1,4 +1,4 @@
-import { IAuthState } from "@/types/auth"
+import { IAuthState } from "@/types/interface"
 import { create } from "zustand"
 import { persist } from "zustand/middleware"
 
@@ -8,8 +8,8 @@ export const useAuthStore = create<IAuthState>()(
       token: null,
       user: null,
       isAuthenticated: false,
-      setUser: (user) => set({ user,  }),
-      setAuth: (token, user) => set({ token, user, isAuthenticated: !!user}),
+      setUser: (user) => set({ user }),
+      setAuth: (token, user) => set({ token, user, isAuthenticated: !!user }),
       clearAuth: () => set({ token: null, user: null }),
     }),
     { name: "auth_storage" },
