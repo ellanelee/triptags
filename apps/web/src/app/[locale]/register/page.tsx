@@ -6,6 +6,7 @@ import { useState } from "react"
 import { RegisterDto } from "@triptags/shared"
 import { Link } from "@/i18n/routing"
 import { getLocaleConfig, validateAgreements } from "@/i18n/localeConfig"
+import { LanguageSelect } from "@/components/common/LanguageSelect"
 
 export default function RegisterPage() {
   const tr = useTranslations("RegisterPage")
@@ -190,7 +191,19 @@ export default function RegisterPage() {
                   />
                 </div>
 
-                <div>
+                <LanguageSelect
+                  label={tr("language")}
+                  value={formData.language}
+                  onChange={(val) =>
+                    setFormData({
+                      ...formData,
+                      language: val as RegisterDto["language"],
+                    })
+                  }
+                  tr={tr}
+                />
+
+                {/* <div>
                   <label
                     htmlFor="languageSelection"
                     className="block text-sm font-medium text-gray-700 mb-1.5"
@@ -219,7 +232,7 @@ export default function RegisterPage() {
                     <option value="es">{tr("languages.es")}</option>
                     <option value="fr">{tr("languages.fr")}</option>
                   </select>
-                </div>
+                </div> */}
 
                 <div className="pt-4">
                   <button
