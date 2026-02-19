@@ -20,16 +20,8 @@ function init() {
   countries.registerLocale(fr)
   countries.registerLocale(de)
 }
-
-export const CountryUtils = {
-  // ISO 3166-1 alpha-2를 이용한 국가 코드검증
-  isValidCountryCode(countryCode: string): boolean {
-    init()
-    return countries.isValid(countryCode)
-  },
-
   //국가명 변환
-  getCountryName(countryCode: string, lang: string = "ko"): string {
+export function localeCountryName(countryCode: string, lang: string = "ko"): string {
     init()
     const countryName = countries.getName(countryCode, lang)
     if (!countryName) {
@@ -37,15 +29,4 @@ export const CountryUtils = {
       throw new Error(`Invalid Country Code: ${countryCode}`)
     }
     return countryName
-  },
-
-  //프론트엔드 국가 List (드롭다운))
-  selectCountryOption(lang: string = "ko") {
-    init()
-    const countryNames = countries.getNames(lang)
-    return Object.entries(countryNames).map(([code, name]) => ({
-      value: code,
-      lable: name,
-    }))
-  },
 }
