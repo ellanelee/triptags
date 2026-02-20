@@ -81,7 +81,8 @@
     "noDestinationsHint": "여행지를 추가하면 맞춤형 추천을 받을 수 있습니다.",
     "loading": "로딩 중...",
     "language": "사용 언어",
-    "languageOption": "언어 변경"
+    "languageOption": "언어 변경",
+    "role": "사용자 권한"
   },
   "Common": {
     "languages": {

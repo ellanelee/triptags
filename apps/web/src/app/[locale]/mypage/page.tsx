@@ -126,6 +126,9 @@ export default function MyPage() {
                 <p className="text-gray-600 pr-10">
                   {tr("welcome", { nickname: user?.nickname || "guest" })}
                 </p>
+                <p className="text-gray-600 pr-10">
+                  {tr("role")} : {user?.role}
+                </p>
                 <div className="flex items-center">
                   <p className="text-gray-600 pr-10 whitespace-nowrap">
                     {tr("language")}: {user?.language}
