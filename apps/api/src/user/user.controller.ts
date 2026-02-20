@@ -22,6 +22,8 @@ import {
   UserProfileImageDto,
   UserIntroductionDto,
   UserAddressDto,
+  LanguageDto,
+  Language,
 } from '@triptags/shared';
 import { User } from '@prisma/client';
 
@@ -85,6 +87,21 @@ export class UserController {
     @Body() passwordUpdate: UpdatePasswordDto,
   ) {
     return this.userService.updateUserPassword(user.id, passwordUpdate);
+  }
+  //User language Update
+  @UseGuards(JwtAccessGuard)
+  @Patch('language')
+  @HttpCode(200)
+  async updateUserLanguage(
+    @CurrentUser() user: User,
+    @Body() updateDto: LanguageDto,
+  ) {
+    const updatedLanguage = await this.userService.updateLanguage(
+      user.id,
+      updateDto.language as Language,
+    );
+    console.log(user.id);
+    return createResponse(true, updatedLanguage, '회원 정보 수정완료');
   }
 
   //User 정보 이미지 정보 Update

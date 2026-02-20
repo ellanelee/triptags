@@ -7,6 +7,7 @@ import {
 import { PrismaService } from '@/prisma/prisma.service';
 import { USER_PERSONAL_SELECT } from '@/common/const/user.select';
 import {
+  Language,
   UpdateNicknameDto,
   UpdatePasswordDto,
   UserAddressDto,
@@ -123,6 +124,7 @@ export class UserService {
     });
   }
 
+  //비밀번호 업데이트
   async updateUserPassword(userId: string, passwordUpdate: UpdatePasswordDto) {
     const user = await this.prisma.client.user.findFirst({
       where: {
@@ -166,6 +168,19 @@ export class UserService {
       },
       data: {
         profileImage: profileImageUrl,
+      },
+    });
+  }
+
+  //언어변경
+  async updateLanguage(userId: string, newLang: Language) {
+    return this.prisma.client.user.update({
+      where: {
+        id: userId,
+        deletedAt: null,
+      },
+      data: {
+        language: newLang,
       },
     });
   }

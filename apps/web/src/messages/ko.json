@@ -80,6 +80,18 @@
     "noDestinations": "아직 관심 여행지가 없습니다.",
     "noDestinationsHint": "여행지를 추가하면 맞춤형 추천을 받을 수 있습니다.",
     "loading": "로딩 중...",
-    "language": "사용 언어"
+    "language": "사용 언어",
+    "languageOption": "언어 변경"
+  },
+  "Common": {
+    "languages": {
+      "ko": "한국어",
+      "en": "English",
+      "ja": "日本語",
+      "zh": "中文",
+      "de": "Deutsch",
+      "fr": "Français",
+      "es": "Español"
+    }
   }
 }

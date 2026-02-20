@@ -12,9 +12,9 @@ export const LanguageSelect = ({
       {label && (
         <label
           htmlFor="languageSelection"
-          className="block text-sm font-medium text-gray-700 mb-1.5"
+          className="block text-sm font-medium text-gray-700 mr-6"
         >
-          {label}
+          {label} :
         </label>
       )}
       <select
@@ -22,7 +22,7 @@ export const LanguageSelect = ({
         name="language"
         autoComplete="language"
         required
-        className="appearance-none block w-full px-4 py-2 border border-gray-300 rounded-lg placeholder-gray-400 text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm h-9"
+        className="appearance-none block px-4 py-2 bg-gray-100 text-gray-800 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm h-9"
         value={value}
         onChange={(e) => onChange(e.target.value)}
       >
