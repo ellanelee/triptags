@@ -1,17 +1,18 @@
 "use client"
 import { LanguageSelect } from "@/components/common/LanguageSelect"
-import apiClient from "@/lib/api/api.client"
 import { destinationApi } from "@/lib/api/destination.api"
+import { userApi } from "@/lib/api/user.api"
 import { destinationInfo } from "@/lib/utils/format.region"
 import { useAuthStore } from "@/store/auth-store"
 import { DestinationWithRegion } from "@/types/types"
-import { ApiResponse } from "@triptags/shared"
+import { LanguageDto } from "@triptags/shared"
 import { useLocale, useTranslations } from "next-intl"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 
 export default function MyPage() {
   const tr = useTranslations("MyPage")
+  const t = useTranslations("Common")
   const locale = useLocale()
   const router = useRouter()
   const { isAuthenticated, user } = useAuthStore()
@@ -65,8 +66,17 @@ export default function MyPage() {
 
   const handleDAddress = () => {}
 
-  const handleLanguage = () => {
-    
+  const handleLanguage = async (newLang: string) => {
+    try {
+      const response = await userApi.updateLanguage({ language: newLang })
+      if (response.success) {
+        useAuthStore.getState()
+      }
+      router.push(`/${response.data.language}/mypage)`)
+    } catch (e) {
+      console.error("언어 업데이트 실패: ", e)
+      alert("언어변경중 오류발생")
+    }
   }
 
   return (
@@ -109,29 +119,36 @@ export default function MyPage() {
                 )}
               </div>
             </div>
+            {/* 개인별 설정 */}
             <div className="flex flex-col w-full mx-4">
-              <div className="flex justify-between pb-1 px-6">
-                <div className="flex">
-                  <p className="text-gray-600 pr-10">
-                    {tr("welcome", { nickname: user?.nickname || "guest" })}
-                  </p>
-                  <p className="text-gray-600 pr-10">
+              <div className="flex items-center mx-6 my-2">
+                {/* <div className="flex"> */}
+                <p className="text-gray-600 pr-10">
+                  {tr("welcome", { nickname: user?.nickname || "guest" })}
+                </p>
+                <div className="flex items-center">
+                  <p className="text-gray-600 pr-10 whitespace-nowrap">
                     {tr("language")}: {user?.language}
                   </p>
+                  <LanguageSelect
+                    label={tr("languageOption")}
+                    value={user?.language ?? "ko"}
+                    onChange={(value) => handleLanguage(value)}
+                    tr={t}
+                  />
                 </div>
-                <LanguageSelect label={tr("language")} value={value}
-                onChange={(val)=> }
-
-                 />
               </div>
-              <div className="flex items-center px-6 pb-1">
-                <p className="text-gray-600 pr-10">주소</p>
-                <button className="px-2 py-2 bg-gray-100 text-gray-800 rounded-lg hover:bg-primary-700 transition-colors">
+              <div className="flex items-center px-1 pb-1">
+                <p className="text-gray-600 px-5">주소 : </p>
+                <p className="bg-gray-100 text-gray-800">
+                  서울시 영등포구 여의도동 1-2(이후 수정필요)
+                </p>
+                <button className="px-2 py-2 mx-6 bg-gray-100 text-gray-800 rounded-lg hover:bg-primary-700 transition-colors">
                   + 주소 등록 / 변경
                 </button>
               </div>
               <p className="mt-2 px-6 text-gray-600">
-                회원 가입일:{" "}
+                회원 가입일 :{" "}
                 {user?.createdAt
                   ? new Date(user.createdAt).toLocaleDateString()
                   : ""}

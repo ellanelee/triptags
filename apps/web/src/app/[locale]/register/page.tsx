@@ -10,6 +10,7 @@ import { LanguageSelect } from "@/components/common/LanguageSelect"
 
 export default function RegisterPage() {
   const tr = useTranslations("RegisterPage")
+  const t = useTranslations("Common.languages")
   const locale = useLocale()
   const localeConfig = getLocaleConfig(locale)
   const router = useRouter()
@@ -200,7 +201,7 @@ export default function RegisterPage() {
                       language: val as RegisterDto["language"],
                     })
                   }
-                  tr={tr}
+                  tr={t}
                 />
 
                 {/* <div>
