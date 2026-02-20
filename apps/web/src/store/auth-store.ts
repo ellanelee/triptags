@@ -8,10 +8,18 @@ export const useAuthStore = create<IAuthState>()(
       token: null,
       user: null,
       isAuthenticated: false,
+      hydrated: false,
+      setHydrated: (v) => set({ hydrated: v }),
       setUser: (user) => set({ user }),
-      setAuth: (token, user) => set({ token, user, isAuthenticated: !!user }),
-      clearAuth: () => set({ token: null, user: null }),
+
+      setAuth: (token, user) => set({ token, user, isAuthenticated: !!token }),
+      clearAuth: () => set({ token: null, user: null, isAuthenticated: false }),
     }),
-    { name: "auth_storage" },
+    {
+      name: "auth_storage",
+      onRehydrateStorage: () => (state) => {
+        state?.setHydrated(true)
+      },
+    },
   ),
 )
