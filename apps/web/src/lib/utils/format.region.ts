@@ -2,7 +2,7 @@ import { RegionInfo } from "@/types/types"
 import { CountryUtils } from "@triptags/shared"
 import { localeCountryName } from "./country"
 
-export function destinationInfo(
+export function destinationName(
   region: RegionInfo | null | undefined,
   locale: string = "ko",
 ): string {
@@ -23,3 +23,7 @@ export function destinationInfo(
 
   return name.reverse().join(" ")
 }
+
+
+
+

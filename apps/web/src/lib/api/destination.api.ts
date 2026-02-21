@@ -15,7 +15,12 @@ export const destinationApi = {
       withCredentials: true,
     })
     console.log(response.data)
-    return response.data
+    if (!response.data.success) {
+      throw new Error(
+        response.data.message ?? response.data.error ?? "조회 실패",
+      )
+    }
+    return response.data.data ?? []
   },
 
   create: async (data: DestinationCreateDto) => {
