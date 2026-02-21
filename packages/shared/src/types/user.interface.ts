@@ -1,3 +1,4 @@
+import { Region } from "@triptags/database"
 import { Provider, UserRole } from "../common/types"
 
 export interface IUserResponse {
@@ -13,6 +14,7 @@ export interface IUserResponse {
   createdAt: Date
   profile: {
     detailedAddress: string | null
+    regionId: string | null
     latitude: number | null
     longitude: number | null
     introduction: string

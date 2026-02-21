@@ -9,7 +9,11 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { RegionCreateDto, RegionSearchDto } from '@triptags/shared';
+import {
+  createResponse,
+  RegionCreateDto,
+  RegionSearchDto,
+} from '@triptags/shared';
 import { JwtAccessGuard } from '@/auth/jwt-auth.guard.ts/jwt-auth.access.guard';
 import { RolesGuard } from '@/auth/jwt-auth.guard.ts/roels.guard';
 
@@ -33,6 +37,14 @@ export class RegionController {
     await this.regionService.getSubRegion(regionId);
   }
 
+  //regionId(districtId)로 상위 정보를 가져옴
+  @Get(':regionId')
+  async handleHierachicalRegion(@Param('regionId') regionId: string) {
+    const userProfile =
+      await this.regionService.getRegionHierachicalInfo(regionId);
+    return createResponse(true, userProfile);
+  }
+
   //특정 지역의 정보로 Venue검색 (사용자 선호지역의 venue정보 및 region hierachy에 의한 검색)
   @Get('places')
   async handleGetVenueByRegion(@Query() searchDto: RegionSearchDto) {
@@ -40,7 +52,7 @@ export class RegionController {
     return await this.regionService.getVenueByRegion(searchDto.code, parentId);
   }
 
-  //regionId(district Id를 가져옴)
+  //국가/도시/지역 정보로 regionId검색 (district Id를 가져옴)
   @Post()
   @UseGuards(JwtAccessGuard, RolesGuard)
   async handlecreateRegion(@Body() createDto: RegionCreateDto) {

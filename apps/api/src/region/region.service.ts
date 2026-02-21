@@ -17,6 +17,7 @@ export class RegionService {
     return regionSeparated.trim().replace(/\s+/g, ' ');
   }
 
+  //리전 정보 호출, 부재시는 생성
   async getOrCreateRegionHistory(
     country: string,
     city: string,
@@ -62,6 +63,7 @@ export class RegionService {
     return districtNode.id;
   }
 
+  //regionId 검색(국가, 도시, 지역정보로)
   async getRegionId(code: string, parentId: string | null) {
     //정규화하여 국가코드 여부를 검증한후 Id추출
     let isCountry = false;
@@ -99,6 +101,7 @@ export class RegionService {
     return targetRegion.id;
   }
 
+  //1단계 하위의 리전 가져오기
   async getSubRegion(regionId: string) {
     const parentNode = await this.prisma.client.region.findUnique({
       where: { id: regionId },
@@ -117,6 +120,7 @@ export class RegionService {
     });
   }
 
+  //하위 리전 모두가져오기(재귀)
   async getAllSubRegionIds(regionId: string) {
     const children = await this.getSubRegion(regionId);
     let subRegionIds: string[] = [regionId];
@@ -127,6 +131,7 @@ export class RegionService {
     return subRegionIds;
   }
 
+  //리전의 하위 venue가져오기
   async getVenueByRegion(code: string, parentId: string | null) {
     const regionId = await this.getRegionId(code, parentId);
     const subRegionIds = await this.getAllSubRegionIds(regionId);
@@ -134,6 +139,29 @@ export class RegionService {
     return this.prisma.client.venue.findMany({
       where: { regionId: { in: subRegionIds } },
       include: { region: true },
+    });
+  }
+
+  //regionId로 region정보 가져오기
+  async getRegionHierachicalInfo(regionId: string) {
+    return await this.prisma.client.region.findFirst({
+      where: { id: regionId },
+      include: {
+        parent: {
+          select: {
+            id: true,
+            name: true,
+            level: true,
+            parent: {
+              select: {
+                id: true,
+                name: true,
+                level: true,
+              },
+            },
+          },
+        },
+      },
     });
   }
 }
