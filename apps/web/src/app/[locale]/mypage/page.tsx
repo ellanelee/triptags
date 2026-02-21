@@ -1,11 +1,13 @@
 "use client"
 import { LanguageSelect } from "@/components/common/LanguageSelect"
 import { destinationApi } from "@/lib/api/destination.api"
+import { regionApi } from "@/lib/api/region.api"
 import { userApi } from "@/lib/api/user.api"
-import { destinationInfo } from "@/lib/utils/format.region"
+import { useAsync } from "@/lib/hooks/use.async"
+import { destinationName } from "@/lib/utils/format.region"
 import { useAuthStore } from "@/store/auth-store"
-import { DestinationWithRegion } from "@/types/types"
-import { LanguageDto } from "@triptags/shared"
+import { DestinationWithRegion, RegionInfo } from "@/types/types"
+import { IUserResponse } from "@triptags/shared"
 import { useLocale, useTranslations } from "next-intl"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
@@ -16,53 +18,30 @@ export default function MyPage() {
   const locale = useLocale()
   const router = useRouter()
   const { isAuthenticated, user } = useAuthStore()
-  const [data, setData] = useState({
-    email: "",
-    nickname: "",
-    language: "ko",
-    profileImage: "",
-    createdAt: "",
-    introductions: "",
-  })
-  const [profiles, setProfile] = useState({
-    id: "",
-    regionId: "",
-    detailedAddress: "",
-    latitude: null,
-    longitude: null,
-    reviewCount: 0,
-    helpfulCount: 0,
-  })
-  const [destinations, setDestinations] = useState<DestinationWithRegion[]>([])
-  const [point, userPoint] = useState(0)
-  const [country, setCountry] = useState("")
-  const [city, setCity] = useState("")
-  const [district, setDistrict] = useState("")
-  const [addressDetails, setAddressDetails] = useState("")
 
+  const [point, userPoint] = useState(0)
   const [localVerification, setLocalVerification] = useState()
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const [address, setAddress] = useState("")
+  const destinations = useAsync<DestinationWithRegion[]>([])
+  const userProfiles = useAsync<IUserResponse | null>(null)
+  const addressRegion = useAsync<RegionInfo | null>(null)
 
   useEffect(() => {
-    const fetchDestination = async () => {
-      setLoading(true)
-      setError(null)
-      try {
-        const response = await destinationApi.getInfo()
-        if (response.success && response.data) {
-          setDestinations(response.data)
-        } else {
-          setError(response.data.message ?? response.data.error ?? "조회 실패")
-        }
-      } catch (error) {
-        setError("destination 조회 실패")
-      } finally {
-        setLoading(false)
-      }
+    if (!user?.id) return //미실행시 종료
+    userProfiles.run(() => userApi.getMyProfile(user.id))
+  }, [user?.id, userProfiles.run])
+
+  useEffect(() => {
+    const regionId = userProfiles.data?.profile?.regionId
+    if (regionId) {
+      addressRegion.run(() => regionApi.getRegionName(regionId))
     }
-    fetchDestination()
-  }, [])
+  }, [userProfiles.data?.profile?.regionId])
+
+  useEffect(() => {
+    if (!isAuthenticated) router.replace(`/${locale}/login`)
+    destinations.run(() => destinationApi.getInfo())
+  }, [destinations.run])
 
   const handleDAddress = () => {}
 
@@ -72,7 +51,7 @@ export default function MyPage() {
       if (response.success) {
         useAuthStore.getState()
       }
-      router.push(`/${response.data.language}/mypage)`)
+      router.push(`/${response.data.language}/mypage`)
     } catch (e) {
       console.error("언어 업데이트 실패: ", e)
       alert("언어변경중 오류발생")
@@ -143,9 +122,12 @@ export default function MyPage() {
               </div>
               <div className="flex items-center px-1 pb-1">
                 <p className="text-gray-600 px-5">주소 : </p>
-                <p className="bg-gray-100 text-gray-800">
-                  서울시 영등포구 여의도동 1-2(이후 수정필요)
-                </p>
+                {addressRegion && (
+                  <p className="bg-gray-100 text-gray-800">
+                    {destinationName(addressRegion.data)}{" "}
+                    {userProfiles.data?.profile?.detailedAddress}
+                  </p>
+                )}
                 <button className="px-2 py-2 mx-6 bg-gray-100 text-gray-800 rounded-lg hover:bg-primary-700 transition-colors">
                   + 주소 등록 / 변경
                 </button>
@@ -170,7 +152,7 @@ export default function MyPage() {
           </div>
 
           {/* 여행지 목록 */}
-          {destinations.length === 0 ? (
+          {destinations?.data?.length === 0 ? (
             <div className="text-center py-12">
               <svg
                 className="mx-auto h-12 w-12 text-gray-400"
@@ -192,13 +174,13 @@ export default function MyPage() {
             </div>
           ) : (
             <div className="grid gap-4">
-              {destinations.map((destination) => (
+              {destinations?.data?.map((destination) => (
                 <div
                   key={destination.id}
                   className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
                 >
                   <div className="flex justify-between items-start">
-                    <div>{destinationInfo(destination.region)}</div>
+                    <div>{destinationName(destination.region)}</div>
                   </div>
                 </div>
               ))}
