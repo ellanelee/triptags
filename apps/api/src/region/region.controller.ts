@@ -24,6 +24,14 @@ export class RegionController {
 
   //region명과 parentId로 regionId검색
   @Get('region')
+  async handleGetSubRegionId(
+    @Query('code') code: string,
+    @Query('parentId') parentId: string,
+  ) {
+    await this.regionService.getRegionId(code, parentId);
+  }
+
+  @Get('region')
   async handleRegionId(
     @Query('code') code: string,
     @Query('parentId') parentId: string,
