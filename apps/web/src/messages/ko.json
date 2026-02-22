@@ -84,6 +84,25 @@
     "languageOption": "언어 변경",
     "role": "사용자 권한"
   },
+  "Address": {
+    "setAddressTitle": "주소 설정",
+    "addressHelp": "국가/도시/구·군/상세주소를 입력하면 주소가 저장됩니다.",
+    "addressPreview": "주소 미리보기",
+    "addressEmpty": "주소 미입력",
+    "countryLabel": "국가 설정",
+    "selectCountry": "국가선택",
+    "country": "국가",
+    "cityLabel": "자치도/특별시/광역시",
+    "city": "광역행정구역(주/도/특별시/광역시)",
+    "cityPlaceholder": "예: 서울특별시 혹은 제주특별자치도",
+    "districtLabel": "시/군/구",
+    "district": "개별행정구역(시/군/구)",
+    "districtPlaceholder": "예: 강남구",
+    "detailsLabel": "도로명 주소",
+    "details": "개별주소",
+    "detailsPlaceholder": "예: 테헤란로 123, 101동 1001호",
+    "addressRequired": "국가/광역행정구역/개별행정구역/개별주소 입력은 필수"
+  },
   "Common": {
     "languages": {
       "ko": "한국어",
@@ -93,6 +112,12 @@
       "de": "Deutsch",
       "fr": "Français",
       "es": "Español"
+    },
+    "transaction": {
+      "back": "뒤로가기",
+      "save": "저장",
+      "cancel": "취소",
+      "reset": "초기화"
     }
   }
 }
