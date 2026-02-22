@@ -43,8 +43,6 @@ export default function MyPage() {
     destinations.run(() => destinationApi.getInfo())
   }, [destinations.run])
 
-  const handleDAddress = () => {}
-
   const handleLanguage = async (newLang: string) => {
     try {
       const response = await userApi.updateLanguage({ language: newLang })
@@ -128,7 +126,10 @@ export default function MyPage() {
                     {userProfiles.data?.profile?.detailedAddress}
                   </p>
                 )}
-                <button className="px-2 py-2 mx-6 bg-gray-100 text-gray-800 rounded-lg hover:bg-primary-700 transition-colors">
+                <button
+                  onClick={() => router.push(`/${locale}/mypage/setaddress`)}
+                  className="px-2 py-2 mx-6 bg-gray-100 text-gray-800 rounded-lg hover:bg-primary-700 transition-colors"
+                >
                   + 주소 등록 / 변경
                 </button>
               </div>
