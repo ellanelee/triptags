@@ -22,21 +22,14 @@ import { RolesGuard } from '@/auth/jwt-auth.guard.ts/roels.guard';
 export class RegionController {
   constructor(private regionService: RegionService) {}
 
-  //region명과 parentId로 regionId검색
-  @Get('region')
-  async handleGetSubRegionId(
-    @Query('code') code: string,
-    @Query('parentId') parentId: string,
-  ) {
-    await this.regionService.getRegionId(code, parentId);
-  }
-
+  //code와 parentId로 하위regionId겁색
   @Get('region')
   async handleRegionId(
     @Query('code') code: string,
     @Query('parentId') parentId: string,
   ) {
-    await this.regionService.getRegionId(code, parentId);
+    const data = await this.regionService.getRegionId(code, parentId ?? null);
+    return createResponse(true, data);
   }
 
   //regionId로 하위 region검색
