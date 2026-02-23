@@ -16,7 +16,6 @@ import {
   UpdatePasswordDto,
   IUserResponse,
   createResponse,
-  ApiResponse,
   IUserPublicResponse,
   UpdateNicknameDto,
   UserProfileImageDto,

@@ -142,7 +142,7 @@ export class RegionService {
     });
   }
 
-  //regionId로 region정보 가져오기
+  //regionId로 상위 region정보 가져오기
   async getRegionHierachicalInfo(regionId: string) {
     return await this.prisma.client.region.findFirst({
       where: { id: regionId },

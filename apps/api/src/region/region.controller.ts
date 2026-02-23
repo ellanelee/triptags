@@ -23,7 +23,7 @@ export class RegionController {
   constructor(private regionService: RegionService) {}
 
   //code와 parentId로 하위regionId겁색
-  @Get('region')
+  @Get('id')
   async handleRegionId(
     @Query('code') code: string,
     @Query('parentId') parentId: string,
@@ -32,14 +32,15 @@ export class RegionController {
     return createResponse(true, data);
   }
 
-  //regionId로 하위 region검색
-  @Get('regions')
+  //regionId로 1단계 하단의 region검색
+  @Get(':regionId/sub')
   async handleSearchSubRegion(@Param('regionId') regionId: string) {
-    await this.regionService.getSubRegion(regionId);
+    const data = await this.regionService.getSubRegion(regionId);
+    return createResponse(true, data);
   }
 
-  //regionId(districtId)로 상위 정보를 가져옴
-  @Get(':regionId')
+  //regionId(districtId)로 상위 지역정보
+  @Get(':regionId/hierarchy')
   async handleHierachicalRegion(@Param('regionId') regionId: string) {
     const userProfile =
       await this.regionService.getRegionHierachicalInfo(regionId);

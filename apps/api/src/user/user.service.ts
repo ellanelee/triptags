@@ -207,10 +207,10 @@ export class UserService {
     const norm = (s: string) => s.trim().replace(/\s+/g, ' ');
     function normalize(userAddress: UserAddressDto) {
       return {
-        ...userAddress,
         country: norm(userAddress.country),
         city: norm(userAddress.city),
         district: norm(userAddress.district),
+        details: userAddress.details,
       };
     }
     const normalizedAddress = normalize(userAddress);
