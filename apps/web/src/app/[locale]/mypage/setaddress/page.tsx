@@ -3,9 +3,12 @@
 import { useAuthStore } from "@/store/auth-store"
 import { useLocale, useTranslations } from "next-intl"
 import { useRouter } from "next/navigation"
-import { useEffect, useMemo, useState } from "react"
-import * as countryAll from "i18n-iso-countries"
+import { useEffect, useState } from "react"
 import { getAllCountries, toCountryLang } from "@/lib/utils/country"
+import { regionApi } from "@/lib/api/region.api"
+import { RegionInfo } from "@/types/types"
+import { useAsync } from "@/lib/hooks/use.async"
+import { userApi } from "@/lib/api/user.api"
 
 export default function SetAddress() {
   const tr = useTranslations("Address")
@@ -19,13 +22,13 @@ export default function SetAddress() {
     district: "",
     details: "",
   })
-
+  const [cities, setCities] = useState<RegionInfo[]>([])
+  const [districts, setDistricts] = useState<RegionInfo[]>([])
   const countryList = getAllCountries(toCountryLang(locale))
+  const countryInfo = useAsync<string>("")
+  const regionInfo = useAsync<RegionInfo[]>([])
   const fullAddress =
-    [data.country, data.city, data.district, data.details]
-      .map((v) => v.trim())
-      .filter(Boolean)
-      .join(" ") || ""
+    [data.country, data.city, data.district, data.details].join(" ") || ""
 
   useEffect(() => {
     if (!isAuthenticated || !user) {
@@ -33,19 +36,80 @@ export default function SetAddress() {
     }
   }, [isAuthenticated, user, locale, router])
 
-  useEffect(() => {
-    const fetchCountries = async () => {
-      if (!isAuthenticated) return
+  const extractSub = async (parentId: string) => {
+    return await regionInfo.run(() => regionApi.getSubRegion(parentId))
+  }
+
+  const handleCountryInfo = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const code = e.target.value
+    const selected = countryList.find((el) => el.code === code)
+    setData((prev) => ({
+      ...prev,
+      country: selected?.name ?? "",
+      city: "",
+      district: "",
+    }))
+    try {
+      const countryId = await countryInfo.run(() =>
+        regionApi.getCountryIdByCode(code),
+      )
+      if (!countryId) return
+      const cities = await extractSub(countryId)
+      setCities(cities)
+    } catch (error) {
+      console.error("데이터 수신에 실패하였습니다", error)
     }
-  }, [])
+  }
+
+  const handleRegionInfo = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const { name, value } = e.target
+    if (!value) return
+    if (name === "city") {
+      const regionName = cities.find((el) => el.id === value)?.name || ""
+      setData((prev) => ({
+        ...prev,
+        city: regionName,
+        district: "",
+      }))
+      try {
+        if (!value) return
+        const regions = await extractSub(value)
+        setDistricts(regions)
+      } catch (error) {
+        console.error("데이터 수신에 실패하였습니다", error)
+      }
+    } else if (name === "district") {
+      const regionName = districts.find((el) => el.id === value)?.name || ""
+      setData((prev) => ({
+        ...prev,
+        district: regionName,
+      }))
+    } else {
+      console.error("데이터 설정에 오류발생")
+    }
+  }
 
   const handleSubmitRegion = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (!data.country || !data.city || !data.district || !data.details) {
+      alert("세부 주소정보를 선택해주세요")
+      return
+    }
     try {
+      const countryCode =
+        countryList.find((el) => el.name === data.country)?.code || ""
+      const submitData = {
+        ...data,
+        country: countryCode,
+      }
+      const response = await userApi.updateAddress(submitData)
+      console.log(response, "주소 정보가 update되었습니다")
+      router.push(`/${locale}/mypage`)
     } catch (error) {
-    } finally {
+      console.error("업데이트 진행에 오류가 있습니다.", error)
     }
   }
+
   return (
     <div className="min-h-screen bg-gray-50 py-10">
       <div className="max-w-2xl mx-auto px-4 sm:px-6">
@@ -114,15 +178,10 @@ export default function SetAddress() {
               <select
                 id="country"
                 name="country"
-                value={data.country}
-                onChange={(e) =>
-                  setData((prev) => ({
-                    ...prev,
-                    country: e.target.value,
-                    city: "",
-                    district: "",
-                  }))
+                value={
+                  countryList.find((el) => el.name === data.country)?.code || ""
                 }
+                onChange={handleCountryInfo}
                 className="block w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm"
               >
                 <option value="">{tr("selectCountry")}</option>
@@ -142,16 +201,20 @@ export default function SetAddress() {
               >
                 {tr("cityLabel") ?? tr("city") ?? "시/도"}
               </label>
-              <input
+              <select
                 id="city"
                 name="city"
-                value={data.city}
-                onChange={(e) =>
-                  setData((prev) => ({ ...prev, city: e.target.value }))
-                }
-                placeholder={tr("cityPlaceholder") ?? "예: 서울특별시"}
+                value={cities.find((el) => el.name === data.city)?.id || ""}
+                onChange={handleRegionInfo}
                 className="block w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm"
-              />
+              >
+                <option value="">{tr("cityLabel")}</option>
+                {cities.map((el) => (
+                  <option key={el.id} value={el.id}>
+                    {el.name}
+                  </option>
+                ))}
+              </select>
             </div>
 
             {/* District */}
@@ -162,16 +225,22 @@ export default function SetAddress() {
               >
                 {tr("districtLabel") ?? tr("district") ?? "구/군"}
               </label>
-              <input
+              <select
                 id="district"
                 name="district"
-                value={data.district}
-                onChange={(e) =>
-                  setData((prev) => ({ ...prev, district: e.target.value }))
+                value={
+                  districts.find((el) => el.name === data.district)?.id || ""
                 }
-                placeholder={tr("districtPlaceholder") ?? "예: 강남구"}
+                onChange={handleRegionInfo}
                 className="block w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm"
-              />
+              >
+                <option value="">{tr("districtLabel")}</option>
+                {districts.map((el) => (
+                  <option key={el.id} value={el.id}>
+                    {el.name}
+                  </option>
+                ))}
+              </select>
             </div>
 
             {/* Details */}

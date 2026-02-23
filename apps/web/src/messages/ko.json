@@ -85,7 +85,7 @@
     "role": "사용자 권한"
   },
   "Address": {
-    "setAddressTitle": "주소 설정",
+    "setAddressTitle": "주소 재설정",
     "addressHelp": "국가/도시/구·군/상세주소를 입력하면 주소가 저장됩니다.",
     "addressPreview": "주소 미리보기",
     "addressEmpty": "주소 미입력",

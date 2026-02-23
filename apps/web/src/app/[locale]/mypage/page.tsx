@@ -26,23 +26,29 @@ export default function MyPage() {
   const userProfiles = useAsync<IUserResponse | null>(null)
   const addressRegion = useAsync<RegionInfo | null>(null)
 
-  useEffect(() => {
-    if (!user?.id) return //미실행시 종료
-    userProfiles.run(() => userApi.getMyProfile(user.id))
-  }, [user?.id, userProfiles.run])
-
-  useEffect(() => {
-    const regionId = userProfiles.data?.profile?.regionId
-    if (regionId) {
-      addressRegion.run(() => regionApi.getRegionName(regionId))
-    }
-  }, [userProfiles.data?.profile?.regionId])
-
+  //인증확인 후 destination정보 불러오기
   useEffect(() => {
     if (!isAuthenticated) router.replace(`/${locale}/login`)
     destinations.run(() => destinationApi.getInfo())
   }, [destinations.run])
 
+  //set Profile (User확인 후 profile불러오기)
+  useEffect(() => {
+    if (!user?.id) return //미실행시 종료
+    userProfiles.run(() => userApi.getMyProfile(user.id))
+  }, [user?.id, userProfiles.run])
+
+  //set address (from district Id of userProfileDB)
+  useEffect(() => {
+    console.log(userProfiles)
+    const regionId = userProfiles.data?.profile?.regionId
+    console.log(regionId)
+    if (regionId) {
+      addressRegion.run(() => regionApi.getRegionHierarchical(regionId))
+    }
+  }, [userProfiles.data?.profile?.regionId])
+
+  //언어 변경
   const handleLanguage = async (newLang: string) => {
     try {
       const response = await userApi.updateLanguage({ language: newLang })
@@ -97,6 +103,8 @@ export default function MyPage() {
               </div>
             </div>
             {/* 개인별 설정 */}
+            {/* 자기소개 Update, 이후 주소 변경가능 */}
+            
             <div className="flex flex-col w-full mx-4">
               <div className="flex items-center mx-6 my-2">
                 {/* <div className="flex"> */}
