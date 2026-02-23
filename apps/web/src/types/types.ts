@@ -30,4 +30,3 @@ export type RegionInfo = {
   level: number
   parent?: RegionInfo | null
 }
-
