@@ -6,6 +6,7 @@ export class DestinationCreateDto {
     example: "KR",
     description: "국가코드(ISO 3166-1 alpha-2, KR/US등으로 입력",
   })
+  @IsString()
   country!: string
 
   @ApiProperty({
@@ -19,6 +20,7 @@ export class DestinationCreateDto {
     example: "경주",
     description: "여행하고 지역(시/군/구)",
   })
+  @IsString()
   district!: string
 
   @ApiProperty({

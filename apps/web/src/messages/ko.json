@@ -103,6 +103,23 @@
     "detailsPlaceholder": "예: 테헤란로 123, 101동 1001호",
     "addressRequired": "국가/광역행정구역/개별행정구역/개별주소 입력은 필수"
   },
+  "Destination": {
+    "setTitle": "나의 여행지 설정",
+    "destinationPreview": "여행지 미리보기",
+    "destinationHelp": "국가/도시/구·군를 입력하면 저장됩니다",
+    "addressRequired": "국가/시도/구군은 필수 입력입니다.",
+    "DestinationEmpty": "아직 입력된 주소가 없어요.",
+    "countryLabel": "국가 설정",
+    "selectCountry": "국가선택",
+    "country": "국가",
+    "cityLabel": "자치도/특별시/광역시",
+    "city": "광역행정구역(주/도/특별시/광역시)",
+    "cityPlaceholder": "예: 서울특별시 혹은 제주특별자치도",
+    "districtLabel": "시/군/구",
+    "district": "개별행정구역(시/군/구)",
+    "districtPlaceholder": "예: 강남구",
+    "priority": "우선 순위 (0~9 중에서 선택)"
+  },
   "Common": {
     "languages": {
       "ko": "한국어",
