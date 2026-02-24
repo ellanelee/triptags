@@ -1,4 +1,8 @@
-import { LanguageDto, UserAddressDto } from "@triptags/shared"
+import {
+  LanguageDto,
+  UserAddressDto,
+  UserIntroductionDto,
+} from "@triptags/shared"
 import apiClient from "./api.client"
 
 export const userApi = {
@@ -26,6 +30,17 @@ export const userApi = {
 
   updateAddress: async (data: UserAddressDto) => {
     const response = await apiClient.post("users/address", data)
+    if (!response.data.success) {
+      throw new Error(
+        response.data.message ?? response.data.error ?? "조회 실패",
+      )
+    }
+    console.log(response.data)
+    return response.data.data
+  },
+
+  updateIntroduction: async (data: UserIntroductionDto) => {
+    const response = await apiClient.patch("users/introduction", data)
     if (!response.data.success) {
       throw new Error(
         response.data.message ?? response.data.error ?? "조회 실패",
