@@ -1,5 +1,7 @@
 "use client"
+import BasicButton from "@/components/common/Button/BasicButton"
 import { LanguageSelect } from "@/components/common/LanguageSelect"
+import Introduction from "@/components/mypage/introduction"
 import { destinationApi } from "@/lib/api/destination.api"
 import { regionApi } from "@/lib/api/region.api"
 import { userApi } from "@/lib/api/user.api"
@@ -103,8 +105,6 @@ export default function MyPage() {
               </div>
             </div>
             {/* 개인별 설정 */}
-            {/* 자기소개 Update, 이후 주소 변경가능 */}
-            
             <div className="flex flex-col w-full mx-4">
               <div className="flex items-center mx-6 my-2">
                 {/* <div className="flex"> */}
@@ -150,7 +150,10 @@ export default function MyPage() {
             </div>
           </div>
         </div>
-
+        {/* 자기소개 Update, 이후 주소 변경가능 */}
+        <Introduction
+          savedText={userProfiles.data?.profile?.introduction || ""}
+        />
         {/* 관심 여행지 섹션 */}
         <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
           <div className="flex justify-between items-center mb-6">
