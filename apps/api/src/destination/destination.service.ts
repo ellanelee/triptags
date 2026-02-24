@@ -69,6 +69,7 @@ export class DestinationService {
       },
       select: { id: true },
     });
+    console.log(targetRegion);
     if (!targetRegion?.id)
       throw new NotFoundException('등록할수 있는 region이 없습니다');
     const alreadyExisted = await this.prisma.client.destination.findUnique({
