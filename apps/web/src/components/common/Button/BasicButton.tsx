@@ -1,9 +1,5 @@
-interface IBasicButtonProps {
-  children?: React.ReactNode
-  onClick?: () => void | Promise<void>
-  type?: "button" | "submit" | "reset"
-  className?: string
-}
+import { IBasicButtonProps } from "@/types/interfaces/interface.props";
+
 export default function BasicButton({
   children,
   onClick,

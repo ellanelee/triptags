@@ -1,4 +1,4 @@
-import { LanguageSelectProps } from "@/types/interface"
+import { LanguageSelectProps } from "@/types/interfaces/interface.props"
 
 export const LanguageSelect = ({
   label,

@@ -158,9 +158,14 @@ export default function MyPage() {
         <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-2xl font-bold text-gray-900">관심 여행지</h2>
-            <button className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors">
-              + 관심 여행지 수정
-            </button>
+            <BasicButton
+              onClick={() => {
+                router.push(`/${locale}/mypage/setdestinations`)
+              }}
+              type="button"
+            >
+              관심여행지 수정
+            </BasicButton>
           </div>
 
           {/* 여행지 목록 */}
