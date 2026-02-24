@@ -1,4 +1,4 @@
-import { IAuthState } from "@/types/interface"
+import { IAuthState } from "@/types/interfaces/interface.dto"
 import { create } from "zustand"
 import { persist } from "zustand/middleware"
 
