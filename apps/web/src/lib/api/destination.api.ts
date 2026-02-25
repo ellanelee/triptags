@@ -29,9 +29,7 @@ export const destinationApi = {
     return response.data
   },
 
-  remove: async (regionId: string) => {
-    const response = await apiClient.delete("destination", {
-      params: { regionId },
-    })
+  remove: async (destinationId: string) => {
+    const response = await apiClient.delete(`destination/${destinationId}`)
   },
 }

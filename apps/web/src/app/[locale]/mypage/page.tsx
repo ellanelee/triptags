@@ -1,5 +1,6 @@
 "use client"
 import BasicButton from "@/components/common/Button/BasicButton"
+import DeleteButton from "@/components/common/Button/DeleteButton"
 import { LanguageSelect } from "@/components/common/LanguageSelect"
 import Introduction from "@/components/mypage/introduction"
 import { destinationApi } from "@/lib/api/destination.api"
@@ -61,6 +62,15 @@ export default function MyPage() {
     } catch (e) {
       console.error("언어 업데이트 실패: ", e)
       alert("언어변경중 오류발생")
+    }
+  }
+
+  const handleDelete = async (id: string) => {
+    try {
+      await destinationApi.remove(id)
+      destinations.run(() => destinationApi.getInfo())
+    } catch (error) {
+      console.error("삭제 실패: ", error)
     }
   }
 
@@ -194,11 +204,14 @@ export default function MyPage() {
               {destinations?.data?.map((destination) => (
                 <div
                   key={destination.id}
-                  className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
+                  className="flex justify-between border px-10 border-gray-200 rounded-lg hover:shadow-md transition-shadow"
                 >
-                  <div className="flex justify-between items-start">
-                    <div>{destinationName(destination.region)}</div>
+                  <div className="p-4">
+                    <div className="flex justify-between items-start">
+                      <div>{destinationName(destination.region)}</div>
+                    </div>
                   </div>
+                  <DeleteButton onClick={() => handleDelete(destination.id)} />
                 </div>
               ))}
             </div>

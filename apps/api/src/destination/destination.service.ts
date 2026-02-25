@@ -90,13 +90,10 @@ export class DestinationService {
     });
   }
 
-  async deleteDestination(userId: string, regionId: string) {
+  async deleteDestination(destinationId: string) {
     return await this.prisma.client.destination.delete({
       where: {
-        userId_regionId: {
-          userId: userId,
-          regionId: regionId,
-        },
+        id: destinationId,
       },
     });
   }

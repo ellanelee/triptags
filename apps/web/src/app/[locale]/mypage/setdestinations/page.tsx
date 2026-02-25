@@ -251,55 +251,59 @@ export default function MyDestination() {
                 ))}
               </select>
             </div>
-          </div>
 
-          {/* Priority */}
-          <div>
-            <label
-              htmlFor="priority"
-              className="block text-sm font-medium text-gray-700 mb-1.5"
-            >
-              {tr("priority") ?? "우선 순위 (0~9사이에서 선택"}
-            </label>
-            <input
-              id="priority"
-              name="priority"
-              type="number"
-              min="0"
-              max="9"
-              value={data.priority || ""}
-              onChange={(e) => {
-                const value = Number(e.target.value)
-                setData((prev) => ({ ...prev, priority: value }))
-              }}
-              placeholder={tr("priorityPlaceholder")}
-              className="block w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm"
-            />
-          </div>
+            {/* Priority */}
+            <div>
+              <label
+                htmlFor="priority"
+                className="block text-sm font-medium text-gray-700 mb-1.5"
+              >
+                {tr("priority") ?? "우선 순위 (0~9사이에서 선택"}
+              </label>
+              <input
+                id="priority"
+                name="priority"
+                type="number"
+                min="0"
+                max="9"
+                value={data.priority || ""}
+                onChange={(e) => {
+                  const value = Number(e.target.value)
+                  setData((prev) => ({ ...prev, priority: value }))
+                }}
+                placeholder={tr("priorityPlaceholder")}
+                className="block w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm"
+              />
+            </div>
+            {/* 버튼 영역 */}
+            <div className="mt-7 flex flex-col sm:flex-row gap-3 sm:justify-end">
+              <button
+                type="button"
+                onClick={() => router.push(`/${locale}/mypage`)}
+                className="px-4 py-2 rounded-lg bg-gray-100 text-gray-800 hover:bg-gray-200 transition-colors"
+              >
+                {t("transaction.cancel") ?? "취소"}
+              </button>
 
-          {/* 버튼 영역 */}
-          <div className="mt-7 flex flex-col sm:flex-row gap-3 sm:justify-end">
-            <button
-              type="button"
-              onClick={() => router.push(`/${locale}/mypage`)}
-              className="px-4 py-2 rounded-lg bg-gray-100 text-gray-800 hover:bg-gray-200 transition-colors"
-            >
-              {t("transaction.cancel") ?? "취소"}
-            </button>
-
-            <button
-              type="submit"
-              className="px-4 py-2 rounded-lg bg-primary-600 text-white hover:bg-primary-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              disabled={!data.country || !data.city || !data.district}
-              title={
-                !data.country || !data.city || !data.district
-                  ? (tr("addressRequired") ??
-                    "국가/시도/구군은 필수 입력입니다.")
-                  : undefined
-              }
-            >
-              {t("transaction.save") ?? "저장"}
-            </button>
+              <button
+                type="submit"
+                className="px-4 py-2 rounded-lg bg-primary-600 text-white hover:bg-primary-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                disabled={
+                  !data.country ||
+                  !data.city ||
+                  !data.district ||
+                  !data.priority
+                }
+                title={
+                  !data.country || !data.city || !data.district
+                    ? (tr("addressRequired") ??
+                      "국가/시도/구군 및 우선순위는 필수 입력입니다.")
+                    : undefined
+                }
+              >
+                {t("transaction.save") ?? "저장"}
+              </button>
+            </div>
           </div>
         </form>
       </div>

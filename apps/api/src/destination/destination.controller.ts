@@ -3,8 +3,8 @@ import {
   Controller,
   Delete,
   Get,
+  Param,
   Post,
-  Query,
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
@@ -51,12 +51,13 @@ export class DestinationController {
   }
 
   //선호여행지 제거
-  @Delete()
+  @Delete(':destinaionId')
   @UseGuards(JwtAccessGuard)
   async handleRemoveDestination(
     @CurrentUser() user: User,
-    @Query() regionId: string,
+    @Param('destinaionId') destinationId: string,
   ) {
-    return this.destinationService.deleteDestination(user.id, regionId);
+    await this.destinationService.deleteDestination(destinationId);
+    return createResponse(true, null);
   }
 }
