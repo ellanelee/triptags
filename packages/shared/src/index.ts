@@ -34,6 +34,7 @@ export * from "./utils/match.decorator"
 
 //Types
 export * from "./types/user.interface"
+export * from "./types/userpoint.interface"
 
 //Model
 export type {
