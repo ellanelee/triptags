@@ -82,7 +82,8 @@
     "loading": "로딩 중...",
     "language": "사용 언어",
     "languageOption": "언어 변경",
-    "role": "사용자 권한"
+    "role": "사용자 권한",
+    "pointHistory": "포인트 이력조회"
   },
   "Address": {
     "setAddressTitle": "주소 재설정",

@@ -10,7 +10,7 @@ import { useAsync } from "@/lib/hooks/use.async"
 import { destinationName } from "@/lib/utils/format.region"
 import { useAuthStore } from "@/store/auth-store"
 import { DestinationWithRegion, RegionInfo } from "@/types/types"
-import { IUserResponse } from "@triptags/shared"
+import { IUserPointAll, IUserResponse } from "@triptags/shared"
 import { useLocale, useTranslations } from "next-intl"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
@@ -22,12 +22,18 @@ export default function MyPage() {
   const router = useRouter()
   const { isAuthenticated, user } = useAuthStore()
 
-  const [point, userPoint] = useState(0)
+  const [point, setPoint] = useState(0)
   const [localVerification, setLocalVerification] = useState()
   const [address, setAddress] = useState("")
   const destinations = useAsync<DestinationWithRegion[]>([])
   const userProfiles = useAsync<IUserResponse | null>(null)
   const addressRegion = useAsync<RegionInfo | null>(null)
+  const userPoint = useAsync<IUserPointAll[] | null>(null)
+  const userPointSum =
+    userPoint.data?.reduce(
+      (acc: number, curr: IUserPointAll) => acc + curr.point,
+      0,
+    ) || 0
 
   //인증확인 후 destination정보 불러오기
   useEffect(() => {
@@ -36,6 +42,12 @@ export default function MyPage() {
   }, [destinations.run])
 
   //set Profile (User확인 후 profile불러오기)
+  useEffect(() => {
+    if (!user?.id) return //미실행시 종료
+    const response = userPoint.run(() => userApi.getUserPoint(user.id))
+  }, [user?.id, userPoint.run])
+
+  //UserPoint
   useEffect(() => {
     if (!user?.id) return //미실행시 종료
     userProfiles.run(() => userApi.getMyProfile(user.id))
@@ -74,6 +86,12 @@ export default function MyPage() {
     }
   }
 
+  // handleUserPoint = async (id: string) => {
+  //   try {
+  //   } catch (error) {
+  //     console.error("삭제 실패: ", error)
+  //   }
+  // }
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -218,11 +236,17 @@ export default function MyPage() {
           )}
         </div>
         {/* UserPoint */}
-        <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold text-gray-900">사용자 포인트</h2>
-            <button className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors">
-              + 포인트 이력조회
+        <div className="bg-white rounded-lg shadow-sm p-6">
+          <div className="flex justify-between items-center">
+            <h2 className="text-2xl font-bold text-gray-900">
+              사용자 포인트 : {userPointSum}
+              <span className="text-xl text-gray-900">points</span>{" "}
+            </h2>
+            <button
+              onClick={() => router.push(`/${locale}/mypage/pointHistory`)}
+              className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
+            >
+              + {tr("pointHistory")}
             </button>
           </div>
         </div>
