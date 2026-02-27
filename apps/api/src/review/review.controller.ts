@@ -10,6 +10,7 @@ import {
 } from '@nestjs/common';
 import { ReviewService } from './review.service';
 import {
+  createResponse,
   ReviewCreateDto,
   ReviewUpdateDto,
   VenuePaginationDto,
@@ -31,6 +32,13 @@ export class ReviewController {
     @Query() paginationDto: VenuePaginationDto,
   ) {
     return await this.reviewService.findReviewByVenueId(venueId, paginationDto);
+  }
+
+  @UseGuards(JwtAccessGuard)
+  @Get()
+  async getReviewByUser(@CurrentUser() user: User) {
+    const reviews = await this.reviewService.getReviewByUserId(user.id);
+    return createResponse(true, reviews);
   }
 
   //사용자 Review생성

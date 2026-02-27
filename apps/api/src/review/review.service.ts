@@ -17,7 +17,23 @@ export class ReviewService {
     private readonly event: EventEmitter2,
   ) {}
 
-  //review 받아오기
+  //user의 review받아오기
+  async getReviewByUserId(userId: string) {
+    return await this.prisma.client.review.findMany({
+      where: { userId: userId },
+      select: {
+        id: true,
+        contents: true,
+        rating: true,
+        _count: {
+          select: { reviewHelpfuls: true },
+        },
+        createdAt: true,
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+  }
+  //venue별 review 받아오기
   async findReviewByVenueId(venueId: string, pageDto: VenuePaginationDto) {
     const page = Number(pageDto.page) || 1;
     const items = Number(pageDto.items) || 10;
