@@ -22,9 +22,6 @@ export default function MyPage() {
   const router = useRouter()
   const { isAuthenticated, user } = useAuthStore()
 
-  const [point, setPoint] = useState(0)
-  const [localVerification, setLocalVerification] = useState()
-  const [address, setAddress] = useState("")
   const destinations = useAsync<DestinationWithRegion[]>([])
   const userProfiles = useAsync<IUserResponse | null>(null)
   const addressRegion = useAsync<RegionInfo | null>(null)
@@ -86,12 +83,6 @@ export default function MyPage() {
     }
   }
 
-  // handleUserPoint = async (id: string) => {
-  //   try {
-  //   } catch (error) {
-  //     console.error("삭제 실패: ", error)
-  //   }
-  // }
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -240,7 +231,7 @@ export default function MyPage() {
           <div className="flex justify-between items-center">
             <h2 className="text-2xl font-bold text-gray-900">
               사용자 포인트 : {userPointSum}
-              <span className="text-xl text-gray-900">points</span>{" "}
+              <span className="text-xl text-gray-900"> points</span>{" "}
             </h2>
             <button
               onClick={() => router.push(`/${locale}/mypage/pointHistory`)}
