@@ -11,9 +11,7 @@ export const destinationApi = {
   },
 
   getInfo: async () => {
-    const response = await apiClient.get("destination/info", {
-      withCredentials: true,
-    })
+    const response = await apiClient.get("destination/info")
     console.log(response.data)
     if (!response.data.success) {
       throw new Error(

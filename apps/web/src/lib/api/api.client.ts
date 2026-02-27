@@ -9,6 +9,8 @@ const apiClient = axios.create({
 
 apiClient.interceptors.request.use(
   async (config) => {
+    if (typeof window === "undefined") return config
+
     try {
       const authStorage = localStorage.getItem("auth_storage")
       const lang = "ko"
