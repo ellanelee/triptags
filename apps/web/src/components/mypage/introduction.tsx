@@ -3,10 +3,13 @@ import { UserIntroductionDto } from "@triptags/shared"
 import BasicButton from "../common/Button/BasicButton"
 import { userApi } from "@/lib/api/user.api"
 import { useEffect, useState } from "react"
+import { useTranslations } from "next-intl"
 
 export default function Introduction({ savedText }: { savedText: string }) {
   const [isEditing, setIsEditing] = useState(false)
   const [text, setText] = useState(savedText)
+  const t = useTranslations("Common")
+  const tr = useTranslations("Introduction")
 
   useEffect(() => {
     setText(savedText)
@@ -28,11 +31,13 @@ export default function Introduction({ savedText }: { savedText: string }) {
         <h2 className="text-2xl font-bold text-gray-900">소개글</h2>
         <BasicButton
           onClick={
-            isEditing ? () => handleIntroduction({"introduction": text}) : () => setIsEditing(true)
+            isEditing
+              ? () => handleIntroduction({ introduction: text })
+              : () => setIsEditing(true)
           }
           type="button"
         >
-          {isEditing ? "저장하기" : "+ 자기 소개글 수정"}
+          {isEditing ? t("edit") : "수정"}
         </BasicButton>
       </div>
       <div className="grid gap-4">
@@ -45,7 +50,7 @@ export default function Introduction({ savedText }: { savedText: string }) {
               onChange={(e) => setText(e.target.value)}
             />
           ) : (
-            <p>{text || "소개글이 없습니다."}</p>
+            <p>{text || tr("noIntoruction")}</p>
           )}
         </div>
       </div>

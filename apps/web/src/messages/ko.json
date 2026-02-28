@@ -123,6 +123,14 @@
     "districtPlaceholder": "예: 강남구",
     "priority": "우선 순위 (0~9 중에서 선택)"
   },
+  "MyReview": {
+    "reviewTitle": "리뷰 내역",
+    "rating": "평가점수" ,
+    "reviewHelpfule": "도움돼요"
+  },
+  "Introduction": {
+    "noIntroduction" : "소개글이 없습니다"
+  },
   "Common": {
     "languages": {
       "ko": "한국어",
@@ -137,7 +145,9 @@
       "back": "뒤로가기",
       "save": "저장",
       "cancel": "취소",
-      "reset": "초기화"
+      "reset": "초기화",
+      "edit": "편집",
+      "delete": "삭제"
     }
   }
 }
