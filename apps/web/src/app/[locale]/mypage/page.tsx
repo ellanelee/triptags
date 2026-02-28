@@ -3,6 +3,7 @@ import BasicButton from "@/components/common/Button/BasicButton"
 import DeleteButton from "@/components/common/Button/DeleteButton"
 import { LanguageSelect } from "@/components/common/LanguageSelect"
 import Introduction from "@/components/mypage/introduction"
+import MyReview from "@/components/mypage/myreview"
 import { destinationApi } from "@/lib/api/destination.api"
 import { regionApi } from "@/lib/api/region.api"
 import { userApi } from "@/lib/api/user.api"
@@ -126,7 +127,6 @@ export default function MyPage() {
             {/* 개인별 설정 */}
             <div className="flex flex-col w-full mx-4">
               <div className="flex items-center mx-6 my-2">
-                {/* <div className="flex"> */}
                 <p className="text-gray-600 pr-10">
                   {tr("welcome", { nickname: user?.nickname || "guest" })}
                 </p>
@@ -227,7 +227,7 @@ export default function MyPage() {
           )}
         </div>
         {/* UserPoint */}
-        <div className="bg-white rounded-lg shadow-sm p-6">
+        <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
           <div className="flex justify-between items-center">
             <h2 className="text-2xl font-bold text-gray-900">
               사용자 포인트 : {userPointSum}
@@ -241,6 +241,8 @@ export default function MyPage() {
             </button>
           </div>
         </div>
+        {/* My Review보여주기 최근 3개까지?? */}
+        <MyReview />
       </div>
     </div>
   )
