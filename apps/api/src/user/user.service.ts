@@ -7,6 +7,7 @@ import {
 import { PrismaService } from '@/prisma/prisma.service';
 import { USER_PERSONAL_SELECT } from '@/common/const/user.select';
 import {
+  Language,
   UpdateNicknameDto,
   UpdatePasswordDto,
   UserAddressDto,
@@ -123,6 +124,7 @@ export class UserService {
     });
   }
 
+  //비밀번호 업데이트
   async updateUserPassword(userId: string, passwordUpdate: UpdatePasswordDto) {
     const user = await this.prisma.client.user.findFirst({
       where: {
@@ -170,6 +172,19 @@ export class UserService {
     });
   }
 
+  //언어변경
+  async updateLanguage(userId: string, newLang: Language) {
+    return this.prisma.client.user.update({
+      where: {
+        id: userId,
+        deletedAt: null,
+      },
+      data: {
+        language: newLang,
+      },
+    });
+  }
+
   //User소개정보
   async updateUserIntroduction(userId: string, userIntroduction: string) {
     return this.prisma.client.userProfile.upsert({
@@ -192,10 +207,10 @@ export class UserService {
     const norm = (s: string) => s.trim().replace(/\s+/g, ' ');
     function normalize(userAddress: UserAddressDto) {
       return {
-        ...userAddress,
         country: norm(userAddress.country),
         city: norm(userAddress.city),
         district: norm(userAddress.district),
+        details: userAddress.details,
       };
     }
     const normalizedAddress = normalize(userAddress);

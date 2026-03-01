@@ -42,7 +42,7 @@ export class AuthController {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-      maxAge: 1209600,
+      maxAge: 1209600 * 1000,
     });
 
     return createResponse(

@@ -14,6 +14,7 @@ export class DestinationService {
     private regionService: RegionService,
   ) {}
 
+  //개인별 Destination검색
   async getDestination(userId: string) {
     const user = await this.prisma.client.user.findFirst({
       where: { id: userId, deletedAt: null },
@@ -21,6 +22,37 @@ export class DestinationService {
     if (!user) throw new NotFoundException('사용자가 존재하지 않습니다');
     return await this.prisma.client.destination.findMany({
       where: { userId: userId },
+    });
+  }
+
+  //destination의 regionId에 대해 내용 파악
+  async getRegionInfo(userId: string) {
+    return await this.prisma.client.destination.findMany({
+      where: { userId },
+      include: {
+        region: {
+          select: {
+            id: true,
+            name: true,
+            level: true,
+            parent: {
+              select: {
+                id: true,
+                name: true,
+                level: true,
+                parent: {
+                  select: {
+                    id: true,
+                    name: true,
+                    level: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      orderBy: [{ priority: 'desc' }, { createdAt: 'desc' }],
     });
   }
 
@@ -37,6 +69,7 @@ export class DestinationService {
       },
       select: { id: true },
     });
+    console.log(targetRegion);
     if (!targetRegion?.id)
       throw new NotFoundException('등록할수 있는 region이 없습니다');
     const alreadyExisted = await this.prisma.client.destination.findUnique({
@@ -57,13 +90,10 @@ export class DestinationService {
     });
   }
 
-  async deleteDestination(userId: string, regionId: string) {
+  async deleteDestination(destinationId: string) {
     return await this.prisma.client.destination.delete({
       where: {
-        userId_regionId: {
-          userId: userId,
-          regionId: regionId,
-        },
+        id: destinationId,
       },
     });
   }

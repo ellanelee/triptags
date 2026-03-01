@@ -16,12 +16,13 @@ import {
   UpdatePasswordDto,
   IUserResponse,
   createResponse,
-  ApiResponse,
   IUserPublicResponse,
   UpdateNicknameDto,
   UserProfileImageDto,
   UserIntroductionDto,
   UserAddressDto,
+  LanguageDto,
+  Language,
 } from '@triptags/shared';
 import { User } from '@prisma/client';
 
@@ -35,9 +36,7 @@ export class UserController {
   @UseGuards(JwtAccessGuard)
   @Get('me')
   @HttpCode(200)
-  async getUserProflie(
-    @CurrentUser() user: User,
-  ): Promise<ApiResponse<IUserResponse>> {
+  async getMyInfo(@CurrentUser() user: User) {
     console.log('UserId: ', user.id);
     const userProfile = await this.userService.findAllById(user.id);
     return createResponse(true, userProfile, '회원 정보 검색완료');
@@ -53,7 +52,7 @@ export class UserController {
   ) {
     let userProfile: IUserResponse | IUserPublicResponse;
     console.log(`Params targetId: ${targetUserId}, Current User:${user.id}`);
-    if (user.role === 'ADMIN') {
+    if (user.role === 'ADMIN' || user.id === targetUserId) {
       userProfile = await this.userService.findAllById(targetUserId);
     } else {
       userProfile = await this.userService.findPubicInfoById(targetUserId);
@@ -85,6 +84,21 @@ export class UserController {
     @Body() passwordUpdate: UpdatePasswordDto,
   ) {
     return this.userService.updateUserPassword(user.id, passwordUpdate);
+  }
+  //User language Update
+  @UseGuards(JwtAccessGuard)
+  @Patch('language')
+  @HttpCode(200)
+  async updateUserLanguage(
+    @CurrentUser() user: User,
+    @Body() updateDto: LanguageDto,
+  ) {
+    const updatedLanguage = await this.userService.updateLanguage(
+      user.id,
+      updateDto.language as Language,
+    );
+    console.log(user.id);
+    return createResponse(true, updatedLanguage, '회원 정보 수정완료');
   }
 
   //User 정보 이미지 정보 Update

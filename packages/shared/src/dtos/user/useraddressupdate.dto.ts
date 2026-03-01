@@ -1,8 +1,8 @@
-import { IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator"
+import { IsNotEmpty, IsNumber, IsString } from "class-validator"
 import { ApiProperty } from "@nestjs/swagger"
 import { Type } from "class-transformer"
 
-export class UserAddressDto {
+export class UserAddressUpdateDto {
   @ApiProperty({
     example: "KR",
     description: "거주 국가명의 영문명, KR, UK, USA등등",
@@ -40,14 +40,14 @@ export class UserAddressDto {
     description: "사용자 위치(위도)",
   })
   @IsNumber()
-  @IsOptional()
-  latitude?: number
+  @IsNotEmpty()
+  latitude!: number
 
   @ApiProperty({
     example: 132.32,
     description: "사용자 위치(경도)",
   })
   @IsNumber()
-  @IsOptional()
-  longitude?: number
+  @IsNotEmpty()
+  longitude!: number
 }

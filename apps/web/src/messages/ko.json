@@ -71,5 +71,85 @@
     "submit": "로그인",
     "loading": "로그인 중...",
     "error": "로그인에 실패했습니다."
+  },
+  "MyPage": {
+    "title": "마이페이지",
+    "welcome": "{nickname}님, 환영합니다!",
+    "interestedDestinations": "관심 여행지",
+    "addDestination": "+ 여행지 추가",
+    "noDestinations": "아직 관심 여행지가 없습니다.",
+    "noDestinationsHint": "여행지를 추가하면 맞춤형 추천을 받을 수 있습니다.",
+    "loading": "로딩 중...",
+    "language": "사용 언어",
+    "languageOption": "언어 변경",
+    "role": "사용자 권한",
+    "pointHistory": "포인트 이력조회",
+    "totalPoint": "전체 포인트",
+    "pointActivity": "포인트 수령"
+  },
+  "Address": {
+    "setAddressTitle": "주소 재설정",
+    "addressHelp": "국가/도시/구·군/상세주소를 입력하면 주소가 저장됩니다.",
+    "addressPreview": "주소 미리보기",
+    "addressEmpty": "주소 미입력",
+    "countryLabel": "국가 설정",
+    "selectCountry": "국가선택",
+    "country": "국가",
+    "cityLabel": "자치도/특별시/광역시",
+    "city": "광역행정구역(주/도/특별시/광역시)",
+    "cityPlaceholder": "예: 서울특별시 혹은 제주특별자치도",
+    "districtLabel": "시/군/구",
+    "district": "개별행정구역(시/군/구)",
+    "districtPlaceholder": "예: 강남구",
+    "detailsLabel": "도로명 주소",
+    "details": "개별주소",
+    "detailsPlaceholder": "예: 테헤란로 123, 101동 1001호",
+    "addressRequired": "국가/광역행정구역/개별행정구역/개별주소 입력은 필수"
+  },
+  "Destination": {
+    "setTitle": "나의 여행지 설정",
+    "destinationPreview": "여행지 미리보기",
+    "destinationHelp": "국가/도시/구·군를 입력하면 저장됩니다",
+    "addressRequired": "국가/시도/구군은 필수 입력입니다.",
+    "DestinationEmpty": "아직 입력된 주소가 없어요.",
+    "countryLabel": "국가 설정",
+    "selectCountry": "국가선택",
+    "country": "국가",
+    "cityLabel": "자치도/특별시/광역시",
+    "city": "광역행정구역(주/도/특별시/광역시)",
+    "cityPlaceholder": "예: 서울특별시 혹은 제주특별자치도",
+    "districtLabel": "시/군/구",
+    "district": "개별행정구역(시/군/구)",
+    "districtPlaceholder": "예: 강남구",
+    "priority": "우선 순위 (0~9 중에서 선택)"
+  },
+  "MyReview": {
+    "reviewTitle": "리뷰 내역",
+    "rating": "평가점수",
+    "reviewHelpful": "도움돼요 채택"
+  },
+  "Introduction": {
+    "noIntroduction": "소개글이 없습니다"
+  },
+  "Common": {
+    "languages": {
+      "ko": "한국어",
+      "en": "English",
+      "ja": "日本語",
+      "zh": "中文",
+      "de": "Deutsch",
+      "fr": "Français",
+      "es": "Español"
+    },
+    "transaction": {
+      "back": "뒤로가기",
+      "save": "저장",
+      "cancel": "취소",
+      "reset": "초기화",
+      "edit": "편집",
+      "change": "변경",
+      "delete": "삭제",
+      "createdAt": "생성일"
+    }
   }
 }

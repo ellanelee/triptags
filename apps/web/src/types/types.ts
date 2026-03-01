@@ -11,3 +11,23 @@ export type LocaleConfigType = {
   legalBasis: string
 }
 
+export type RegionType = {
+  country: string
+  city: string
+  district: string
+}
+
+export type DestinationWithRegion = {
+  id: string
+  regionId: string
+  priority: number
+  region: RegionInfo
+}
+
+export type RegionInfo = {
+  id: string
+  name: string
+  level: number
+  parent?: RegionInfo | null
+}
+

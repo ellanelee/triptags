@@ -9,8 +9,9 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { PointType, VerificationMethod } from '@prisma/client';
+import { PointType, User, VerificationMethod } from '@prisma/client';
 import { OnEvent } from '@nestjs/event-emitter';
+import { IUserPointAll } from '@triptags/shared';
 
 @Injectable()
 export class UserPointService {
@@ -40,6 +41,20 @@ export class UserPointService {
     } else {
       throw new BadRequestException('데이터 처리에 오류가 있습니다');
     }
+  }
+
+  async getUserPoints(user: User): Promise<IUserPointAll[]> {
+    return await this.prisma.client.userPoint.findMany({
+      where: { user: user },
+      select: {
+        id: true,
+        point: true,
+        pointActivity: true,
+        localVerified: true,
+        createdAt: true,
+        venueId: true,
+      },
+    });
   }
 
   async issuePoint(pointInput: IPointCreateInput) {

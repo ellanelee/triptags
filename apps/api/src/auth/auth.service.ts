@@ -29,14 +29,14 @@ export class AuthService {
       { sub: userId },
       {
         secret: this.configService.get<string>('JWT_ACCESS_SECRET'),
-        expiresIn: this.configService.get<number>('JWT_ACCESS_EXPIRED_IN'),
+        expiresIn: this.configService.get('JWT_ACCESS_EXPIRED_IN'),
       },
     );
     const refreshToken = await this.jwtService.signAsync(
       { sub: userId },
       {
         secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
-        expiresIn: this.configService.get<number>('JWT_REFRESH_EXPIRED_IN'),
+        expiresIn: this.configService.get('JWT_REFRESH_EXPIRED_IN'),
       },
     );
 

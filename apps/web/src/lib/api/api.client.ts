@@ -9,6 +9,8 @@ const apiClient = axios.create({
 
 apiClient.interceptors.request.use(
   async (config) => {
+    if (typeof window === "undefined") return config
+
     try {
       const authStorage = localStorage.getItem("auth_storage")
       const lang = "ko"
@@ -17,7 +19,7 @@ apiClient.interceptors.request.use(
         const parsed = JSON.parse(authStorage)
         const locale = parsed?.state?.user?.language ?? lang
         const token = parsed?.state?.token
-        config.headers["Accept-Language"] = locale; 
+        config.headers["Accept-Language"] = locale
         if (token) {
           config.headers.Authorization = `Bearer ${token}`
         }
@@ -41,12 +43,13 @@ apiClient.interceptors.response.use(
     if (response) {
       switch (response.status) {
         case 401:
-          console.error("인증이 필요합니다")
-          if (typeof window !== undefined) {
-            localStorage.removeItem("auth_storage") //토큰 삭제
-            window.location.href = "/login"
-          }
-          //이후에 refreshToken을 가져오는 로직 구현
+          console.error("401_인증이 필요합니다")
+          // if (typeof window !== "undefined") {
+          //   localStorage.removeItem("auth_storage") //토큰 삭제
+          //   const locale = window.location.pathname.split("/")[1] || "ko"
+          //   window.location.href = `/${locale}/login`
+          // }
+          //이후에 refreshToken을 가져오는 로직 구현후 토큰 삭제로직 재구현
           break
 
         case 403:
