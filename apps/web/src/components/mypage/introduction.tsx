@@ -1,6 +1,6 @@
 "use client"
 import { UserIntroductionDto } from "@triptags/shared"
-import BasicButton from "../common/Button/BasicButton"
+import BasicButton from "../common/button/BasicButton"
 import { userApi } from "@/lib/api/user.api"
 import { useEffect, useState } from "react"
 import { useTranslations } from "next-intl"
