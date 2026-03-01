@@ -1,6 +1,6 @@
 export interface IUserReview {
   id: string
-  content: string
+  contents: string
   rating: number
   reviewHelpful: number
   createdAt: Date

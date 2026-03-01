@@ -125,11 +125,11 @@
   },
   "MyReview": {
     "reviewTitle": "리뷰 내역",
-    "rating": "평가점수" ,
-    "reviewHelpfule": "도움돼요"
+    "rating": "평가점수",
+    "reviewHelpful": "도움돼요 채택"
   },
   "Introduction": {
-    "noIntroduction" : "소개글이 없습니다"
+    "noIntroduction": "소개글이 없습니다"
   },
   "Common": {
     "languages": {
@@ -147,7 +147,9 @@
       "cancel": "취소",
       "reset": "초기화",
       "edit": "편집",
-      "delete": "삭제"
+      "change": "변경",
+      "delete": "삭제",
+      "createdAt": "생성일"
     }
   }
 }
