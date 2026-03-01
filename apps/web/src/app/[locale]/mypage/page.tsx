@@ -1,6 +1,6 @@
 "use client"
-import BasicButton from "@/components/common/Button/BasicButton"
-import DeleteButton from "@/components/common/Button/DeleteButton"
+import BasicButton from "@/components/common/button/BasicButton"
+import DeleteButton from "@/components/common/button/DeleteButton"
 import { LanguageSelect } from "@/components/common/LanguageSelect"
 import Introduction from "@/components/mypage/introduction"
 import MyReview from "@/components/mypage/myreview"
