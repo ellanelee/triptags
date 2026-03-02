@@ -57,6 +57,10 @@ export function Header() {
     languages.find((lang) => lang.code === locale) || languages[0]
   const isTransparentNav = pathname === "/" && !isAuthenticated
 
+  if (pathname.includes("/login") || pathname.includes("/register")) {
+    return null
+  }
+
   return (
     <header
       className={`${isTransparentNav ? "bg-transparent absolute top-0 left-0 right-0 z-50" : "bg-white shadow"}`}
