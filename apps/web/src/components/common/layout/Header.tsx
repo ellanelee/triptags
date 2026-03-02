@@ -20,7 +20,7 @@ export function Header() {
   const locale = useLocale()
   const pathname = usePathname()
   const router = useI18nRouter()
-  const { isAuthenticated, user } = useAuthStore()
+  const { isAuthenticated, user, logout } = useAuthStore()
   const [isLangMenuOpen, setIsLangMenuOpen] = useState(false)
   const langMenuRef = useRef<HTMLDivElement>(null)
 
@@ -43,10 +43,10 @@ export function Header() {
     }
   }, [isLangMenuOpen])
 
-  // const handleLogout = () => {
-  //   logout();
-  //   router.push('/');
-  // };
+  const handleLogout = () => {
+    logout()
+    router.push("/")
+  }
 
   const handleLanguageChange = (newLocale: string) => {
     router.replace(pathname, { locale: newLocale as any })
@@ -167,7 +167,7 @@ export function Header() {
                     </div>
                   )}
                 </Link>
-                {/* <button
+                <button
                   onClick={handleLogout}
                   className={`text-sm ${
                     isTransparentNav
@@ -176,7 +176,7 @@ export function Header() {
                   }`}
                 >
                   {t('logout')}
-                </button> */}
+                </button>
               </>
             ) : (
               <>

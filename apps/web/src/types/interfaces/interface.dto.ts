@@ -9,6 +9,7 @@ export interface IAuthState {
   setAuth: (token: string, user: IUserPublicResponse) => void
   clearAuth: () => void
   setHydrated: (v: boolean) => void
+  logout: () => Promise<void>
 }
 
 export interface IAuthResponse {
