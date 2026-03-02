@@ -24,6 +24,13 @@
     "noAccount": "아직 회원이 아니신가요?",
     "registerLink": "회원가입하기"
   },
+  "Navbar": {
+    "venues": "장소 찾기",
+    "addVenue": "장소 등록",
+    "login": "로그인",
+    "register": "회원가입",
+    "logout": "로그아웃"
+  },
   "RegisterPage": {
     "title": "회원가입",
     "backToLogin": "로그인으로",
