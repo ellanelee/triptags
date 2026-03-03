@@ -3,13 +3,14 @@ import { UserIntroductionDto } from "@triptags/shared"
 import BasicButton from "../common/button/BasicButton"
 import { userApi } from "@/lib/api/user.api"
 import { useEffect, useState } from "react"
-import { useTranslations } from "next-intl"
+import { useLocale, useTranslations } from "next-intl"
 
 export default function Introduction({ savedText }: { savedText: string }) {
   const [isEditing, setIsEditing] = useState(false)
   const [text, setText] = useState(savedText)
   const t = useTranslations("Common")
-  const tr = useTranslations("Introduction")
+  const tr = useTranslations("MyPage")
+  const locale = useLocale()
 
   useEffect(() => {
     setText(savedText)
@@ -28,7 +29,9 @@ export default function Introduction({ savedText }: { savedText: string }) {
   return (
     <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-900">소개글</h2>
+        <h2 className="text-2xl font-bold text-gray-900">
+          {tr(`Introduction.introduction`) || "나의 소개글"}
+        </h2>
         <BasicButton
           onClick={
             isEditing
@@ -37,7 +40,7 @@ export default function Introduction({ savedText }: { savedText: string }) {
           }
           type="button"
         >
-          {isEditing ? t("edit") : "수정"}
+          {isEditing ? t("transaction.save") : t("transaction.editContents")}
         </BasicButton>
       </div>
       <div className="grid gap-4">
