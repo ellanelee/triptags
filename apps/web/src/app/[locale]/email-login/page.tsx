@@ -3,7 +3,7 @@
 import { Link } from "@/i18n/routing"
 import { authApi } from "@/lib/api/auth.api"
 import { useAuthStore } from "@/store/auth-store"
-import { IAuthResponse } from "@/types/auth"
+import { IAuthResponse } from "@/types/interfaces/interface.dto"
 import { useTranslations } from "next-intl"
 import { useRouter } from "next/navigation"
 import { useState } from "react"

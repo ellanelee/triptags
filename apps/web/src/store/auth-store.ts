@@ -23,6 +23,8 @@ export const useAuthStore = create<IAuthState>()(
           console.error("Logout error", error)
         }
         set({ user: null, isAuthenticated: false, token: null })
+        localStorage.removeItem("auth_storage")
+        localStorage.removeItem("accessToken")
       },
     }),
     {
