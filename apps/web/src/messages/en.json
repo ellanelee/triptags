@@ -1,0 +1,169 @@
+{
+  "HomePage": {
+    "title": "TripTags - Authentic Travel, Local Voices",
+    "description": "Providing genuine travel information by distinguishing between local and traveler experiences",
+    "exploreVenues": "Explore Venues",
+    "getStarted": "Get Started",
+    "localSection": {
+      "title": "Local Recommendations",
+      "description": "Authentic recommendations from residents actually living in the area"
+    },
+    "travelerSection": {
+      "title": "Traveler Experiences",
+      "description": "Real visit reviews from a traveler's perspective"
+    }
+  },
+  "LoginPage": {
+    "title": "Login",
+    "backToHome": "Back to Home",
+    "kakaoLogin": "Continue with Kakao",
+    "googleLogin": "Continue with Google",
+    "naverLogin": "Continue with Naver",
+    "orDivider": "OR",
+    "emailLogin": "Login with Email",
+    "noAccount": "Don't have an account?",
+    "registerLink": "Sign Up"
+  },
+  "Navbar": {
+    "venues": "Find Venues",
+    "addVenue": "Add Venue",
+    "login": "Login",
+    "register": "Sign Up",
+    "logout": "Logout"
+  },
+  "RegisterPage": {
+    "title": "Sign Up",
+    "backToLogin": "Back to Login",
+    "email": "Email",
+    "nickname": "Nickname",
+    "password": "Password",
+    "passwordConfirm": "Confirm Password",
+    "language": "Select Language",
+    "languages": {
+      "ko": "Korean",
+      "en": "English",
+      "ja": "Japanese",
+      "zh": "Chinese",
+      "de": "German",
+      "fr": "French",
+      "es": "Spanish"
+    },
+    "agreeAll": "I agree to all terms",
+    "agreeTerms": "Terms of Service",
+    "agreePrivacy": "Privacy Policy",
+    "agreeMarketing": "Receive Marketing Info",
+    "agreeAge": "I am 14 years or older",
+    "required": "(Required)",
+    "optional": "(Optional)",
+    "termsRequired": "Please agree to the required terms.",
+    "submit": "Sign Up",
+    "loading": "Signing up...",
+    "error": "Registration failed.",
+    "passwordMismatch": "Passwords do not match.",
+    "hasAccount": "Already have an account?",
+    "loginLink": "Login",
+    "agreementsTitle": "Terms Agreement",
+    "requireTerms": true,
+    "requirePrivacy": true,
+    "requireAge": true,
+    "showMarketing": true
+  },
+  "EmailLoginPage": {
+    "title": "Email Login",
+    "backToLogin": "Back to Login",
+    "email": "Email",
+    "emailPlaceholder": "Enter your email",
+    "password": "Password",
+    "passwordPlaceholder": "Enter your password",
+    "submit": "Login",
+    "loading": "Logging in...",
+    "error": "Login failed."
+  },
+  "MyPage": {
+    "title": "My Page",
+    "welcome": "Welcome, {nickname}!",
+    "interestedDestinations": "Interested Destinations",
+    "addDestination": "+ Add Destination",
+    "noDestinations": "No interested destinations yet.",
+    "noDestinationsHint": "Add destinations to receive personalized recommendations.",
+    "loading": "Loading...",
+    "language": "Language",
+    "languageOption": "Change Language",
+    "role": "User Role",
+    "pointHistory": "Point History",
+    "totalPoint": "Total Points",
+    "pointActivity": "Points Earned",
+    "editAddress": "Register/Change Address",
+    "editImage": "Register/Change Image",
+    "createdAt": "Joined Date",
+    "editDestinations": "Edit Interested Destinations",
+    "userPoint": "User Points",
+    "Introduction": {
+      "noIntroduction": "No introduction available",
+      "introduction": "My Introduction"
+    }
+  },
+  "Address": {
+    "setAddressTitle": "Reset Address",
+    "addressHelp": "Enter Country/City/District/Detail address to save.",
+    "addressPreview": "Address Preview",
+    "addressEmpty": "Address not entered",
+    "countryLabel": "Country Settings",
+    "selectCountry": "Select Country",
+    "country": "Country",
+    "cityLabel": "State/Province/City",
+    "city": "Metropolitan Admin Area (State/City)",
+    "cityPlaceholder": "e.g., Seoul or Jeju-do",
+    "districtLabel": "City/County/District",
+    "district": "Local Admin Area (District)",
+    "districtPlaceholder": "e.g., Gangnam-gu",
+    "detailsLabel": "Street Address",
+    "details": "Detail Address",
+    "detailsPlaceholder": "e.g., 123 Teheran-ro, Apt 101-1001",
+    "addressRequired": "Country/State/District/Detail address are required"
+  },
+  "Destination": {
+    "setTitle": "Set My Destination",
+    "destinationPreview": "Destination Preview",
+    "destinationHelp": "Enter Country/City/District to save.",
+    "addressRequired": "Country, City, and District are required.",
+    "DestinationEmpty": "No address entered yet.",
+    "countryLabel": "Country Settings",
+    "selectCountry": "Select Country",
+    "country": "Country",
+    "cityLabel": "State/Province/City",
+    "city": "Metropolitan Admin Area (State/City)",
+    "cityPlaceholder": "e.g., Seoul or Jeju-do",
+    "districtLabel": "City/County/District",
+    "district": "Local Admin Area (District)",
+    "districtPlaceholder": "e.g., Gangnam-gu",
+    "priority": "Priority (Select from 0-9)"
+  },
+  "MyReview": {
+    "reviewTitle": "Review History",
+    "rating": "Rating",
+    "reviewHelpful": "Helpful Counts"
+  },
+  "Common": {
+    "languages": {
+      "ko": "Korean",
+      "en": "English",
+      "ja": "Japanese",
+      "zh": "Chinese",
+      "de": "German",
+      "fr": "French",
+      "es": "Spanish"
+    },
+    "transaction": {
+      "back": "Back",
+      "save": "Save",
+      "cancel": "Cancel",
+      "reset": "Reset",
+      "edit": "Edit",
+      "editContents": "Edit Contents",
+      "change": "Change",
+      "delete": "Delete",
+      "createdAt": "Created Date"
+    }
+  }
+}

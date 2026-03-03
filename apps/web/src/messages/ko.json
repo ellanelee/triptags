@@ -92,7 +92,16 @@
     "role": "사용자 권한",
     "pointHistory": "포인트 이력조회",
     "totalPoint": "전체 포인트",
-    "pointActivity": "포인트 수령"
+    "pointActivity": "포인트 수령",
+    "editAddress": "주소 등록/변경",
+    "editImage": "이미지 등록/변경",
+    "createdAt": "회원 가입일",
+    "editDestinations": "관심여행지 수정",
+    "userPoint": "사용자 포인트",
+    "Introduction": {
+      "noIntroduction": "소개글이 없습니다",
+      "introduction": "나의 소개글"
+    }
   },
   "Address": {
     "setAddressTitle": "주소 재설정",
@@ -135,9 +144,6 @@
     "rating": "평가점수",
     "reviewHelpful": "도움돼요 채택"
   },
-  "Introduction": {
-    "noIntroduction": "소개글이 없습니다"
-  },
   "Common": {
     "languages": {
       "ko": "한국어",
@@ -154,6 +160,7 @@
       "cancel": "취소",
       "reset": "초기화",
       "edit": "편집",
+      "editContents": "내용 수정",
       "change": "변경",
       "delete": "삭제",
       "createdAt": "생성일"
