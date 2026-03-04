@@ -36,6 +36,7 @@ export * from "./utils/match.decorator"
 export * from "./types/user.interface"
 export * from "./types/userpoint.interface"
 export * from "./types/review.interface"
+export * from "./types/venue.interface"
 
 //Model
 export type {
