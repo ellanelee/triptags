@@ -144,6 +144,28 @@
     "rating": "평가점수",
     "reviewHelpful": "도움돼요 채택"
   },
+  "VenuesPage": {
+    "title": "장소 찾기",
+    "searchPlaceholder": "장소 이름이나 설명으로 검색하세요...",
+    "category": "카테고리",
+    "allCategories": "전체",
+    "city": "도시",
+    "cityPlaceholder": "도시 이름을 입력하세요",
+    "priceRange": "가격대",
+    "allPrices": "전체 가격대",
+    "categories": {
+      "RESTAURANT": "레스토랑",
+      "CAFE": "카페",
+      "HOTEL": "호텔",
+      "STREET_FOOD": "길거리 음식",
+      "BAR": "바",
+      "ATTRACTION": "관광지",
+      "ACTIVITY": "액티비티",
+      "SHOPPING": "쇼핑",
+      "NATURE": "자연",
+      "CULTURE": "문화"
+    }
+  },
   "Common": {
     "languages": {
       "ko": "한국어",
