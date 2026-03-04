@@ -13,7 +13,7 @@ import {
   VenueUpdateDtoUser,
 } from '@triptags/shared';
 import { VenuePaginationDto } from '@triptags/shared';
-import { PointType, UserRole } from '@prisma/client';
+import { PointType, Prisma, UserRole } from '@prisma/client';
 import { UserPointService } from '@/userpoint/userpoint.service';
 import { IUserPoint } from '@/common/type/types';
 import { EventEmitter2 } from '@nestjs/event-emitter';
@@ -34,12 +34,44 @@ export class VenueService {
   }
 
   async findAll(paginationDto: VenuePaginationDto) {
-    const page = Number(paginationDto.page) || 1;
-    const items = Number(paginationDto.items) || 10;
+    const {
+      page = 1,
+      items = 10,
+      search,
+      category,
+      city,
+      district,
+    } = paginationDto;
     const skip = (page - 1) * items;
+    const where: Prisma.VenueWhereInput = {
+      deletedAt: null,
+    };
+
+    if (category) where.venueCategory = category;
+
+    if (district) {
+      where.region = {
+        name: { contains: district },
+        level: 3,
+      };
+    } else if (city) {
+      where.region = {
+        name: { contains: city },
+        level: 2,
+      };
+    }
+
+    if (search) {
+      where.name = {
+        path: ['ko'],
+        string_contains: search,
+      };
+    }
+
     const [totalCount, data] = await Promise.all([
       this.prisma.client.venue.count(),
       this.prisma.client.venue.findMany({
+        where,
         skip,
         take: items,
         include: {
