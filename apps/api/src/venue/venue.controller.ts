@@ -33,13 +33,19 @@ export class VenueController {
   @Get('all')
   async getAllVenues(@Query() paginationDto: VenuePaginationDto) {
     console.log(paginationDto);
-    return await this.venueService.findAll(paginationDto);
+    return await this.venueService.findAllAbstract(paginationDto);
   }
 
   //VenueId로 정보 불러오기
   @Get(':venueId')
   async getVenueById(venueId: string) {
     return await this.venueService.findVenueById(venueId);
+  }
+
+  //VenueId로 이미지 불러오기
+  @Get(':venueId')
+  async getVenueImageById(venueId: string) {
+    return await this.venueService.findVenueImageById(venueId);
   }
 
   //Venue생성하기
