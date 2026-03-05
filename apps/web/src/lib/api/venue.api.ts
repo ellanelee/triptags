@@ -14,4 +14,8 @@ export const venueApi = {
     console.log(response.data)
     return response.data.data ?? []
   },
+
+  getVenueImage: async (venueId: string) => {
+    const response = await apiClient.get('venues/a')
+  }
 }
