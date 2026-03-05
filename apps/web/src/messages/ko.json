@@ -39,15 +39,6 @@
     "password": "비밀번호",
     "passwordConfirm": "비밀번호 확인",
     "language": "언어 선택",
-    "languages": {
-      "ko": "한국어",
-      "en": "English",
-      "ja": "日本語",
-      "zh": "中文",
-      "de": "Deutsch",
-      "fr": "Français",
-      "es": "Español"
-    },
     "agreeAll": "전체 동의합니다",
     "agreeTerms": "이용약관 동의",
     "agreePrivacy": "개인정보 처리방침 동의",
@@ -151,19 +142,11 @@
     "allCategories": "전체",
     "city": "도시",
     "cityPlaceholder": "도시 이름을 입력하세요",
-    "priceRange": "가격대",
-    "allPrices": "전체 가격대",
-    "categories": {
-      "RESTAURANT": "레스토랑",
-      "CAFE": "카페",
-      "HOTEL": "호텔",
-      "STREET_FOOD": "길거리 음식",
-      "BAR": "바",
-      "ATTRACTION": "관광지",
-      "ACTIVITY": "액티비티",
-      "SHOPPING": "쇼핑",
-      "NATURE": "자연",
-      "CULTURE": "문화"
+    "sortBy": "정렬",
+    "sort": {
+      "recent": "최신순",
+      "rating": "평점순",
+      "reviews": "리뷰순"
     }
   },
   "Common": {
@@ -186,6 +169,18 @@
       "change": "변경",
       "delete": "삭제",
       "createdAt": "생성일"
+    },
+    "categories": {
+      "RESTAURANT": "레스토랑",
+      "CAFE": "카페",
+      "HOTEL": "호텔",
+      "STREET_FOOD": "길거리 음식",
+      "BAR": "바",
+      "ATTRACTION": "관광지",
+      "ACTIVITY": "액티비티",
+      "SHOPPING": "쇼핑",
+      "NATURE": "자연",
+      "CULTURE": "문화"
     }
   }
 }
