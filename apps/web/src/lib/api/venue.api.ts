@@ -1,8 +1,10 @@
-import type { VenuePaginationDto } from "@triptags/shared"
+import type { IGetVenueAllResponse, VenuePaginationDto } from "@triptags/shared"
 import apiClient from "./api.client"
 
 export const venueApi = {
-  getAllVenue: async (paginationDto: VenuePaginationDto) => {
+  getAllVenue: async (
+    paginationDto: VenuePaginationDto,
+  ): Promise<IGetVenueAllResponse> => {
     const response = await apiClient.get(`venues/all`, {
       params: paginationDto,
     })

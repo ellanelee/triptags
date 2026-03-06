@@ -147,7 +147,9 @@
       "recent": "최신순",
       "rating": "평점순",
       "reviews": "리뷰순"
-    }
+    },
+    "resultsCount": "{count}개의 장소",
+    "reviewsCount": "{count}개의 리뷰"
   },
   "Common": {
     "languages": {
@@ -181,6 +183,9 @@
       "SHOPPING": "쇼핑",
       "NATURE": "자연",
       "CULTURE": "문화"
-    }
+    },
+    "loading": "로딩 중...",
+    "noResults": "검색 결과가 없습니다.",
+    "noResultsHint": "다른 검색어나 필터를 시도해보세요."
   }
 }
