@@ -16,20 +16,20 @@ export interface IVenueDetail {
   work_hour: string
 }
 
-export interface IVenueImage {
+export interface IVenueImage{
   id: string
   url: string
 }
 export interface IGetVenueAll {
   id: string
-  name: Record<string, string>
+  name: Record<string,string>
   venueCategory: VenueCategory
   detailedAddress?: string
   rating?: number
   reviewCount?: number
   region: IVenueRegion
   venueDetail?: IVenueDetail
-  venueImages: IVenueImage[]
+  venueImages: IVenueImage[]  
 }
 
 export interface IVenueSearchFilters {

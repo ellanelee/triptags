@@ -10,5 +10,3 @@ export const venueCategories = [
   "NATURE",
   "CULTURE",
 ] as const
-
-

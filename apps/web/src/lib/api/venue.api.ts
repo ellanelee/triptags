@@ -1,10 +1,10 @@
-import { VenuePaginationDto } from "@triptags/shared"
+import type { VenuePaginationDto } from "@triptags/shared"
 import apiClient from "./api.client"
 
 export const venueApi = {
   getAllVenue: async (paginationDto: VenuePaginationDto) => {
     const response = await apiClient.get(`venues/all`, {
-      params: { paginationDto },
+      params: paginationDto,
     })
     if (!response.data.success) {
       throw new Error(
@@ -14,8 +14,4 @@ export const venueApi = {
     console.log(response.data)
     return response.data.data ?? []
   },
-
-  getVenueImage: async (venueId: string) => {
-    const response = await apiClient.get('venues/a')
-  }
 }

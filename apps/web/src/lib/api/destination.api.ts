@@ -1,4 +1,4 @@
-import { DestinationCreateDto } from "@triptags/shared"
+import type { DestinationCreateDto } from "@triptags/shared"
 import apiClient from "./api.client"
 
 export const destinationApi = {
