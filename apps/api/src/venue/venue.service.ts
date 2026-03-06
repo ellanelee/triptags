@@ -85,7 +85,15 @@ export class VenueService {
         take: items,
         include: {
           venueDetail: true,
-          region: true,
+          region: {
+            include: {
+              parent: {
+                include: {
+                  parent: true,
+                },
+              },
+            },
+          },
           venueImages: {
             where: {
               isThumbnail: true,
@@ -100,6 +108,7 @@ export class VenueService {
         orderBy: { createdAt: 'desc' },
       }),
     ]);
+
     return {
       items: data,
       meta: {
