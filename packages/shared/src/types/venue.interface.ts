@@ -1,9 +1,12 @@
+import { IPaginatedResponse } from "src/common/interface"
 import { VenueCategory } from "src/common/types"
 
 export interface IVenueRegion {
   id: string
   name: string
   level: number
+  parentId?: string | null
+  parent?: IVenueRegion | null
 }
 
 export interface IVenueDetail {
@@ -31,6 +34,8 @@ export interface IGetVenueAll {
   venueDetail?: IVenueDetail
   venueImages: IVenueImage[]  
 }
+
+export type IGetVenueAllResponse = IPaginatedResponse<IGetVenueAll>
 
 export interface IVenueSearchFilters {
   search?: string

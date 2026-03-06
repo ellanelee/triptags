@@ -28,7 +28,6 @@ export * from "./dtos/reviewdetail/reviewdetailcreate.dto"
 export * from "./common/types"
 export * from "./common/response"
 export * from "./common/interface"
-export * from "./common/const"
 
 //Utils
 export * from "./utils/match.decorator"
