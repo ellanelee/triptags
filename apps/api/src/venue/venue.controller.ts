@@ -14,6 +14,7 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { CurrentUser } from '@/common/decorator/current_user.decorator';
 import { User } from '@prisma/client';
 import {
+  createResponse,
   VenueCreateDto,
   VenuePaginationDto,
   VenueUpdateDto,
@@ -33,7 +34,8 @@ export class VenueController {
   @Get('all')
   async getAllVenues(@Query() paginationDto: VenuePaginationDto) {
     console.log(paginationDto);
-    return await this.venueService.findAllAbstract(paginationDto);
+    const response = await this.venueService.findAllAbstract(paginationDto);
+    return createResponse(true, response);
   }
 
   //VenueId로 정보 불러오기
