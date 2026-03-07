@@ -2,10 +2,11 @@
 import { Link } from "@/i18n/routing"
 import { venueApi } from "@/lib/api/venue.api"
 import { useAsync } from "@/lib/hooks/use.async"
-import type { IGetVenueAllResponse, VenueCategory } from "@triptags/shared"
+import type { VenueCategory } from "@triptags/shared"
 import { venueCategories } from "@/components/common/const"
 import { useLocale, useTranslations } from "next-intl"
 import { useEffect, useState } from "react"
+import { IGetVenueAllResponse } from "@/types/interfaces/interface.api"
 
 export default function VenuePage() {
   const tr = useTranslations("VenuesPage")
@@ -144,7 +145,7 @@ export default function VenuePage() {
           </div>
         </div>
         {/* Venue List */}
-        {!venues.data && venues.data?.length === 0 ? (
+        {!venues.data ? (
           <div className="bg-white rounded-lg shadow p-12 text-center">
             <svg
               className="mx-auto h-12 w-12 text-gray-400 mb-4"

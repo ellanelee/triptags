@@ -1,9 +1,7 @@
-import type {
-  IGetVenueAllResponse,
-  IPaginationMeta,
-  VenuePaginationDto,
-} from "@triptags/shared"
+
+import type { VenuePaginationDto } from "@triptags/shared"
 import apiClient from "./api.client"
+import { IGetVenueAllResponse } from "@/types/interfaces/interface.api"
 
 export const venueApi = {
   getAllVenue: async (
