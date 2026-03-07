@@ -11,7 +11,7 @@ export default function VenuePage() {
   const tr = useTranslations("VenuesPage")
   const t = useTranslations("Common")
   const locale = useLocale()
-  const venues = useAsync<IGetVenueAllResponse | null>(null)
+  const venues = useAsync<IGetVenueAllResponse>(null)
   const [filters, setFilters] = useState({
     category: "" as VenueCategory | "",
     city: "",
@@ -21,7 +21,7 @@ export default function VenuePage() {
   })
 
   useEffect(() => {
-    venues.run(() => venueApi.getAllVenue({ page: 1, items: 10 }))
+    venues.run(() => venueApi.getAllVenue({ page: 1, items: 9 }))
   }, [])
 
   const handlePageChange = (newPage: number) => {
@@ -144,7 +144,7 @@ export default function VenuePage() {
           </div>
         </div>
         {/* Venue List */}
-        {venues.length === 0 ? (
+        {!venues.data && venues.data?.length === 0 ? (
           <div className="bg-white rounded-lg shadow p-12 text-center">
             <svg
               className="mx-auto h-12 w-12 text-gray-400 mb-4"
@@ -210,7 +210,7 @@ export default function VenuePage() {
                   <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-1">
                     {typeof venue.name === "string"
                       ? venue.name
-                      : venue.name.locale}
+                      : venue.name[locale]}
                   </h3>
                   <p className="text-sm text-gray-500 mb-3 flex items-center">
                     <svg

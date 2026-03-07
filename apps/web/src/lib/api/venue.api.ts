@@ -1,4 +1,8 @@
-import type { IGetVenueAllResponse, VenuePaginationDto } from "@triptags/shared"
+import type {
+  IGetVenueAllResponse,
+  IPaginationMeta,
+  VenuePaginationDto,
+} from "@triptags/shared"
 import apiClient from "./api.client"
 
 export const venueApi = {
@@ -13,7 +17,7 @@ export const venueApi = {
         response.data.message ?? response.data.error ?? "조회 실패",
       )
     }
-    console.log(response.data)
-    return response.data.data ?? []
+    console.log(response.data.data)
+    return response.data.data as IGetVenueAllResponse
   },
 }
