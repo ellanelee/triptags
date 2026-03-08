@@ -89,8 +89,12 @@
     "createdAt": "회원 가입일",
     "editDestinations": "관심여행지 수정",
     "userPoint": "사용자 포인트",
+    "destination": {
+      "noDestination": "아직 관심 여행지가 없습니다.",
+      "noDestinationsHint":  "여행지를 추가하면 맞춤형 추천을 받을 수 있습니다."
+    },
     "Introduction": {
-      "noIntroduction": "소개글이 없습니다",
+      "noIntroduction": "아직 소개글이 없습니다",
       "introduction": "나의 소개글"
     }
   },
