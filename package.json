@@ -14,6 +14,7 @@
     "db:generate": "pnpm --filter @triptags/database run db:generate",
     "db:migrate": "pnpm --filter @triptags/database run db:migrate",
     "db:studio": "pnpm --filter @triptags/database run db:studio",
+    "db:reset": "pnpm --filter @triptags/database run db:reset",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "pnpm --parallel --stream start"
   },

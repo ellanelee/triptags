@@ -9,7 +9,8 @@
     "build": "tsc",
     "db:generate": "dotenv -e ../../.env -e .env -- prisma generate --schema prisma/schema.prisma",
     "db:migrate": "dotenv -e ../../.env -e .env -- prisma migrate dev --schema prisma/schema.prisma",
-    "db:studio": "dotenv -e ../../.env -e .env -- prisma studio --schema prisma/schema.prisma"
+    "db:studio": "dotenv -e ../../.env -e .env -- prisma studio --schema prisma/schema.prisma",
+    "db:reset": "prisma migrate reset --force"
   },
   "keywords": [],
   "author": "",
