@@ -223,14 +223,14 @@ async function main() {
           });
         }
 
-        //   const checked = await prisma.venue.findUnique({
-        //     where: { tourApiContentId: item.contentid },
-        //   });
+        const checked = await prisma.venue.findFirst({
+          where: { tourApiContentId: item.contentid },
+        });
 
-        //   if (checked) {
-        //     totalSkipped++;
-        //     continue;
-        //   }
+        if (checked) {
+          continue;
+        }
+
         const address = [item.addr1, item.addr2].filter(Boolean).join(' ');
         const regionLevels = getRegionLevels(address);
         if (!regionLevels) {
@@ -258,6 +258,9 @@ async function main() {
                   },
                   phoneNumber: item.tel || null,
                 },
+              },
+              venueImages: {
+                create: [...imageList],
               },
             },
           });
