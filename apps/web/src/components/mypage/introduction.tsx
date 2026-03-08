@@ -53,7 +53,7 @@ export default function Introduction({ savedText }: { savedText: string }) {
               onChange={(e) => setText(e.target.value)}
             />
           ) : (
-            <p>{text || tr("noIntoruction")}</p>
+            <p>{text || tr("Introduction.noIntroduction")}</p>
           )}
         </div>
       </div>

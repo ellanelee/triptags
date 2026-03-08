@@ -252,10 +252,10 @@ export default function VenuePage() {
                       </div>
                       <div className="flex items-center gap-1">
                         <span className="text-sm font-bold text-emerald-900">
-                          {venue.localAvgRating}
+                          {/* {venue.localAvgRating || 0} */}
                         </span>
                         <span className="text-xs text-emerald-600">
-                          ({venue.localReviewCount})
+                          {/* ({venue.localReviewCount || 0}) */}
                         </span>
                       </div>
                     </div>
@@ -265,10 +265,10 @@ export default function VenuePage() {
                       </div>
                       <div className="flex items-center gap-1">
                         <span className="text-sm font-bold text-blue-900">
-                          {venue.travelerAvgRating}
+                          {/* {venue.travelerAvgRating || 0} */}
                         </span>
                         <span className="text-xs text-blue-600">
-                          ({venue.travelerReviewCount})
+                          {/* ({venue.travelerReviewCount || 0}) */}
                         </span>
                       </div>
                     </div>

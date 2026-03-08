@@ -206,10 +206,10 @@ export default function MyPage() {
                 />
               </svg>
               <p className="mt-4 text-gray-600">
-                {tr("noDestination") || "아직 관심 여행지가 없습니다."}
+                {tr("destination.noDestination") || "아직 관심 여행지가 없습니다."}
               </p>
               <p className="text-sm text-gray-500">
-                {tr("noDestinationsHint") ||
+                {tr("destination.noDestinationsHint") ||
                   "여행지를 추가하면 맞춤형 추천을 받을 수 있습니다."}
               </p>
             </div>
