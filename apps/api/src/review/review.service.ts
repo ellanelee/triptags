@@ -75,7 +75,7 @@ export class ReviewService {
     if (!targetVenue)
       throw new NotFoundException('Review를 등록할 장소를 찾을수 없습니다');
     if (!targetUser) throw new NotFoundException('사용자를 찾을수 없습니다');
-    const review = this.prisma.client.review.create({
+    const review = await this.prisma.client.review.create({
       data: {
         rating: createDto.rating,
         contents: createDto.contents,

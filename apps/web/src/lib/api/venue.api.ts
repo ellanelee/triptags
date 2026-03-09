@@ -22,7 +22,7 @@ export const venueApi = {
   },
 
   getVenueById: async (venueId: string): Promise<IGetVenueAll> => {
-    const response = await apiClient.get(`venues/${venueId}/venue`)
+    const response = await apiClient.get(`venues/${venueId}`)
     if (!response.data.success) {
       throw new Error(
         response.data.message ?? response.data.error ?? "조회 실패",
