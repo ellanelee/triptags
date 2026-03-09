@@ -159,6 +159,26 @@
     "reviewsCount": "{count}개의 리뷰",
     "total": "건이 조회되었습니다."
   },
+  "VenueDetailPage": {
+    "notFound": "장소를 찾을 수 없습니다.",
+    "overallRating": "전체 평점",
+    "localRating": "로컬 평점",
+    "travelerRating": "여행자 평점",
+    "about": "소개",
+    "reviews": "리뷰",
+    "writeReview": "리뷰 작성",
+    "allReviews": "전체",
+    "localReviews": "로컬",
+    "travelerReviews": "여행자",
+    "noReviews": "아직 리뷰가 없습니다.",
+    "localTip": "로컬 팁",
+    "information": "정보",
+    "phone": "전화",
+    "address": "주소",
+    "priceRange": "가격대",
+    "website": "웹사이트",
+    "visitWebsite": "웹사이트 방문"
+  },
   "Common": {
     "languages": {
       "ko": "한국어",

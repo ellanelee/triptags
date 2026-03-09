@@ -7,7 +7,6 @@ import { PrismaService } from '@/prisma/prisma.service';
 import { RegionService } from '@/region/region.service';
 import {
   I18nText,
-  IGetVenueAll,
   Language,
   VenueCreateDto,
   VenueUpdateDto,
@@ -227,6 +226,14 @@ export class VenueService {
         googlePlaceId: venueCreateDto.googlePlaceId,
         regionId: newRegionId,
         createdBy: userId,
+        venueImages: venueCreateDto.venueImage?.length
+          ? {
+              create: venueCreateDto.venueImage.map((image, index) => ({
+                imageUrl: image,
+                isThumbnail: index === 0,
+              })),
+            }
+          : undefined,
       },
     });
     const pointInput: IUserPoint = {
