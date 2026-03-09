@@ -1,0 +1,195 @@
+{
+  "HomePage": {
+    "title": "TripTags - Real Travel, Local Voices",
+    "description": "Providing authentic travel information by distinguishing between local and traveler experiences",
+    "exploreVenues": "Explore Places",
+    "getStarted": "Get Started",
+    "localSection": {
+      "title": "Local Recommendations",
+      "description": "Authentic recommendations from residents actually living in the area"
+    },
+    "travelerSection": {
+      "title": "Traveler Experiences",
+      "description": "Real visit reviews from a traveler's perspective"
+    }
+  },
+  "LoginPage": {
+    "title": "Login",
+    "backToHome": "Back to Home",
+    "kakaoLogin": "Continue with Kakao",
+    "googleLogin": "Continue with Google",
+    "naverLogin": "Continue with Naver",
+    "orDivider": "OR",
+    "emailLogin": "Login with Email",
+    "noAccount": "Don't have an account?",
+    "registerLink": "Sign Up"
+  },
+  "Navbar": {
+    "venues": "Find Places",
+    "addVenue": "Add Place",
+    "login": "Login",
+    "register": "Sign Up",
+    "logout": "Logout"
+  },
+  "RegisterPage": {
+    "title": "Sign Up",
+    "backToLogin": "Back to Login",
+    "email": "Email",
+    "nickname": "Nickname",
+    "password": "Password",
+    "passwordConfirm": "Confirm Password",
+    "language": "Select Language",
+    "agreeAll": "I agree to all terms",
+    "agreeTerms": "Terms of Service",
+    "agreePrivacy": "Privacy Policy",
+    "agreeMarketing": "Receive marketing information",
+    "agreeAge": "I am 14 years of age or older",
+    "required": "(Required)",
+    "optional": "(Optional)",
+    "termsRequired": "Please agree to the required terms.",
+    "submit": "Sign Up",
+    "loading": "Signing up...",
+    "error": "Failed to sign up.",
+    "passwordMismatch": "Passwords do not match.",
+    "hasAccount": "Already have an account?",
+    "loginLink": "Login",
+    "agreementsTitle": "Agreements",
+    "requireTerms": true,
+    "requirePrivacy": true,
+    "requireAge": true,
+    "showMarketing": true
+  },
+  "EmailLoginPage": {
+    "title": "Email Login",
+    "backToLogin": "Back to Login",
+    "email": "Email",
+    "emailPlaceholder": "Enter your email",
+    "password": "Password",
+    "passwordPlaceholder": "Enter your password",
+    "submit": "Login",
+    "loading": "Logging in...",
+    "error": "Login failed."
+  },
+  "MyPage": {
+    "title": "My Page",
+    "welcome": "Welcome, {nickname}!",
+    "interestedDestinations": "Interested Destinations",
+    "addDestination": "+ Add Destination",
+    "noDestinations": "No interested destinations yet.",
+    "noDestinationsHint": "Add destinations to receive personalized recommendations.",
+    "loading": "Loading...",
+    "language": "Preferred Language",
+    "languageOption": "Change Language",
+    "role": "User Role",
+    "pointHistory": "Point History",
+    "totalPoint": "Total Points",
+    "pointActivity": "Earn Points",
+    "editAddress": "Register/Change Address",
+    "editImage": "Register/Change Image",
+    "createdAt": "Member Since",
+    "editDestinations": "Edit Destinations",
+    "userPoint": "User Points",
+    "destination": {
+      "noDestination": "No interested destinations yet.",
+      "noDestinationsHint": "Add destinations to receive personalized recommendations."
+    },
+    "Introduction": {
+      "noIntroduction": "No introduction yet",
+      "introduction": "My Introduction"
+    }
+  },
+  "Address": {
+    "setAddressTitle": "Reset Address",
+    "addressHelp": "Your address will be saved once you enter the country, city, district, and detailed address.",
+    "addressPreview": "Address Preview",
+    "addressEmpty": "Address not entered",
+    "countryLabel": "Country Settings",
+    "selectCountry": "Select Country",
+    "country": "Country",
+    "cityLabel": "State/Province/Metropolitan City",
+    "city": "Regional Admin Area (State/Province/City)",
+    "cityPlaceholder": "e.g., Seoul or California",
+    "districtLabel": "City/County/District",
+    "district": "Local Admin Area (City/County/District)",
+    "districtPlaceholder": "e.g., Gangnam-gu",
+    "detailsLabel": "Street Address",
+    "details": "Detailed Address",
+    "detailsPlaceholder": "e.g., 123 Teheran-ro, Apt 101-1001",
+    "addressRequired": "Country, State, District, and Detailed Address are required."
+  },
+  "Destination": {
+    "setTitle": "Set My Destinations",
+    "destinationPreview": "Destination Preview",
+    "destinationHelp": "It will be saved once you enter the country, city, and district.",
+    "addressRequired": "Country, State, and District are required.",
+    "DestinationEmpty": "No address entered yet.",
+    "countryLabel": "Country Settings",
+    "selectCountry": "Select Country",
+    "country": "Country",
+    "cityLabel": "State/Province/Metropolitan City",
+    "city": "Regional Admin Area (State/Province/City)",
+    "cityPlaceholder": "e.g., Seoul or California",
+    "districtLabel": "City/County/District",
+    "district": "Local Admin Area (City/County/District)",
+    "districtPlaceholder": "e.g., Gangnam-gu",
+    "priority": "Priority (Select between 0-9)"
+  },
+  "MyReview": {
+    "reviewTitle": "Review History",
+    "rating": "Rating",
+    "reviewHelpful": "Helpful Votes"
+  },
+  "VenuesPage": {
+    "title": "Find Places",
+    "searchPlaceholder": "Search by place name or description...",
+    "category": "Category",
+    "allCategories": "All",
+    "city": "City",
+    "cityPlaceholder": "Enter city name",
+    "sortBy": "Sort by",
+    "sort": {
+      "recent": "Most Recent",
+      "rating": "Highest Rated",
+      "reviews": "Most Reviews"
+    },
+    "resultsCount": "{count} places",
+    "reviewsCount": "{count} reviews"
+  },
+  "Common": {
+    "languages": {
+      "ko": "Korean",
+      "en": "English",
+      "ja": "Japanese",
+      "zh": "Chinese",
+      "de": "German",
+      "fr": "French",
+      "es": "Spanish"
+    },
+    "transaction": {
+      "back": "Back",
+      "save": "Save",
+      "cancel": "Cancel",
+      "reset": "Reset",
+      "edit": "Edit",
+      "editContents": "Edit Content",
+      "change": "Change",
+      "delete": "Delete",
+      "createdAt": "Created Date"
+    },
+    "categories": {
+      "RESTAURANT": "Restaurant",
+      "CAFE": "Cafe",
+      "HOTEL": "Hotel",
+      "STREET_FOOD": "Street Food",
+      "BAR": "Bar",
+      "ATTRACTION": "Attraction",
+      "ACTIVITY": "Activity",
+      "SHOPPING": "Shopping",
+      "NATURE": "Nature",
+      "CULTURE": "Culture"
+    },
+    "loading": "Loading...",
+    "noResults": "No results found.",
+    "noResultsHint": "Try different keywords or filters."
+  }
+}

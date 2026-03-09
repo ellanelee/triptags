@@ -10,7 +10,7 @@ import { LanguageSelect } from "@/components/common/LanguageSelect"
 
 export default function RegisterPage() {
   const tr = useTranslations("RegisterPage")
-  const t = useTranslations("Common.languages")
+  const t = useTranslations("Common")
   const locale = useLocale()
   const localeConfig = getLocaleConfig(locale)
   const router = useRouter()

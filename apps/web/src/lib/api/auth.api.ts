@@ -1,4 +1,4 @@
-import { RegisterDto, LoginDto, ApiResponse } from "@triptags/shared"
+import type { RegisterDto, LoginDto, ApiResponse } from "@triptags/shared"
 import apiClient from "./api.client"
 
 export const authApi = {

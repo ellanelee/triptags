@@ -13,7 +13,7 @@ import {
   VenueUpdateDtoUser,
 } from '@triptags/shared';
 import { VenuePaginationDto } from '@triptags/shared';
-import { PointType, UserRole } from '@prisma/client';
+import { PointType, Prisma, UserRole } from '@prisma/client';
 import { UserPointService } from '@/userpoint/userpoint.service';
 import { IUserPoint } from '@/common/type/types';
 import { EventEmitter2 } from '@nestjs/event-emitter';
@@ -33,22 +33,82 @@ export class VenueService {
     });
   }
 
-  async findAll(paginationDto: VenuePaginationDto) {
-    const page = Number(paginationDto.page) || 1;
-    const items = Number(paginationDto.items) || 10;
+  async findVenueById(venueId: string) {
+    return await this.prisma.client.venue.findFirst({
+      where: {
+        id: venueId,
+      },
+    });
+  }
+
+  //검색어, 카테고리, 지역정보 검색후 조회 (페이지 반영한 response)
+  async findAllAbstract(paginationDto: VenuePaginationDto) {
+    const {
+      page = 1,
+      items = 10,
+      search,
+      category,
+      city,
+      district,
+    } = paginationDto;
     const skip = (page - 1) * items;
+    const where: Prisma.VenueWhereInput = {
+      deletedAt: null,
+    };
+
+    if (category) where.venueCategory = category;
+
+    if (district) {
+      where.region = {
+        name: { contains: district },
+        level: 3,
+      };
+    } else if (city) {
+      where.region = {
+        name: { contains: city },
+        level: 2,
+      };
+    }
+
+    if (search) {
+      where.name = {
+        path: ['ko'],
+        string_contains: search,
+      };
+    }
+
     const [totalCount, data] = await Promise.all([
       this.prisma.client.venue.count(),
       this.prisma.client.venue.findMany({
+        where,
         skip,
         take: items,
         include: {
           venueDetail: true,
-          region: true,
+          region: {
+            include: {
+              parent: {
+                include: {
+                  parent: true,
+                },
+              },
+            },
+          },
+          venueImages: {
+            where: {
+              isThumbnail: true,
+            },
+            take: 1,
+          },
+          venueStats: true,
+          _count: {
+            select: { review: true },
+          },
         },
         orderBy: { createdAt: 'desc' },
       }),
     ]);
+
     return {
       items: data,
       meta: {
@@ -62,14 +122,7 @@ export class VenueService {
     };
   }
 
-  async findVenueById(venueId: string) {
-    return await this.prisma.client.venue.findFirst({
-      where: {
-        id: venueId,
-      },
-    });
-  }
-
+  //Venue이름 변경
   async updateVenueNameById(venueId: string, venueNames: I18nText) {
     const targetVenue = await this.findVenueById(venueId);
     if (!venueId || !venueNames)
@@ -90,6 +143,8 @@ export class VenueService {
       data: { name: targetName },
     });
   }
+
+  //Venue설명 변경
   async updateVenueDescriptionById(
     venueId: string,
     venueDescription: I18nText,
@@ -111,6 +166,13 @@ export class VenueService {
     await this.prisma.client.venue.update({
       where: { id: venueId, deletedAt: null },
       data: { description: targetDescription },
+    });
+  }
+
+  //venueImage불러오기
+  async findVenueImageById(venueId: string) {
+    return await this.prisma.client.venueImage.findFirst({
+      where: { venueId: venueId },
     });
   }
 

@@ -11,3 +11,13 @@ export interface LanguageSelectProps {
   onChange: (value: string) => void
   tr: (key: string) => string // 언어변역
 }
+
+export interface PageProps {
+  groupSize: number
+  totalCount: number
+  currentPage: number
+  totalPage: number
+  hasNextPage: boolean
+  hasPrevPage: boolean
+  onPageChange: (newPage: number) => void
+}

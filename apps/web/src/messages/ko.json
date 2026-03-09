@@ -24,6 +24,13 @@
     "noAccount": "아직 회원이 아니신가요?",
     "registerLink": "회원가입하기"
   },
+  "Navbar": {
+    "venues": "장소 찾기",
+    "addVenue": "장소 등록",
+    "login": "로그인",
+    "register": "회원가입",
+    "logout": "로그아웃"
+  },
   "RegisterPage": {
     "title": "회원가입",
     "backToLogin": "로그인으로",
@@ -32,15 +39,6 @@
     "password": "비밀번호",
     "passwordConfirm": "비밀번호 확인",
     "language": "언어 선택",
-    "languages": {
-      "ko": "한국어",
-      "en": "English",
-      "ja": "日本語",
-      "zh": "中文",
-      "de": "Deutsch",
-      "fr": "Français",
-      "es": "Español"
-    },
     "agreeAll": "전체 동의합니다",
     "agreeTerms": "이용약관 동의",
     "agreePrivacy": "개인정보 처리방침 동의",
@@ -85,7 +83,20 @@
     "role": "사용자 권한",
     "pointHistory": "포인트 이력조회",
     "totalPoint": "전체 포인트",
-    "pointActivity": "포인트 수령"
+    "pointActivity": "포인트 수령",
+    "editAddress": "주소 등록/변경",
+    "editImage": "이미지 등록/변경",
+    "createdAt": "회원 가입일",
+    "editDestinations": "관심여행지 수정",
+    "userPoint": "사용자 포인트",
+    "destination": {
+      "noDestination": "아직 관심 여행지가 없습니다.",
+      "noDestinationsHint": "여행지를 추가하면 맞춤형 추천을 받을 수 있습니다."
+    },
+    "Introduction": {
+      "noIntroduction": "아직 소개글이 없습니다",
+      "introduction": "나의 소개글"
+    }
   },
   "Address": {
     "setAddressTitle": "주소 재설정",
@@ -128,8 +139,25 @@
     "rating": "평가점수",
     "reviewHelpful": "도움돼요 채택"
   },
-  "Introduction": {
-    "noIntroduction": "소개글이 없습니다"
+  "VenuesPage": {
+    "title": "장소 찾기",
+    "searchPlaceholder": "장소 이름이나 설명으로 검색하세요...",
+    "category": "카테고리",
+    "allCategories": "전체",
+    "city": "특별시/광역시/도",
+    "cityPlaceholder": "행정구역 이름을 입력하세요",
+    "district": "시/군/구",
+    "districtPlaceholder": "시/군/그 이름을 입력하세요",
+    "sortBy": "정렬",
+    "sort": {
+      "recent": "최신순",
+      "rating": "평점순",
+      "reviews": "리뷰순",
+      "distance": "거리순"
+    },
+    "resultsCount": "{count}개의 장소",
+    "reviewsCount": "{count}개의 리뷰",
+    "total": "건이 조회되었습니다."
   },
   "Common": {
     "languages": {
@@ -147,9 +175,25 @@
       "cancel": "취소",
       "reset": "초기화",
       "edit": "편집",
+      "editContents": "내용 수정",
       "change": "변경",
       "delete": "삭제",
       "createdAt": "생성일"
-    }
+    },
+    "categories": {
+      "RESTAURANT": "레스토랑",
+      "CAFE": "카페",
+      "HOTEL": "호텔",
+      "STREET_FOOD": "길거리 음식",
+      "BAR": "바",
+      "ATTRACTION": "관광지",
+      "ACTIVITY": "액티비티",
+      "SHOPPING": "쇼핑",
+      "NATURE": "자연",
+      "CULTURE": "문화"
+    },
+    "loading": "로딩 중...",
+    "noResults": "검색 결과가 없습니다.",
+    "noResultsHint": "다른 검색어나 필터를 시도해보세요."
   }
 }

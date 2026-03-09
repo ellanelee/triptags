@@ -87,7 +87,7 @@ export default function MyPage() {
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* 헤더 */}
+        {/* 개요 */}
         <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
           <h1 className="text-3xl font-bold text-gray-900 mb-6">My</h1>
           <div className="flex items-center">
@@ -118,7 +118,7 @@ export default function MyPage() {
                       />
                     </svg>
                     <span className="text-[10px] text-gray-400 mt-1 block">
-                      이미지 등록/변경
+                      {tr("editImage") || "이미지 등록/변경"}
                     </span>
                   </div>
                 )}
@@ -157,11 +157,11 @@ export default function MyPage() {
                   onClick={() => router.push(`/${locale}/mypage/setaddress`)}
                   className="px-2 py-2 mx-6 bg-gray-100 text-gray-800 rounded-lg hover:bg-primary-700 transition-colors"
                 >
-                  + 주소 등록 / 변경
+                  + {tr("editAddress")}
                 </button>
               </div>
               <p className="mt-2 px-6 text-gray-600">
-                회원 가입일 :{" "}
+                {tr("createdAt") || "회원 가입일"} :{" "}
                 {user?.createdAt
                   ? new Date(user.createdAt).toLocaleDateString()
                   : ""}
@@ -176,14 +176,16 @@ export default function MyPage() {
         {/* 관심 여행지 섹션 */}
         <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold text-gray-900">관심 여행지</h2>
+            <h2 className="text-2xl font-bold text-gray-900">
+              {tr("interestedDestinations") || "관심 여행지"}
+            </h2>
             <BasicButton
               onClick={() => {
                 router.push(`/${locale}/mypage/setdestinations`)
               }}
               type="button"
             >
-              관심여행지 수정
+              {tr("editDestinations") || "관심여행지 수정"}
             </BasicButton>
           </div>
 
@@ -203,9 +205,12 @@ export default function MyPage() {
                   d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                 />
               </svg>
-              <p className="mt-4 text-gray-600">아직 관심 여행지가 없습니다.</p>
+              <p className="mt-4 text-gray-600">
+                {tr("destination.noDestination") || "아직 관심 여행지가 없습니다."}
+              </p>
               <p className="text-sm text-gray-500">
-                여행지를 추가하면 맞춤형 추천을 받을 수 있습니다.
+                {tr("destination.noDestinationsHint") ||
+                  "여행지를 추가하면 맞춤형 추천을 받을 수 있습니다."}
               </p>
             </div>
           ) : (
@@ -230,7 +235,7 @@ export default function MyPage() {
         <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
           <div className="flex justify-between items-center">
             <h2 className="text-2xl font-bold text-gray-900">
-              사용자 포인트 : {userPointSum}
+              {tr("userPoint") || "사용자 포인트"} : {userPointSum}
               <span className="text-xl text-gray-900"> points</span>{" "}
             </h2>
             <button

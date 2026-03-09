@@ -40,7 +40,7 @@ export default function MyReview() {
                 </div>
                 <div className="mx-4">
                   {tr("reviewHelpful")} :{" "}
-                  {el.reviewHelpful ? el.reviewHelpful : 0} 건
+                  {el.reviewHelpful ? el.reviewHelpful : 0},
                 </div>
                 <div className="mx-4">
                   {t("transaction.createdAt")} :{" "}

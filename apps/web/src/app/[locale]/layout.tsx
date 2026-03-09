@@ -5,6 +5,7 @@ import { notFound } from "next/navigation"
 import { getMessages } from "next-intl/server"
 import { headers } from "next/headers"
 import { NextIntlClientProvider } from "next-intl"
+import { Header } from "@/components/common/layout/Header"
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }))
@@ -32,6 +33,7 @@ export default async function RootLayout({
     <html lang={locale}>
       <body>
         <NextIntlClientProvider messages={messages}>
+          {!isAuthPage && <Header />}
           {children}
         </NextIntlClientProvider>
       </body>

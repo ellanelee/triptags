@@ -1,6 +1,5 @@
 import { RegionType } from "@/types/types"
 import apiClient from "./api.client"
-import { count } from "console"
 
 export const regionApi = {
   create: async (data: RegionType) => {

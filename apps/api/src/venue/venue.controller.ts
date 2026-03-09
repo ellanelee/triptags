@@ -14,6 +14,7 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { CurrentUser } from '@/common/decorator/current_user.decorator';
 import { User } from '@prisma/client';
 import {
+  createResponse,
   VenueCreateDto,
   VenuePaginationDto,
   VenueUpdateDto,
@@ -29,17 +30,27 @@ import { RolesGuard } from '@/auth/jwt-auth.guard.ts/roels.guard';
 export class VenueController {
   constructor(private venueService: VenueService) {}
 
+  //모든 Venue정보 가져오기
   @Get('all')
   async getAllVenues(@Query() paginationDto: VenuePaginationDto) {
     console.log(paginationDto);
-    return await this.venueService.findAll(paginationDto);
+    const response = await this.venueService.findAllAbstract(paginationDto);
+    return createResponse(true, response);
   }
 
+  //VenueId로 정보 불러오기
   @Get(':venueId')
   async getVenueById(venueId: string) {
     return await this.venueService.findVenueById(venueId);
   }
 
+  //VenueId로 이미지 불러오기
+  @Get(':venueId')
+  async getVenueImageById(venueId: string) {
+    return await this.venueService.findVenueImageById(venueId);
+  }
+
+  //Venue생성하기
   @Post()
   @UseGuards(JwtAccessGuard)
   async createVenue(
