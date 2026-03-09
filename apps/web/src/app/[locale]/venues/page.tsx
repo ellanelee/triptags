@@ -17,7 +17,6 @@ export default function VenuePage() {
   const locale = useLocale()
   const venues = useAsync<IGetVenueAllResponse>(null)
   const [currentPage, setCurrentPage] = useState<number>(1)
-  const [currentPageGroup, setCurrentPageGroup] = useState<number>(1)
   const [filters, setFilters] = useState({
     category: "" as VenueCategory | "",
     city: "",
@@ -35,12 +34,7 @@ export default function VenuePage() {
   const handlePageChange = (newPage: number) => {
     setCurrentPage(newPage)
   }
-
-  const handlePageGroupChange = (newPageGroup: number) => {
-    const pageGroup = Math.floor(currentPage / pageInfo.groupSize)
-    setCurrentPage(pageGroup)
-  }
-
+  
   const {
     hasNextPage,
     hasPrevPage,
