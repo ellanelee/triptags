@@ -7,12 +7,17 @@ import { venueCategories } from "@/components/common/const"
 import { useLocale, useTranslations } from "next-intl"
 import { useEffect, useState } from "react"
 import { IGetVenueAllResponse } from "@/types/interfaces/interface.api"
+import PageGroups from "@/components/common/pages/PageGroups"
+import { PageProps } from "@/types/interfaces/interface.props"
 
 export default function VenuePage() {
   const tr = useTranslations("VenuesPage")
   const t = useTranslations("Common")
+  const pageInfo = { groupSize: 10, items: 9 }
   const locale = useLocale()
   const venues = useAsync<IGetVenueAllResponse>(null)
+  const [currentPage, setCurrentPage] = useState<number>(1)
+  const [currentPageGroup, setCurrentPageGroup] = useState<number>(1)
   const [filters, setFilters] = useState({
     category: "" as VenueCategory | "",
     city: "",
@@ -22,11 +27,40 @@ export default function VenuePage() {
   })
 
   useEffect(() => {
-    venues.run(() => venueApi.getAllVenue({ page: 1, items: 9 }))
-  }, [])
+    venues.run(() =>
+      venueApi.getAllVenue({ page: currentPage, items: pageInfo.items }),
+    )
+  }, [currentPage])
 
   const handlePageChange = (newPage: number) => {
-    venues.run(() => venueApi.getAllVenue({ page: newPage, items: 10 }))
+    setCurrentPage(newPage)
+  }
+
+  const handlePageGroupChange = (newPageGroup: number) => {
+    const pageGroup = Math.floor(currentPage / pageInfo.groupSize)
+    setCurrentPage(pageGroup)
+  }
+
+  const {
+    hasNextPage,
+    hasPrevPage,
+    page: CurrentPage,
+    totalCount,
+    totalPage,
+  } = venues.data?.meta ?? {
+    hasNextPage: false,
+    hasPrevPage: false,
+    totalCount: 0,
+    totalPage: 0,
+  }
+  const pageProps: PageProps = {
+    groupSize: 10,
+    totalCount,
+    currentPage,
+    totalPage,
+    hasNextPage,
+    hasPrevPage,
+    onPageChange: handlePageChange,
   }
 
   return (
@@ -118,6 +152,22 @@ export default function VenuePage() {
               />
             </div>
 
+            {/* District Filter */}
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                {tr("district")}
+              </label>
+              <input
+                type="text"
+                className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                placeholder={tr("cityPlaceholder")}
+                value={filters.city}
+                onChange={(e) =>
+                  setFilters({ ...filters, city: e.target.value })
+                }
+              />
+            </div>
+
             {/* Sort Filter */}
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
@@ -140,11 +190,15 @@ export default function VenuePage() {
                 <option value="recent">{tr("sort.recent")}</option>
                 <option value="rating">{tr("sort.rating")}</option>
                 <option value="reviews">{tr("sort.reviews")}</option>
+                <option value="reviews">{tr("sort.distance")}</option>
               </select>
             </div>
           </div>
         </div>
         {/* Venue List */}
+        <div className="m-4 text-xl">
+          {totalCount} {tr("total")}
+        </div>
         {!venues.data ? (
           <div className="bg-white rounded-lg shadow p-12 text-center">
             <svg
@@ -276,6 +330,9 @@ export default function VenuePage() {
                 </div>
               </Link>
             ))}
+            <div className="col-span-full mt-8 flex justify-center">
+              <PageGroups {...pageProps} />
+            </div>
           </div>
         )}
       </div>
