@@ -1,7 +1,9 @@
-
 import type { VenuePaginationDto } from "@triptags/shared"
 import apiClient from "./api.client"
-import { IGetVenueAllResponse } from "@/types/interfaces/interface.api"
+import {
+  IGetVenueAll,
+  IGetVenueAllResponse,
+} from "@/types/interfaces/interface.api"
 
 export const venueApi = {
   getAllVenue: async (
@@ -17,5 +19,16 @@ export const venueApi = {
     }
     console.log(response.data.data)
     return response.data.data as IGetVenueAllResponse
+  },
+
+  getVenueById: async (venueId: string): Promise<IGetVenueAll> => {
+    const response = await apiClient.get(`venues/${venueId}/venue`)
+    if (!response.data.success) {
+      throw new Error(
+        response.data.message ?? response.data.error ?? "조회 실패",
+      )
+    }
+    console.log(response.data.data)
+    return response.data.data
   },
 }
