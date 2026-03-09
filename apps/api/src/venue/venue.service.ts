@@ -7,6 +7,7 @@ import { PrismaService } from '@/prisma/prisma.service';
 import { RegionService } from '@/region/region.service';
 import {
   I18nText,
+  IGetVenueAll,
   Language,
   VenueCreateDto,
   VenueUpdateDto,
@@ -18,6 +19,29 @@ import { UserPointService } from '@/userpoint/userpoint.service';
 import { IUserPoint } from '@/common/type/types';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 
+const venueBaseInclude = {
+  venueDetail: true,
+  region: {
+    include: {
+      parent: {
+        include: {
+          parent: true,
+        },
+      },
+    },
+  },
+  venueImages: {
+    where: {
+      isThumbnail: true,
+    },
+    take: 1,
+  },
+  venueStats: true,
+  _count: {
+    select: { review: true },
+  },
+};
+
 @Injectable()
 export class VenueService {
   constructor(
@@ -27,17 +51,18 @@ export class VenueService {
     private readonly event: EventEmitter2,
   ) {}
 
+  //venueId로 기본정보조회
   private findActiveVenueById(venueId: string) {
     return this.prisma.client.venue.findFirst({
       where: { id: venueId, deletedAt: null },
     });
   }
 
+  //venueId로 venue기본정보 및 관련 정보찾기
   async findVenueById(venueId: string) {
     return await this.prisma.client.venue.findFirst({
-      where: {
-        id: venueId,
-      },
+      where: { id: venueId, deletedAt: null },
+      include: venueBaseInclude,
     });
   }
 
@@ -83,28 +108,7 @@ export class VenueService {
         where,
         skip,
         take: items,
-        include: {
-          venueDetail: true,
-          region: {
-            include: {
-              parent: {
-                include: {
-                  parent: true,
-                },
-              },
-            },
-          },
-          venueImages: {
-            where: {
-              isThumbnail: true,
-            },
-            take: 1,
-          },
-          venueStats: true,
-          _count: {
-            select: { review: true },
-          },
-        },
+        include: venueBaseInclude,
         orderBy: { createdAt: 'desc' },
       }),
     ]);

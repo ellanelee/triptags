@@ -39,9 +39,10 @@ export class VenueController {
   }
 
   //VenueId로 정보 불러오기
-  @Get(':venueId')
+  @Get(':venueId/venue')
   async getVenueById(venueId: string) {
-    return await this.venueService.findVenueById(venueId);
+    const result = await this.venueService.findVenueById(venueId);
+    return createResponse(true, result);
   }
 
   //VenueId로 이미지 불러오기
