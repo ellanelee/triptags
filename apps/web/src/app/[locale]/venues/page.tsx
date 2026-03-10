@@ -34,7 +34,7 @@ export default function VenuePage() {
   const handlePageChange = (newPage: number) => {
     setCurrentPage(newPage)
   }
-  
+
   const {
     hasNextPage,
     hasPrevPage,
