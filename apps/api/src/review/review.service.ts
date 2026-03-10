@@ -33,6 +33,14 @@ export class ReviewService {
       orderBy: { createdAt: 'desc' },
     });
   }
+
+  //검색 조건에 의해 review받아오기
+  //  async findReviewByInput(pageDto: VenuePaginationDto){
+  //   return  return await this.prisma.client.review.findMany({
+
+  //   })
+  //  }
+
   //venue별 review 받아오기
   async findReviewByVenueId(venueId: string, pageDto: VenuePaginationDto) {
     const page = Number(pageDto.page) || 1;
@@ -45,6 +53,13 @@ export class ReviewService {
         skip,
         take: items,
         orderBy: { updatedAt: 'desc' },
+        include: {
+          user: {
+            select: {
+              nickname: true,
+            },
+          },
+        },
       }),
     ]);
     return {

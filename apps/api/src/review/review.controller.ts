@@ -34,6 +34,12 @@ export class ReviewController {
     return await this.reviewService.findReviewByVenueId(venueId, paginationDto);
   }
 
+  //검색 조건에 따라 Venue검색
+  // @Get()
+  // async getReviewBySearch(@Query() paginationDto: VenuePaginationDto) {
+  //   return await this.reviewService.findReviewByInput(paginationDto);
+  // }
+
   @UseGuards(JwtAccessGuard)
   @Get()
   async getReviewByUser(@CurrentUser() user: User) {
