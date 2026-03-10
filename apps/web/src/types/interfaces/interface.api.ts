@@ -1,4 +1,9 @@
-import type { IPaginatedResponse, VenueCategory } from "@triptags/shared"
+import type {
+  I18nText,
+  IPaginatedResponse,
+  UserRole,
+  VenueCategory,
+} from "@triptags/shared"
 
 export interface IVenueRegion {
   id: string
@@ -21,7 +26,7 @@ export interface IVenueDetail {
 export interface IVenueStats {
   id: string
   localRatingAvg: number
-  ratingAvg: number 
+  ratingAvg: number
   reviewCount: number
   venueId: string
 }
@@ -44,3 +49,23 @@ export interface IGetVenueAll {
 }
 
 export type IGetVenueAllResponse = IPaginatedResponse<IGetVenueAll>
+
+export interface IGetReviewByVenueAll {
+  id: string
+  rating: number
+  contents: Record<string, string>
+  authorRole: UserRole
+  isLocalVerified: boolean
+  likeCount: number
+  createdAt: Date
+  updatedAt: Date
+  deletedAt: Date | null
+  venueId: string
+  userId: string
+  user: {
+    nickname: string
+  }
+}
+
+export type IGetReviewByVenueAllResponse =
+  IPaginatedResponse<IGetReviewByVenueAll>

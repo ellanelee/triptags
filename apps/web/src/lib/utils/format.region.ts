@@ -1,5 +1,4 @@
 import { RegionInfo } from "@/types/types"
-import { CountryUtils } from "@triptags/shared"
 import { localeCountryName } from "./country"
 
 export function destinationName(
