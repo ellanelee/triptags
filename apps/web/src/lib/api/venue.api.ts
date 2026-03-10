@@ -31,4 +31,15 @@ export const venueApi = {
     console.log(response.data.data)
     return response.data.data
   },
+
+  getVenueDetail: async (venueId: string) => {
+    const response = await apiClient.get(`venueDetail/${venueId}`)
+    if (!response.data.success) {
+      throw new Error(
+        response.data.message ?? response.data.error ?? "조회 실패",
+      )
+    }
+    console.log(response.data.data)
+    return response.data.data
+  },
 }
