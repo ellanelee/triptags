@@ -37,6 +37,7 @@ export * from "./types/user.interface"
 export * from "./types/userpoint.interface"
 export * from "./types/review.interface"
 export * from "./types/venue.interface"
+export * from "./types/venueDetail.interface"
 
 //Model
 export type {
