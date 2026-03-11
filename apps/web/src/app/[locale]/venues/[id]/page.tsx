@@ -9,8 +9,8 @@ import {
   IGetReviewByVenueAllResponse,
   IGetVenueAll,
 } from "@/types/interfaces/interface.api"
-import type { IVenueDetailResponse } from "@triptags/shared"
 import { reviewApi } from "@/lib/api/review.api"
+import { Language } from "@triptags/shared"
 
 export default function VenueDetailPage({
   params,
@@ -19,9 +19,9 @@ export default function VenueDetailPage({
 }) {
   const venueId = params.id
   const router = useRouter()
-  const locale = useLocale()
   const tr = useTranslations("VenueDetailPage")
   const t = useTranslations("Common")
+  const locale = useLocale() as Language
   const { isAuthenticated } = useAuthStore()
   const venue = useAsync<IGetVenueAll>(null)
   const reviews = useAsync<IGetReviewByVenueAllResponse>(null)
@@ -49,7 +49,7 @@ export default function VenueDetailPage({
       <div className="bg-white shadow">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <h1 className="text-4xl font-bold text-gray-900 mb-2">
-            {venue.data?.name ? venue.data?.name?.[locale] : ""}
+            {venue.data?.name ? venue.data?.name[locale] : ""}
           </h1>
           <p className="text-lg text-gray-600">
             {venue.data?.region?.parent?.name}
@@ -64,15 +64,16 @@ export default function VenueDetailPage({
           <p className="text-sm text-gray-600 mb-1">{tr("overallRating")}</p>
           <div className="flex items-baseline gap-2">
             <span className="text-3xl font-bold text-gray-900">
-              {venue.data?.rating?.toFixed(1)}
+              {venue.data?.venueStats?.ratingAvg?.toFixed(1) || 0}
             </span>
             <span className="text-yellow-500 text-2xl">★</span>
             <span className="text-sm text-gray-500">
-              ({venue.data?.venueStats?.reviewCount} reviews)
+              ({venue.data?.venueStats?.reviewCount || 0} reviews)
             </span>
           </div>
         </div>
       </div>
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content */}
@@ -141,7 +142,7 @@ export default function VenueDetailPage({
               <div className="space-y-6">
                 {reviews.data?.items.length === 0 ? (
                   <p className="text-center text-gray-600 py-8">
-                    {t("noReviews")}
+                    {tr("noReviews")}
                   </p>
                 ) : (
                   reviews.data?.items.map((review) => (
@@ -180,6 +181,74 @@ export default function VenueDetailPage({
                   ))
                 )}
               </div>
+            </div>
+          </div>
+          {/* Sidebar */}
+          <div className="lg:col-span-1">
+            <div className="bg-white rounded-lg shadow p-6 sticky top-4">
+              <h3 className="text-lg font-bold mb-4">{tr("information")}</h3>
+              <div className="space-y-3">
+                {venue.data?.venueDetail?.phoneNumber && (
+                  <div>
+                    <p className="text-sm text-gray-600">{tr("phone")}</p>
+                    <p className="font-medium">
+                      {venue.data?.venueDetail?.phoneNumber}
+                    </p>
+                  </div>
+                )}
+                <div>
+                  <p className="text-sm text-gray-600">{tr("address")}</p>
+                  <span className="font-medium">
+                    {venue.data?.region?.parent?.name}
+                  </span>
+                  <span className="font-medium">
+                    {venue.data?.region && `, ${venue.data.region.name}`}
+                  </span>
+                  <span className="font-medium">
+                    {venue.data?.detailedAddress}
+                  </span>
+                </div>
+                {venue.data?.venueDetail?.priceRange && (
+                  <div>
+                    <p className="text-sm text-gray-600">{tr("priceRange")}</p>
+                    <p className="font-medium text-lg">
+                      {venue.data.venueDetail.priceRange}
+                    </p>
+                  </div>
+                )}
+                {venue.data?.venueDetail?.websiteUrl && (
+                  <div>
+                    <p className="text-sm text-gray-600">{t("website")}</p>
+                    <a
+                      href={venue.data?.venueDetail?.websiteUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary-600 hover:underline"
+                    >
+                      {tr("visitWebsite")}
+                    </a>
+                  </div>
+                )}
+              </div>
+            </div>
+            {/* External Map Links */}
+            <div className="mt-4 pt-4 border-t border-gray-200 space-y-2">
+              <a
+                href={`https://map.kakao.com/link/map/${encodeURIComponent(venue.data?.name?.[locale])},${venue.data?.latitude},${venue.data?.longitude}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block w-full px-4 py-2 bg-yellow-400 text-black text-center rounded-md hover:bg-yellow-500 transition-colors"
+              >
+                카카오맵에서 보기
+              </a>
+              <a
+                href={`https://www.google.com/maps/search/?api=1&query=${venue.data?.latitude},${venue.data?.longitude}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block w-full px-4 py-2 bg-blue-500 text-white text-center rounded-md hover:bg-blue-600 transition-colors"
+              >
+                구글맵에서 보기
+              </a>
             </div>
           </div>
         </div>

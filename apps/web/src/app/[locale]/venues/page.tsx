@@ -2,7 +2,7 @@
 import { Link } from "@/i18n/routing"
 import { venueApi } from "@/lib/api/venue.api"
 import { useAsync } from "@/lib/hooks/use.async"
-import type { VenueCategory } from "@triptags/shared"
+import type { Language, VenueCategory } from "@triptags/shared"
 import { venueCategories } from "@/components/common/const"
 import { useLocale, useTranslations } from "next-intl"
 import { useEffect, useState } from "react"
@@ -14,7 +14,7 @@ export default function VenuePage() {
   const tr = useTranslations("VenuesPage")
   const t = useTranslations("Common")
   const pageInfo = { groupSize: 10, items: 9 }
-  const locale = useLocale()
+  const locale = useLocale() as Language
   const venues = useAsync<IGetVenueAllResponse>(null)
   const [currentPage, setCurrentPage] = useState<number>(1)
   const [filters, setFilters] = useState({
@@ -225,9 +225,7 @@ export default function VenuePage() {
                     <img
                       src={venue.venueImages[0].imageUrl}
                       alt={
-                        typeof venue.name === "string"
-                          ? venue.name[locale]
-                          : venue.name.ko
+                           venue?.name?.[locale]
                       }
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                     />
@@ -259,7 +257,7 @@ export default function VenuePage() {
                   <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-1">
                     {typeof venue.name === "string"
                       ? venue.name
-                      : venue.name[locale]}
+                      : venue.name?.[locale]}
                   </h3>
                   <p className="text-sm text-gray-500 mb-3 flex items-center">
                     <svg

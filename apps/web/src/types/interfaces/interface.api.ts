@@ -1,4 +1,5 @@
 import type {
+  I18nText,
   IPaginatedResponse,
   IVenueDetailResponse,
   UserRole,
@@ -27,8 +28,10 @@ export interface IVenueImage {
 }
 export interface IGetVenueAll {
   id: string
-  name: Record<string, string>
+  name: I18nText | null
   venueCategory: VenueCategory
+  longitude: number
+  latitude: number
   detailedAddress?: string
   rating?: number
   reviewCount?: number
