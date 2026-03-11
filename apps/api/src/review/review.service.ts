@@ -3,8 +3,8 @@ import { PrismaService } from '@/prisma/prisma.service';
 import {
   Language,
   ReviewCreateDto,
+  ReviewPaginationDto,
   ReviewUpdateDto,
-  VenuePaginationDto,
 } from '@triptags/shared';
 import { IUserPoint } from '@/common/type/types';
 import { PointType } from '@prisma/client';
@@ -42,7 +42,7 @@ export class ReviewService {
   //  }
 
   //venue별 review 받아오기
-  async findReviewByVenueId(venueId: string, pageDto: VenuePaginationDto) {
+  async findReviewByVenueId(venueId: string, pageDto: ReviewPaginationDto) {
     const page = Number(pageDto.page) || 1;
     const items = Number(pageDto.items) || 10;
     const skip = (page - 1) * items;
