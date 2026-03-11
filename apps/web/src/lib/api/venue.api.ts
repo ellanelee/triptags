@@ -1,4 +1,4 @@
-import type { VenuePaginationDto } from "@triptags/shared"
+import type { IVenueDetailResponse, VenuePaginationDto } from "@triptags/shared"
 import apiClient from "./api.client"
 import {
   IGetVenueAll,
@@ -32,7 +32,9 @@ export const venueApi = {
     return response.data.data
   },
 
-  getVenueDetail: async (venueId: string) => {
+  getVenueDetail: async (
+    venueId: string,
+  ): Promise<IVenueDetailResponse> => {
     const response = await apiClient.get(`venueDetail/${venueId}`)
     if (!response.data.success) {
       throw new Error(
@@ -40,6 +42,6 @@ export const venueApi = {
       )
     }
     console.log(response.data.data)
-    return response.data.data
+    return response.data.data ?? null
   },
 }

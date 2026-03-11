@@ -1,3 +1,4 @@
+import { ReviewPaginationDto } from "@triptags/shared"
 import apiClient from "./api.client"
 
 export const reviewApi = {
@@ -16,8 +17,10 @@ export const reviewApi = {
     return response.data.data ?? ""
   },
 
-  getReviewByVenueId: async (venueId: string) => {
-    const response = await apiClient.get(`reveiws/${venueId}`)
+  getReviewByVenueId: async (venueId: string, pageDto: ReviewPaginationDto) => {
+    const response = await apiClient.get(`reviews/${venueId}`, {
+      params: pageDto,
+    })
     if (!response.data.success) {
       throw new Error(
         response.data.message ?? response.data.error ?? "조회 실패",

@@ -1,6 +1,6 @@
 import type {
-  I18nText,
   IPaginatedResponse,
+  IVenueDetailResponse,
   UserRole,
   VenueCategory,
 } from "@triptags/shared"
@@ -11,16 +11,6 @@ export interface IVenueRegion {
   level: number
   parentId?: string | null
   parent?: IVenueRegion | null
-}
-
-export interface IVenueDetail {
-  id: string
-  description: any
-  address: string
-  phoneNumber: string
-  priceRange: string
-  websiteUrl: string
-  work_hour: string
 }
 
 export interface IVenueStats {
@@ -43,7 +33,7 @@ export interface IGetVenueAll {
   rating?: number
   reviewCount?: number
   region: IVenueRegion
-  venueDetail?: IVenueDetail
+  venueDetail?: IVenueDetailResponse
   venueImages: IVenueImage[]
   venueStats: IVenueStats
 }
