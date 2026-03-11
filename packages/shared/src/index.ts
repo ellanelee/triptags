@@ -23,6 +23,7 @@ export * from "./dtos/destination/destinationcreate.dto"
 export * from "./dtos/region/regioncreate.dto"
 export * from "./dtos/region/regionsearch.dto"
 export * from "./dtos/reviewdetail/reviewdetailcreate.dto"
+export * from "./dtos/review/reviewpagination.dto"
 
 //Common
 export * from "./common/types"
