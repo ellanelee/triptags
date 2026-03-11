@@ -24,23 +24,24 @@ export default function VenueDetailPage({
   const t = useTranslations("Common")
   const { isAuthenticated } = useAuthStore()
   const venue = useAsync<IGetVenueAll>(null)
-  const venueDetail = useAsync<IVenueDetailResponse>(null)
   const reviews = useAsync<IGetReviewByVenueAllResponse>(null)
   const [reviewFilter, setReviewFilter] = useState<"all" | "LOCAL" | "USER">(
     "all",
   )
+  const reviewPageInfo = { groupSize: 10, items: 9 }
 
   useEffect(() => {
     venue.run(() => venueApi.getVenueById(venueId))
   }, [])
 
   useEffect(() => {
-    venue.run(() => venueApi.getVenueDetail(venueId))
-  }, [])
-
-  useEffect(() => {
-    venue.run(() => reviewApi.getReviewByVenueId(venueId))
-  }, [])
+    reviews.run(() =>
+      reviewApi.getReviewByVenueId(venueId, {
+        page: 1,
+        items: reviewPageInfo.items,
+      }),
+    )
+  }, [venueId, reviewPageInfo.items])
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -48,9 +49,7 @@ export default function VenueDetailPage({
       <div className="bg-white shadow">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <h1 className="text-4xl font-bold text-gray-900 mb-2">
-            {typeof venue.data?.name === "string"
-              ? venue.data.name[locale]
-              : ""}
+            {venue.data?.name ? venue.data?.name?.[locale] : ""}
           </h1>
           <p className="text-lg text-gray-600">
             {venue.data?.region?.parent?.name}
@@ -79,13 +78,13 @@ export default function VenueDetailPage({
           {/* Main Content */}
           <div className="lg:col-span-2">
             {/* Description */}
-            {venueDetail.data?.description && (
+            {venue.data?.venueDetail?.description && (
               <div className="bg-white rounded-lg shadow p-6 mb-6">
-                <h2 className="text-2xl font-bold mb-4">{t("about")}</h2>
+                <h2 className="text-2xl font-bold mb-4">{tr("about")}</h2>
                 <p className="text-gray-700">
-                  {typeof venueDetail.data.description === "string"
-                    ? venueDetail.data.description
-                    : venueDetail.data.description[locale]}
+                  {venue.data?.venueDetail?.description
+                    ? venue.data?.venueDetail?.description[locale]
+                    : ""}
                 </p>
               </div>
             )}
