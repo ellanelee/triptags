@@ -171,13 +171,34 @@
     "localReviews": "로컬",
     "travelerReviews": "여행자",
     "noReviews": "아직 리뷰가 없습니다.",
-    "localTip": "로컬 팁",
     "information": "정보",
     "phone": "전화",
     "address": "주소",
     "priceRange": "가격대",
     "website": "웹사이트",
     "visitWebsite": "웹사이트 방문"
+  },
+  "WriteReviewPage": {
+    "title": "리뷰 작성",
+    "rating": "전체 평점",
+    "content": "리뷰 내용",
+    "contentPlaceholder": "이 장소에 대한 경험을 공유해주세요...",
+    "tips": "로컬 팁",
+    "tipsPlaceholder": "현지인만 아는 특별한 팁이 있다면 공유해주세요...",
+    "optional": "선택사항",
+    "detailedRatings": "세부 평가",
+    "taste": "맛",
+    "service": "서비스",
+    "atmosphere": "분위기",
+    "price": "가격",
+    "visitPurpose": "방문 목적",
+    "purposes": {
+      "solo": "혼자",
+      "couple": "커플",
+      "family": "가족",
+      "friends": "친구",
+      "business": "비즈니스"
+    }
   },
   "Common": {
     "languages": {
@@ -198,7 +219,10 @@
       "editContents": "내용 수정",
       "change": "변경",
       "delete": "삭제",
-      "createdAt": "생성일"
+      "createdAt": "생성일",
+      "submit": "작성 완료",
+      "submitting": "작성 중...",
+      "error": "리뷰 작성에 실패했습니다."
     },
     "categories": {
       "RESTAURANT": "레스토랑",
