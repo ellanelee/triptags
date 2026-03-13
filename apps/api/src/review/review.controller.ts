@@ -12,6 +12,7 @@ import { ReviewService } from './review.service';
 import {
   createResponse,
   ReviewCreateDto,
+  ReviewCreateWithDetailDto,
   ReviewPaginationDto,
   ReviewUpdateDto,
 } from '@triptags/shared';
@@ -57,7 +58,7 @@ export class ReviewController {
   async createReview(
     @CurrentUser() user: User,
     @Param('venueId') venueId: string,
-    @Body() reviewCreateDto: ReviewCreateDto,
+    @Body() reviewCreateDto: ReviewCreateWithDetailDto,
   ) {
     const targetVenue = await this.reviewService.createReview(
       venueId,

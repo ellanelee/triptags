@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '@/prisma/prisma.service';
 import {
   Language,
-  ReviewCreateDto,
+  ReviewCreateWithDetailDto,
   ReviewPaginationDto,
   ReviewUpdateDto,
 } from '@triptags/shared';
@@ -78,7 +78,7 @@ export class ReviewService {
   async createReview(
     venueId: string,
     userId: string,
-    createDto: ReviewCreateDto,
+    createDto: ReviewCreateWithDetailDto,
   ) {
     const targetVenue = await this.prisma.client.venue.findFirst({
       where: { id: venueId, deletedAt: null },
@@ -94,8 +94,18 @@ export class ReviewService {
       data: {
         rating: createDto.rating,
         contents: createDto.contents,
+        authorRole: createDto.authorRole,
         venueId: venueId,
         userId: userId,
+        reviewDetail: {
+          create: {
+            tasteRating: createDto.reviewDetail.tasteRating,
+            serviceRating: createDto.reviewDetail.serviceRating,
+            priceRating: createDto.reviewDetail.priceRating,
+            visitPurpose: createDto.reviewDetail.visitPurpose,
+            visitDate: createDto.reviewDetail.visitDate ?? null,
+          },
+        },
       },
     });
 
