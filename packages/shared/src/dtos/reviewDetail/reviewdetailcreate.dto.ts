@@ -1,17 +1,21 @@
 import { ApiProperty } from "@nestjs/swagger"
 import {
-  IsDateString,
+  IsDate,
   IsInt,
   IsNotEmpty,
+  IsObject,
+  IsOptional,
   IsString,
   Max,
   Min,
 } from "class-validator"
+import { VisitPurpose } from "../../common/types"
+import { Type } from "class-transformer"
 
 export class ReviewDetailCreateDto {
   @ApiProperty({
     example: 5,
-    description: "맛 선호도 점수평가 (1~5)",
+    description: "장소에 대한 선호도 점수평가 (1~5)",
   })
   @Max(5)
   @Min(1)
@@ -21,36 +25,38 @@ export class ReviewDetailCreateDto {
 
   @ApiProperty({
     example: 5,
-    description: "서비스 선호도 점수평가 (1~5)",
+    description: "장소에 대한 선호도 점수평가 (1~5)",
   })
   @Max(5)
   @Min(1)
   @IsNotEmpty()
   @IsInt()
-  ServiceRating!: number
+  serviceRating!: number
 
   @ApiProperty({
     example: 5,
-    description: "가격 선호도 점수평가 (1~5)",
+    description: "장소에 대한 선호도 점수평가 (1~5)",
   })
   @Max(5)
   @Min(1)
   @IsNotEmpty()
   @IsInt()
-  PriceRating!: number
+  priceRating!: number
 
   @ApiProperty({
-    example: "2026-02-09",
-    description: "방문 일자 형식을 yyyy-mm-dd로 입력해주세요",
-  })
-  @IsDateString({}, { message: "날짜 형식이 바르지 않습니다. YYYY-MM-DD" })
-  visitDate?: Date
-
-  @ApiProperty({
-    example: "독서",
-    description: "방문 목적",
+    example: "가족여행",
+    description: "방문하게 된 동기",
   })
   @IsNotEmpty()
   @IsString()
-  visitPurpose!: string
+  visitPurpose!: VisitPurpose
+
+  @ApiProperty({
+    example: "2026-3-1",
+    description: "Venue방문일자",
+  })
+  @IsOptional()
+  @Type(() => Date)
+  @IsDate()
+  visitDate?: Date
 }
