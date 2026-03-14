@@ -5,8 +5,7 @@ import { venueApi } from "@/lib/api/venue.api"
 import { useAsync } from "@/lib/hooks/use.async"
 import { useAuthStore } from "@/store/auth-store"
 import { IGetVenueAll } from "@/types/interfaces/interface.api"
-import { ReviewForm } from "@/types/interfaces/interface.form"
-import { I18nText, Language } from "@triptags/shared"
+import { I18nText, Language, ReviewForm, VisitPurpose } from "@triptags/shared"
 import { useLocale, useTranslations } from "next-intl"
 import { useEffect, useState } from "react"
 
@@ -26,8 +25,17 @@ export default function WriteReviewPage({
   const { isAuthenticated, user } = useAuthStore()
   const [formData, setFormData] = useState<ReviewForm>({
     rating: 5,
-    content: {} as I18nText,
+    content: { [locale]: "" },
+    userRole: null,
+    reviewDetail: {
+      tasteRating: 5,
+      serviceRating: 5,
+      priceRating: 5,
+      visitDate: "",
+      visitPurpose: "",
+    },
   })
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -38,11 +46,12 @@ export default function WriteReviewPage({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    setLoading(true)
     const userRole = user?.role
 
     try {
     } catch (error) {
-      console.error("review제출에러", error)
+      console.error("review 제출에러", error)
     }
 
     router.push(`/venues/${venueId}`)
@@ -106,6 +115,137 @@ export default function WriteReviewPage({
                   })
                 }
               />
+            </div>
+            {/* Review Detail */}
+            <div>
+              <h3 className="text-lg font-medium mb-4">
+                {tr("detailedRatings")}
+              </h3>
+              <div className="grid grid-cols-2 gap-4">
+                {/* Taste 평가*/}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    {tr("taste")}
+                  </label>
+                  <select
+                    className="w-full border border-gray-300 rounded-md px-3 py-2"
+                    value={formData.reviewDetail.tasteRating}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        reviewDetail: {
+                          ...prev.reviewDetail,
+                          tasteRating: Number(e.target.value),
+                        },
+                      }))
+                    }
+                  >
+                    <option value={0}>-</option>
+                    {[1, 2, 3, 4, 5].map((n) => (
+                      <option key={n} value={n}>
+                        {n} ★
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              {/* Service 평가*/}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  {tr("service")}
+                </label>
+                <select
+                  className="w-full border border-gray-300 rounded-md px-3 py-2"
+                  value={formData.reviewDetail.serviceRating}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      reviewDetail: {
+                        ...prev.reviewDetail,
+                        serviceRating: Number(e.target.value),
+                      },
+                    }))
+                  }
+                >
+                  <option value={0}>-</option>
+                  {[1, 2, 3, 4, 5].map((n) => (
+                    <option key={n} value={n}>
+                      {n} ★
+                    </option>
+                  ))}
+                </select>
+              </div>
+              {/* Price 평가 */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  {tr("price")}
+                </label>
+                <select
+                  className="w-full border border-gray-300 rounded-md px-3 py-2"
+                  value={formData.reviewDetail.priceRating}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      reviewDetail: {
+                        ...prev.reviewDetail,
+                        priceRating: Number(e.target.value),
+                      },
+                    }))
+                  }
+                >
+                  <option value={0}>-</option>
+                  {[1, 2, 3, 4, 5].map((n) => (
+                    <option key={n} value={n}>
+                      {n} ★
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+            {/* Visit Purpose */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                {tr("visitPurpose")}
+              </label>
+              <select
+                className="w-full border border-gray-300 rounded-md px-3 py-2"
+                value={formData.reviewDetail.visitPurpose}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    reviewDetail: {
+                      ...prev.reviewDetail,
+                      visitPurpose: e.target.value as VisitPurpose,
+                    },
+                  }))
+                }
+              >
+                <option value="">-</option>
+                <option value="solo">{tr("purposes.solo")}</option>
+                <option value="couple">{tr("purposes.couple")}</option>
+                <option value="family">{tr("purposes.family")}</option>
+                <option value="friends">{tr("purposes.friends")}</option>
+                <option value="business">{tr("purposes.business")}</option>
+              </select>
+            </div>
+            {/* Submit Buttons */}
+            <div className="flex gap-4 pt-4">
+              <button
+                type="button"
+                onClick={() => router.back()}
+                className="flex-1 px-6 py-3 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition-colors"
+              >
+                {t("transaction.cancel")}
+              </button>
+              <button
+                type="submit"
+                disabled={loading}
+                className="flex-1 px-6 py-3 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {loading
+                  ? t("transaction.submitting")
+                  : t("transaction.submit")}
+              </button>
             </div>
           </form>
         </div>
