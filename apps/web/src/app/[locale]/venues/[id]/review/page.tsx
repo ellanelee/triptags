@@ -1,11 +1,14 @@
 "use client"
 
+import { localeMap } from "@/lib/utils/dateLocales"
+import DatePicker from "react-datepicker"
 import { useRouter } from "@/i18n/routing"
+import { reviewApi } from "@/lib/api/review.api"
 import { venueApi } from "@/lib/api/venue.api"
 import { useAsync } from "@/lib/hooks/use.async"
 import { useAuthStore } from "@/store/auth-store"
 import { IGetVenueAll } from "@/types/interfaces/interface.api"
-import { I18nText, Language, ReviewForm, VisitPurpose } from "@triptags/shared"
+import { Language, ReviewForm, VisitPurpose } from "@triptags/shared"
 import { useLocale, useTranslations } from "next-intl"
 import { useEffect, useState } from "react"
 
@@ -25,13 +28,13 @@ export default function WriteReviewPage({
   const { isAuthenticated, user } = useAuthStore()
   const [formData, setFormData] = useState<ReviewForm>({
     rating: 5,
-    content: { [locale]: "" },
-    userRole: null,
+    contents: { [locale]: "" },
+    authorRole: null,
     reviewDetail: {
       tasteRating: 5,
       serviceRating: 5,
       priceRating: 5,
-      visitDate: "",
+      visitDate: null,
       visitPurpose: "",
     },
   })
@@ -46,15 +49,29 @@ export default function WriteReviewPage({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setLoading(true)
     const userRole = user?.role
-
+    const submitData = {
+      ...formData,
+      reviewDetail: {
+        ...formData.reviewDetail,
+        visitDate: formData.reviewDetail.visitDate ?? undefined,
+        serRole: userRole,
+      },
+    }
+    if (!venue.data?.id) {
+      alert("장소 정보가 로드되지 않았습니다.")
+      return
+    }
+    setLoading(true)
     try {
+      const response = await reviewApi.createReview(venue.data?.id, submitData)
+      console.log(response)
+      router.push(`/${locale}/venues/${params.id}`)
     } catch (error) {
       console.error("review 제출에러", error)
+    } finally {
+      setLoading(false)
     }
-
-    router.push(`/venues/${venueId}`)
   }
 
   return (
@@ -107,11 +124,14 @@ export default function WriteReviewPage({
                 rows={6}
                 className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-primary-500 focus:border-primary-500"
                 placeholder={tr("contentPlaceholder")}
-                value={formData.content[locale] || ""}
+                value={formData.contents[locale] || ""}
                 onChange={(e) =>
                   setFormData({
                     ...formData,
-                    content: { ...formData.content, [locale]: e.target.value },
+                    contents: {
+                      ...formData.contents,
+                      [locale]: e.target.value,
+                    },
                   })
                 }
               />
@@ -202,6 +222,30 @@ export default function WriteReviewPage({
                 </select>
               </div>
             </div>
+            {/* Visit Date, locale로 표현, defaut enUs*/}
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              {tr("visitDate")}
+            </label>
+            <DatePicker
+              className="w-full border border-gray-300 rounded-md px-3 py-2"
+              locale={localeMap[locale] || localeMap.en}
+              selected={
+                formData.reviewDetail.visitDate
+                  ? new Date(formData.reviewDetail.visitDate)
+                  : null
+              }
+              onChange={(date: Date | null) => {
+                setFormData((prev) => ({
+                  ...prev,
+                  reviewDetail: {
+                    ...prev.reviewDetail,
+                    visitDate: date,
+                  },
+                }))
+              }}
+              dateFormat="yyyy-MM-dd"
+              placeholderText= {tr("datePlaceHolder")}
+            />
             {/* Visit Purpose */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
