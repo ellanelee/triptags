@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import "@/app/globals.css"
+import "react-datepicker/dist/react-datepicker.css"
 import { routing } from "@/i18n/routing"
 import { notFound } from "next/navigation"
 import { getMessages } from "next-intl/server"

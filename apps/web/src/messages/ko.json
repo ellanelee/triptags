@@ -190,6 +190,8 @@
     "taste": "맛",
     "service": "서비스",
     "price": "가격",
+    "visitDate": "방문 일자",
+    "datePlaceHolder": "방문 일자를 선택해주세요",
     "visitPurpose": "방문 목적",
     "purposes": {
       "solo": "혼자",

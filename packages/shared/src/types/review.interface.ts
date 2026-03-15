@@ -10,8 +10,8 @@ export interface IUserReview {
 
 export interface ReviewForm {
   rating: number
-  content: I18nText
-  userRole: UserRole | null
+  contents: I18nText
+  authorRole: UserRole | null
   reviewDetail: ReviewDetailForm
 }
 
@@ -19,6 +19,6 @@ export interface ReviewDetailForm {
   tasteRating: number
   serviceRating: number
   priceRating: number
-  visitDate: string
+  visitDate: Date | null
   visitPurpose: VisitPurpose
 }
