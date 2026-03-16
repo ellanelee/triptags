@@ -277,6 +277,18 @@ export default function WriteReviewPage({
               </select>
             </div>
             {/* Location Verification */}
+            <div className="border border-gray-200 rounded-lg p-4 bg-gray-50">
+              <div className="flex justify-between items-center">
+                <div>
+                  <h3 className="text-sm font-medium text-gray-700">
+                    위치 인증
+                  </h3>
+                  <p className="text-xs text-gray-500 mt-1">
+                    현재 위치를 인증하면 로컬 리뷰로 등록됩니다
+                  </p>
+                </div>
+            </div>
+
             {/* Submit Buttons */}
             <div className="flex gap-4 pt-4">
               <button
