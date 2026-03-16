@@ -11,7 +11,7 @@ export interface IUserReview {
 export interface ReviewForm {
   rating: number
   contents: I18nText
-  authorRole: UserRole | null
+  authorRole: UserRole
   reviewDetail: ReviewDetailForm
 }
 

@@ -25,7 +25,7 @@
     "registerLink": "회원가입하기"
   },
   "Navbar": {
-    "venues": "장소 찾기",
+    "venues": "장소 조회",
     "addVenue": "장소 등록",
     "login": "로그인",
     "register": "회원가입",
@@ -193,6 +193,8 @@
     "visitDate": "방문 일자",
     "datePlaceHolder": "방문 일자를 선택해주세요",
     "visitPurpose": "방문 목적",
+    "LocalVerification": "로컬 위치인증",
+    "LocalIndication": "현재 위치를 인증하면 로컬 리뷰로 등록됩니다",
     "purposes": {
       "solo": "혼자",
       "couple": "커플",
