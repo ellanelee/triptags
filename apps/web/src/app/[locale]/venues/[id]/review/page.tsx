@@ -11,6 +11,7 @@ import { IGetVenueAll } from "@/types/interfaces/interface.api"
 import { Language, ReviewForm, VisitPurpose } from "@triptags/shared"
 import { useLocale, useTranslations } from "next-intl"
 import { useEffect, useState } from "react"
+import { userApi } from "@/lib/api/user.api"
 
 export default function WriteReviewPage({
   params,
@@ -25,11 +26,12 @@ export default function WriteReviewPage({
   const venueId = params.id
   const locale = useLocale() as Language
   const venue = useAsync<IGetVenueAll>(null)
+  const localVerification = useAsync()
   const { isAuthenticated, user } = useAuthStore()
   const [formData, setFormData] = useState<ReviewForm>({
     rating: 5,
     contents: { [locale]: "" },
-    authorRole: null,
+    authorRole: "USER",
     reviewDetail: {
       tasteRating: 5,
       serviceRating: 5,
@@ -45,28 +47,30 @@ export default function WriteReviewPage({
       router.back()
     }
     venue.run(() => venueApi.getVenueById(venueId))
+    localVerification.run(() => userApi.getLocalVerification(user?.id))
   }, [isAuthenticated])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (!venue.data?.id || !user?.role) {
+      alert("정보가 로드되지 않았습니다.")
+      return
+    }
     const userRole = user?.role
     const submitData = {
       ...formData,
+      authorRole: userRole,
       reviewDetail: {
         ...formData.reviewDetail,
         visitDate: formData.reviewDetail.visitDate ?? undefined,
-        serRole: userRole,
       },
-    }
-    if (!venue.data?.id) {
-      alert("장소 정보가 로드되지 않았습니다.")
-      return
     }
     setLoading(true)
     try {
+      console.log(submitData)
       const response = await reviewApi.createReview(venue.data?.id, submitData)
       console.log(response)
-      router.push(`/${locale}/venues/${params.id}`)
+      router.push(`/venues/${params.id}`)
     } catch (error) {
       console.error("review 제출에러", error)
     } finally {
@@ -244,7 +248,7 @@ export default function WriteReviewPage({
                 }))
               }}
               dateFormat="yyyy-MM-dd"
-              placeholderText= {tr("datePlaceHolder")}
+              placeholderText={tr("datePlaceHolder")}
             />
             {/* Visit Purpose */}
             <div>
@@ -272,6 +276,7 @@ export default function WriteReviewPage({
                 <option value="business">{tr("purposes.business")}</option>
               </select>
             </div>
+            {/* Location Verification */}
             {/* Submit Buttons */}
             <div className="flex gap-4 pt-4">
               <button

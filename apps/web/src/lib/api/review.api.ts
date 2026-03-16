@@ -5,12 +5,8 @@ import {
 import apiClient from "./api.client"
 
 export const reviewApi = {
-  //   create: async (data: ) => {
-  //     const response = await apiClient.post("regions", data)
-  //   },
-
   getReview: async (userId: string) => {
-    const response = await apiClient.get(`reviews`)
+    const response = await apiClient.get(`/reviews`)
     if (!response.data.success) {
       throw new Error(
         response.data.message ?? response.data.error ?? "조회 실패",
@@ -21,7 +17,7 @@ export const reviewApi = {
   },
 
   getReviewByVenueId: async (venueId: string, pageDto: ReviewPaginationDto) => {
-    const response = await apiClient.get(`reviews/${venueId}`, {
+    const response = await apiClient.get(`/reviews/${venueId}`, {
       params: pageDto,
     })
     if (!response.data.success) {
@@ -37,7 +33,7 @@ export const reviewApi = {
     venueId: string,
     createDto: ReviewCreateWithDetailDto,
   ) => {
-    const response = await apiClient.post(`reviews/${venueId}`,createDto)
+    const response = await apiClient.post(`/reviews/${venueId}`, createDto)
     if (!response.data.success) {
       throw new Error(
         response.data.message ?? response.data.error ?? "조회 실패",
