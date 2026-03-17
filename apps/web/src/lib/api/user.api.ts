@@ -1,4 +1,4 @@
-import type{
+import type {
   LanguageDto,
   UserAddressDto,
   UserIntroductionDto,
@@ -17,9 +17,9 @@ export const userApi = {
     return response.data.data ?? ""
   },
 
-  getUserPoint: async(userId: string) => {
-    const response =await apiClient.get(`userpoints`)
-       if (!response.data.success) {
+  getUserPoint: async (userId: string) => {
+    const response = await apiClient.get(`userpoints`)
+    if (!response.data.success) {
       throw new Error(
         response.data.message ?? response.data.error ?? "조회 실패",
       )
@@ -60,17 +60,4 @@ export const userApi = {
     console.log(response.data)
     return response.data.data
   },
-
-  getLocalVerificationStatus: async (userId: string, venueId: string) => {
-    const response = await apiClient.get("", 
-      params: 
-    )
-        if (!response.data.success) {
-      throw new Error(
-        response.data.message ?? response.data.error ?? "조회 실패",
-      )
-    }
-    console.log(response.data)
-    return response.data.data
-  }
 }
