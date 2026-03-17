@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger"
-import { IsNumber } from "class-validator"
+import { IsNotEmpty, IsNumber } from "class-validator"
 import { VerificationMethod } from "../../common/types"
 
 export class LocalVerificationCreateDto {
@@ -7,6 +7,7 @@ export class LocalVerificationCreateDto {
     example: "GPS",
     description: "ADDRESS, GPS, ACTIVITY 중에서 선택하세요",
   })
+  @IsNotEmpty()
   verificationMethod!: VerificationMethod
 
   @ApiProperty({
