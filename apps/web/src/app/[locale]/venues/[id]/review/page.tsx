@@ -8,10 +8,16 @@ import { venueApi } from "@/lib/api/venue.api"
 import { useAsync } from "@/lib/hooks/use.async"
 import { useAuthStore } from "@/store/auth-store"
 import { IGetVenueAll } from "@/types/interfaces/interface.api"
-import { Language, ReviewForm, VisitPurpose } from "@triptags/shared"
+import {
+  Language,
+  ReviewForm,
+  VerificationMethod,
+  VisitPurpose,
+} from "@triptags/shared"
 import { useLocale, useTranslations } from "next-intl"
 import { useEffect, useState } from "react"
-import { userApi } from "@/lib/api/user.api"
+import { localApi } from "@/lib/api/local.api"
+import { getCurrentPosition } from "@/lib/utils/geolocation"
 
 export default function WriteReviewPage({
   params,
@@ -26,7 +32,7 @@ export default function WriteReviewPage({
   const venueId = params.id
   const locale = useLocale() as Language
   const venue = useAsync<IGetVenueAll>(null)
-  const localVerification = useAsync()
+  const localVerification = useAsync(null)
   const { isAuthenticated, user } = useAuthStore()
   const [formData, setFormData] = useState<ReviewForm>({
     rating: 5,
@@ -47,8 +53,27 @@ export default function WriteReviewPage({
       router.back()
     }
     venue.run(() => venueApi.getVenueById(venueId))
-    localVerification.run(() => userApi.getLocalVerification(user?.id))
   }, [isAuthenticated])
+
+  //granted(허용), denied(거부), prompt(선택 안함)
+  const handleLocation = async () => {
+    try {
+      alert("현재 위치를 기반으로 인증합니다. 위치권한을 허용해주세요.")
+
+      const location = await getCurrentPosition()
+      const localInfo = {
+        verificationMethod: "GPS" as VerificationMethod,
+        latitude: location.latitude,
+        longitude: location.longitude,
+      }
+      await localVerification.run(() =>
+        localApi.getLocalVerification(venueId, localInfo),
+      )
+    } catch (e) {
+      console.error(e)
+      alert("위치 권한이 필요합니다")
+    }
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -286,7 +311,9 @@ export default function WriteReviewPage({
                   <p className="text-xs text-gray-500 mt-1">
                     현재 위치를 인증하면 로컬 리뷰로 등록됩니다
                   </p>
+                  <button onClick={handleLocation}></button>
                 </div>
+              </div>
             </div>
 
             {/* Submit Buttons */}
