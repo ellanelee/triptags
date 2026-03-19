@@ -72,6 +72,7 @@
   },
   "MyPage": {
     "title": "마이페이지",
+    "address": "주소",
     "welcome": "{nickname}님, 환영합니다!",
     "interestedDestinations": "관심 여행지",
     "addDestination": "+ 여행지 추가",
