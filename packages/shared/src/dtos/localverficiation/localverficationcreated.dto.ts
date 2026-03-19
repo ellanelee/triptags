@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger"
-import { IsNotEmpty, IsNumber } from "class-validator"
-import { VerificationMethod } from "../../common/types"
+import { IsNotEmpty, IsNumber, IsOptional } from "class-validator"
+import { VerificationMethod } from "src/common/types"
 
 export class LocalVerificationCreateDto {
   @ApiProperty({
@@ -15,6 +15,7 @@ export class LocalVerificationCreateDto {
     description: "경도를 표시하세요",
   })
   @IsNumber()
+  @IsOptional()
   longitude?: number
 
   @ApiProperty({
@@ -22,5 +23,6 @@ export class LocalVerificationCreateDto {
     description: "위도를 표시하세요",
   })
   @IsNumber()
+  @IsOptional()
   latitude?: number
 }

@@ -3,7 +3,6 @@ import {
   IsDate,
   IsInt,
   IsNotEmpty,
-  IsObject,
   IsOptional,
   IsString,
   Max,
