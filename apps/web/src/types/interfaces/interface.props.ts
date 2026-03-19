@@ -1,3 +1,5 @@
+import { Dispatch, SetStateAction } from "react"
+
 export interface IBasicButtonProps {
   children?: React.ReactNode
   onClick?: () => void | Promise<void>
@@ -20,4 +22,10 @@ export interface PageProps {
   hasNextPage: boolean
   hasPrevPage: boolean
   onPageChange: (newPage: number) => void
+}
+
+export interface ILocalVerificationProps {
+  venueId: string
+  isVerified: boolean
+  setIsVerified: Dispatch<SetStateAction<boolean>>
 }
