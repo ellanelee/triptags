@@ -24,6 +24,7 @@ export class LocalVerificationController {
       venueId,
       createDto,
     );
+    console.log(response);
     return createResponse(true, response);
   }
 
