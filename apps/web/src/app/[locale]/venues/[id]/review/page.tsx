@@ -17,7 +17,7 @@ import {
 import { useLocale, useTranslations } from "next-intl"
 import { useEffect, useState } from "react"
 import { localApi } from "@/lib/api/local.api"
-import { getCurrentPosition } from "@/lib/utils/geolocation"
+import LocalVerification from "@/components/common/local/LocalVerification"
 
 export default function WriteReviewPage({
   params,
@@ -32,8 +32,8 @@ export default function WriteReviewPage({
   const venueId = params.id
   const locale = useLocale() as Language
   const venue = useAsync<IGetVenueAll>(null)
-  const localVerification = useAsync(null)
   const { isAuthenticated, user } = useAuthStore()
+  const [isVerified, setIsVerified] = useState(false)
   const [formData, setFormData] = useState<ReviewForm>({
     rating: 5,
     contents: { [locale]: "" },
@@ -54,26 +54,6 @@ export default function WriteReviewPage({
     }
     venue.run(() => venueApi.getVenueById(venueId))
   }, [isAuthenticated])
-
-  //granted(허용), denied(거부), prompt(선택 안함)
-  const handleLocation = async () => {
-    try {
-      alert("현재 위치를 기반으로 인증합니다. 위치권한을 허용해주세요.")
-
-      const location = await getCurrentPosition()
-      const localInfo = {
-        verificationMethod: "GPS" as VerificationMethod,
-        latitude: location.latitude,
-        longitude: location.longitude,
-      }
-      await localVerification.run(() =>
-        localApi.getLocalVerification(venueId, localInfo),
-      )
-    } catch (e) {
-      console.error(e)
-      alert("위치 권한이 필요합니다")
-    }
-  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -302,20 +282,11 @@ export default function WriteReviewPage({
               </select>
             </div>
             {/* Location Verification */}
-            <div className="border border-gray-200 rounded-lg p-4 bg-gray-50">
-              <div className="flex justify-between items-center">
-                <div>
-                  <h3 className="text-sm font-medium text-gray-700">
-                    위치 인증
-                  </h3>
-                  <p className="text-xs text-gray-500 mt-1">
-                    현재 위치를 인증하면 로컬 리뷰로 등록됩니다
-                  </p>
-                  <button onClick={handleLocation}></button>
-                </div>
-              </div>
-            </div>
-
+            <LocalVerification
+              venueId={venueId}
+              isVerified={isVerified}
+              setIsVerified={setIsVerified}
+            />
             {/* Submit Buttons */}
             <div className="flex gap-4 pt-4">
               <button

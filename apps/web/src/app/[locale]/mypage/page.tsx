@@ -146,7 +146,7 @@ export default function MyPage() {
                 </div>
               </div>
               <div className="flex items-center px-1 pb-1">
-                <p className="text-gray-600 px-5">주소 : </p>
+                <p className="text-gray-600 px-5">{tr("address")} : </p>
                 {addressRegion && (
                   <p className="bg-gray-100 text-gray-800">
                     {destinationName(addressRegion.data)}{" "}

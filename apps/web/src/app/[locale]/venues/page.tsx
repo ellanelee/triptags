@@ -224,9 +224,7 @@ export default function VenuePage() {
                   {venue.venueImages[0] ? (
                     <img
                       src={venue.venueImages[0].imageUrl}
-                      alt={
-                           venue?.name?.[locale]
-                      }
+                      alt={venue?.name?.[locale]}
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                     />
                   ) : (
@@ -280,7 +278,7 @@ export default function VenuePage() {
                     <div className="flex items-center bg-yellow-50 px-3 py-1 rounded-lg">
                       <span className="text-yellow-500 mr-1 text-lg">★</span>
                       <span className="font-bold text-gray-900">
-                        {venue.venueStats?.ratingAvg}
+                        {venue.venueStats?.ratingAvg.toFixed(1)}
                       </span>
                     </div>
                     <span className="text-sm text-gray-500">
