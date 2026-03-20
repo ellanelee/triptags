@@ -13,5 +13,4 @@ export class ReviewCreateWithDetailDto extends ReviewCreateDto{
     @ValidateNested()
     @Type(() => ReviewDetailCreateDto)
     reviewDetail! : ReviewDetailCreateDto
-
 }

@@ -26,6 +26,6 @@ export interface PageProps {
 
 export interface ILocalVerificationProps {
   venueId: string
-  isVerified: boolean
-  setIsVerified: Dispatch<SetStateAction<boolean>>
+  localVerificationId: string | null
+  setLocalVerificationId: Dispatch<SetStateAction<string | null>>
 }
