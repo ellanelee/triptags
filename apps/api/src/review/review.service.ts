@@ -95,6 +95,7 @@ export class ReviewService {
         rating: createDto.rating,
         contents: createDto.contents,
         authorRole: createDto.authorRole,
+        localVerificationId: createDto.localVerificationId,
         venueId: venueId,
         userId: userId,
         reviewDetail: {
