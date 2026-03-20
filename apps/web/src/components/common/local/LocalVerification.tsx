@@ -3,14 +3,14 @@ import { localApi } from "@/lib/api/local.api"
 import { useAsync } from "@/lib/hooks/use.async"
 import { getCurrentPosition } from "@/lib/utils/geolocation"
 import { ILocalVerificationProps } from "@/types/interfaces/interface.props"
-import { VerificationMethod } from "@triptags/shared"
+import { ILocalVerification, VerificationMethod } from "@triptags/shared"
 
 export default function LocalVerification({
   venueId,
-  isVerified,
-  setIsVerified,
+  localVerificationId,
+  setLocalVerificationId,
 }: ILocalVerificationProps) {
-  const localVerification = useAsync(null)
+  const localVerification = useAsync<ILocalVerification>(null)
 
   //granted(허용), denied(거부), prompt(선택 안함)
   const handleLocation = async () => {
@@ -27,7 +27,7 @@ export default function LocalVerification({
         localApi.getLocalVerification(venueId, localInfo),
       )
       if (response) {
-        setIsVerified(true)
+        setLocalVerificationId(response.id)
         alert("위치가 인증되었습니다.")
       }
     } catch (e) {
@@ -46,7 +46,7 @@ export default function LocalVerification({
             </p>
           </div>
           <div>
-            {!isVerified && (
+            {!localVerificationId && (
               <button
                 type="button"
                 onClick={handleLocation}
@@ -58,7 +58,7 @@ export default function LocalVerification({
           </div>
         </div>
         <div>
-          {isVerified ? (
+          {localVerificationId ? (
             <span className="text-sm text-green-600 font-medium">
               ✓ 위치 인증됨
             </span>

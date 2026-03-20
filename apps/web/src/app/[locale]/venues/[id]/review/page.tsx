@@ -8,15 +8,9 @@ import { venueApi } from "@/lib/api/venue.api"
 import { useAsync } from "@/lib/hooks/use.async"
 import { useAuthStore } from "@/store/auth-store"
 import { IGetVenueAll } from "@/types/interfaces/interface.api"
-import {
-  Language,
-  ReviewForm,
-  VerificationMethod,
-  VisitPurpose,
-} from "@triptags/shared"
+import { Language, ReviewForm, VisitPurpose } from "@triptags/shared"
 import { useLocale, useTranslations } from "next-intl"
 import { useEffect, useState } from "react"
-import { localApi } from "@/lib/api/local.api"
 import LocalVerification from "@/components/common/local/LocalVerification"
 
 export default function WriteReviewPage({
@@ -33,11 +27,14 @@ export default function WriteReviewPage({
   const locale = useLocale() as Language
   const venue = useAsync<IGetVenueAll>(null)
   const { isAuthenticated, user } = useAuthStore()
-  const [isVerified, setIsVerified] = useState(false)
+  const [localVerificationId, setLocalVerificationId] = useState<string | null>(
+    null,
+  )
   const [formData, setFormData] = useState<ReviewForm>({
     rating: 5,
     contents: { [locale]: "" },
     authorRole: "USER",
+    localVerificationId: localVerificationId,
     reviewDetail: {
       tasteRating: 5,
       serviceRating: 5,
@@ -65,6 +62,7 @@ export default function WriteReviewPage({
     const submitData = {
       ...formData,
       authorRole: userRole,
+      localVerificationId: localVerificationId ?? undefined,
       reviewDetail: {
         ...formData.reviewDetail,
         visitDate: formData.reviewDetail.visitDate ?? undefined,
@@ -284,8 +282,8 @@ export default function WriteReviewPage({
             {/* Location Verification */}
             <LocalVerification
               venueId={venueId}
-              isVerified={isVerified}
-              setIsVerified={setIsVerified}
+              localVerificationId={localVerificationId}
+              setLocalVerificationId={setLocalVerificationId}
             />
             {/* Submit Buttons */}
             <div className="flex gap-4 pt-4">
