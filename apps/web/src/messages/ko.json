@@ -196,6 +196,7 @@
     "visitPurpose": "방문 목적",
     "LocalVerification": "로컬 위치인증",
     "LocalIndication": "현재 위치를 인증하면 로컬 리뷰로 등록됩니다",
+    "verfiedCondition": "인증된 위치가 장소와 15km 이내일 경우 로컬 리뷰입니다.",
     "purposes": {
       "solo": "혼자",
       "couple": "커플",
@@ -226,7 +227,9 @@
       "createdAt": "생성일",
       "submit": "작성 완료",
       "submitting": "작성 중...",
-      "error": "리뷰 작성에 실패했습니다."
+      "error": "리뷰 작성에 실패했습니다.",
+      "verify": "인증하기",
+      "verified": "✓ 위치 인증됨"
     },
     "categories": {
       "RESTAURANT": "레스토랑",

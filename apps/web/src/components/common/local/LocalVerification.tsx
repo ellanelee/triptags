@@ -4,12 +4,15 @@ import { useAsync } from "@/lib/hooks/use.async"
 import { getCurrentPosition } from "@/lib/utils/geolocation"
 import { ILocalVerificationProps } from "@/types/interfaces/interface.props"
 import { ILocalVerification, VerificationMethod } from "@triptags/shared"
+import { useTranslations } from "next-intl"
 
 export default function LocalVerification({
   venueId,
   localVerificationId,
   setLocalVerificationId,
 }: ILocalVerificationProps) {
+  const tr = useTranslations("WriteReviewPage")
+  const t = useTranslations("Common")
   const localVerification = useAsync<ILocalVerification>(null)
 
   //granted(허용), denied(거부), prompt(선택 안함)
@@ -40,9 +43,11 @@ export default function LocalVerification({
       <div>
         <div className="flex align-middle justify-between w-full">
           <div>
-            <h3 className="text-sm font-medium text-gray-700">위치 인증</h3>
+            <h3 className="text-lg font-medium text-gray-700">
+              {tr("LocalVerification")}
+            </h3>
             <p className="text-xs text-gray-500 mt-1">
-              현재 위치를 인증하면 로컬 리뷰로 등록됩니다
+              {tr("LocalIndication")}
             </p>
           </div>
           <div>
@@ -52,7 +57,7 @@ export default function LocalVerification({
                 onClick={handleLocation}
                 className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                인증하기
+                {tr("LocalVerification")}
               </button>
             )}
           </div>
@@ -60,11 +65,11 @@ export default function LocalVerification({
         <div>
           {localVerificationId ? (
             <span className="text-sm text-green-600 font-medium">
-              ✓ 위치 인증됨
+              {t("verified")}
             </span>
           ) : (
             <p className="text-xs text-gray-400 mt-2">
-              인증된 위치가 장소와 15km 이내일 경우 로컬 리뷰입니다.
+              {tr("verfiedCondition")}
             </p>
           )}
         </div>
