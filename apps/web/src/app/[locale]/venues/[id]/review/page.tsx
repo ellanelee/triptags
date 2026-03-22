@@ -7,11 +7,11 @@ import { reviewApi } from "@/lib/api/review.api"
 import { venueApi } from "@/lib/api/venue.api"
 import { useAsync } from "@/lib/hooks/use.async"
 import { useAuthStore } from "@/store/auth-store"
-import { IGetVenueAll } from "@/types/interfaces/interface.api"
 import { Language, ReviewForm, VisitPurpose } from "@triptags/shared"
 import { useLocale, useTranslations } from "next-intl"
 import { useEffect, useState } from "react"
 import LocalVerification from "@/components/common/local/LocalVerification"
+import { IGetVenueBase } from "@/types/interfaces/interface.api"
 
 export default function WriteReviewPage({
   params,
@@ -25,7 +25,7 @@ export default function WriteReviewPage({
   const router = useRouter()
   const venueId = params.id
   const locale = useLocale() as Language
-  const venue = useAsync<IGetVenueAll>(null)
+  const venue = useAsync<IGetVenueBase>(null)
   const { isAuthenticated, user } = useAuthStore()
   const [localVerificationId, setLocalVerificationId] = useState<string | null>(
     null,
@@ -143,14 +143,15 @@ export default function WriteReviewPage({
                 }
               />
             </div>
+            {/*reviewImage등록 및 표시, 세부 로직은 이미지 정적서버 구성후 반영*/}
             {/* Review Detail */}
-            <div>
+            <div className="bg-gray-50 p-2 rounded-md">
               <h3 className="text-lg font-medium mb-4">
                 {tr("detailedRatings")}
               </h3>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-3 gap-2">
                 {/* Taste 평가*/}
-                <div>
+                <div className="min-w-0">
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     {tr("taste")}
                   </label>
@@ -175,109 +176,115 @@ export default function WriteReviewPage({
                     ))}
                   </select>
                 </div>
-              </div>
-              {/* Service 평가*/}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  {tr("service")}
-                </label>
-                <select
-                  className="w-full border border-gray-300 rounded-md px-3 py-2"
-                  value={formData.reviewDetail.serviceRating}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      reviewDetail: {
-                        ...prev.reviewDetail,
-                        serviceRating: Number(e.target.value),
-                      },
-                    }))
-                  }
-                >
-                  <option value={0}>-</option>
-                  {[1, 2, 3, 4, 5].map((n) => (
-                    <option key={n} value={n}>
-                      {n} ★
-                    </option>
-                  ))}
-                </select>
-              </div>
-              {/* Price 평가 */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  {tr("price")}
-                </label>
-                <select
-                  className="w-full border border-gray-300 rounded-md px-3 py-2"
-                  value={formData.reviewDetail.priceRating}
-                  onChange={(e) =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      reviewDetail: {
-                        ...prev.reviewDetail,
-                        priceRating: Number(e.target.value),
-                      },
-                    }))
-                  }
-                >
-                  <option value={0}>-</option>
-                  {[1, 2, 3, 4, 5].map((n) => (
-                    <option key={n} value={n}>
-                      {n} ★
-                    </option>
-                  ))}
-                </select>
+
+                {/* Service 평가*/}
+                <div className="min-w-0">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    {tr("service")}
+                  </label>
+                  <select
+                    className="w-full border border-gray-300 rounded-md px-3 py-2"
+                    value={formData.reviewDetail.serviceRating}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        reviewDetail: {
+                          ...prev.reviewDetail,
+                          serviceRating: Number(e.target.value),
+                        },
+                      }))
+                    }
+                  >
+                    <option value={0}>-</option>
+                    {[1, 2, 3, 4, 5].map((n) => (
+                      <option key={n} value={n}>
+                        {n} ★
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                {/* Price 평가 */}
+                <div className="min-w-0">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    {tr("price")}
+                  </label>
+                  <select
+                    className="w-full border border-gray-300 rounded-md px-3 py-2"
+                    value={formData.reviewDetail.priceRating}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        reviewDetail: {
+                          ...prev.reviewDetail,
+                          priceRating: Number(e.target.value),
+                        },
+                      }))
+                    }
+                  >
+                    <option value={0}>-</option>
+                    {[1, 2, 3, 4, 5].map((n) => (
+                      <option key={n} value={n}>
+                        {n} ★
+                      </option>
+                    ))}
+                  </select>
+                </div>
               </div>
             </div>
             {/* Visit Date, locale로 표현, defaut enUs*/}
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              {tr("visitDate")}
-            </label>
-            <DatePicker
-              className="w-full border border-gray-300 rounded-md px-3 py-2"
-              locale={localeMap[locale] || localeMap.en}
-              selected={
-                formData.reviewDetail.visitDate
-                  ? new Date(formData.reviewDetail.visitDate)
-                  : null
-              }
-              onChange={(date: Date | null) => {
-                setFormData((prev) => ({
-                  ...prev,
-                  reviewDetail: {
-                    ...prev.reviewDetail,
-                    visitDate: date,
-                  },
-                }))
-              }}
-              dateFormat="yyyy-MM-dd"
-              placeholderText={tr("datePlaceHolder")}
-            />
-            {/* Visit Purpose */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                {tr("visitPurpose")}
-              </label>
-              <select
-                className="w-full border border-gray-300 rounded-md px-3 py-2"
-                value={formData.reviewDetail.visitPurpose}
-                onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    reviewDetail: {
-                      ...prev.reviewDetail,
-                      visitPurpose: e.target.value as VisitPurpose,
-                    },
-                  }))
-                }
-              >
-                <option value="">-</option>
-                <option value="solo">{tr("purposes.solo")}</option>
-                <option value="couple">{tr("purposes.couple")}</option>
-                <option value="family">{tr("purposes.family")}</option>
-                <option value="friends">{tr("purposes.friends")}</option>
-                <option value="business">{tr("purposes.business")}</option>
-              </select>
+            <div className="grid grid-cols-2 gap-6">
+              <div className="w-full">
+                <label className="block text-lg font-medium text-gray-700 mb-2">
+                  {tr("visitDate")}
+                </label>
+                <DatePicker
+                  wrapperClassName="w-full"
+                  className="w-full border border-gray-300 rounded-md px-3 py-2"
+                  locale={localeMap[locale] || localeMap.en}
+                  selected={
+                    formData.reviewDetail.visitDate
+                      ? new Date(formData.reviewDetail.visitDate)
+                      : null
+                  }
+                  onChange={(date: Date | null) => {
+                    setFormData((prev) => ({
+                      ...prev,
+                      reviewDetail: {
+                        ...prev.reviewDetail,
+                        visitDate: date,
+                      },
+                    }))
+                  }}
+                  dateFormat="yyyy-MM-dd"
+                  placeholderText={tr("datePlaceHolder")}
+                />
+              </div>
+              {/* Visit Purpose */}
+              <div>
+                <label className="block text-lg font-medium text-gray-700 mb-2">
+                  {tr("visitPurpose")}
+                </label>
+                <select
+                  className="w-full border border-gray-300 rounded-md px-3 py-2"
+                  value={formData.reviewDetail.visitPurpose}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      reviewDetail: {
+                        ...prev.reviewDetail,
+                        visitPurpose: e.target.value as VisitPurpose,
+                      },
+                    }))
+                  }
+                >
+                  <option value="">-</option>
+                  <option value="solo">{tr("purposes.solo")}</option>
+                  <option value="couple">{tr("purposes.couple")}</option>
+                  <option value="family">{tr("purposes.family")}</option>
+                  <option value="friends">{tr("purposes.friends")}</option>
+                  <option value="business">{tr("purposes.business")}</option>
+                </select>
+              </div>
             </div>
             {/* Location Verification */}
             <LocalVerification
