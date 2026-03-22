@@ -7,7 +7,7 @@ import { useEffect, useState } from "react"
 import { venueApi } from "@/lib/api/venue.api"
 import {
   IGetReviewByVenueAllResponse,
-  IGetVenueAll,
+  IGetVenueBase,
 } from "@/types/interfaces/interface.api"
 import { reviewApi } from "@/lib/api/review.api"
 import { Language } from "@triptags/shared"
@@ -23,7 +23,7 @@ export default function VenueDetailPage({
   const t = useTranslations("Common")
   const locale = useLocale() as Language
   const { isAuthenticated } = useAuthStore()
-  const venue = useAsync<IGetVenueAll>(null)
+  const venue = useAsync<IGetVenueBase>(null)
   const reviews = useAsync<IGetReviewByVenueAllResponse>(null)
   const [reviewFilter, setReviewFilter] = useState<"all" | "LOCAL" | "USER">(
     "all",
@@ -50,27 +50,61 @@ export default function VenueDetailPage({
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <h1 className="text-4xl font-bold text-gray-900 mb-2">
             {venue.data?.name ? venue.data?.name[locale] : ""}
-
           </h1>
           <p className="text-lg text-gray-600">
             {venue.data?.region?.parent?.name}
             {venue.data?.region && `, ${venue.data.region.name}`}
           </p>
-        </div>
-      </div>
-      {/* Ratings Summary */}
-      <div className="mt-6 flex flex-wrap gap-6">
-        {/* Overall Rating */}
-        <div className="bg-gray-50 px-6 py-4 rounded-lg">
-          <p className="text-sm text-gray-600 mb-1">{tr("overallRating")}</p>
-          <div className="flex items-baseline gap-2">
-            <span className="text-3xl font-bold text-gray-900">
-              {venue.data?.venueStats?.ratingAvg?.toFixed(1) || 0}
-            </span>
-            <span className="text-yellow-500 text-2xl">★</span>
-            <span className="text-sm text-gray-500">
-              ({venue.data?.venueStats?.reviewCount || 0} reviews)
-            </span>
+
+          {/* Ratings Summary */}
+          <div className="mt-6 flex flex-wrap gap-6">
+            {/* Overall Rating */}
+            <div className="bg-gray-50 px-6 py-4 rounded-lg">
+              <p className="text-sm text-gray-600 mb-1">
+                {tr("overallRating")}
+              </p>
+              <div className="flex items-baseline gap-2">
+                <span className="text-3xl font-bold text-gray-900">
+                  {venue.data?.venueStats?.ratingAvg?.toFixed(1) || 0}
+                </span>
+                <span className="text-yellow-500 text-2xl">★</span>
+                <span className="text-sm text-gray-500">
+                  ({venue.data?.venueStats?.reviewCount || 0} reviews)
+                </span>
+              </div>
+            </div>
+
+            {/* Local Rating */}
+            <div className="bg-local-50 px-6 py-4 rounded-lg border border-local-200">
+              <p className="text-sm text-local-700 font-medium mb-1">
+                {t("localRating")}
+              </p>
+              <div className="flex items-baseline gap-2">
+                <span className="text-3xl font-bold text-local-700">
+                  {venue.data?.reviewSummary.local.averageRating.toFixed(1)}
+                </span>
+                <span className="text-local-500 text-2xl">★</span>
+                <span className="text-sm text-local-600">
+                  ({venue.data?.reviewSummary.local.count})
+                </span>
+              </div>
+            </div>
+
+            {/* Traveler Rating */}
+            <div className="bg-traveler-50 px-6 py-4 rounded-lg border border-traveler-200">
+              <p className="text-sm text-traveler-700 font-medium mb-1">
+                {t("travelerRating")}
+              </p>
+              <div className="flex items-baseline gap-2">
+                <span className="text-3xl font-bold text-traveler-700">
+                  {venue.data?.reviewSummary.normal.averageRating.toFixed(1)}
+                </span>
+                <span className="text-traveler-500 text-2xl">★</span>
+                <span className="text-sm text-traveler-600">
+                  ({venue.data?.reviewSummary.normal.count})
+                </span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -157,7 +191,7 @@ export default function VenueDetailPage({
                             <span className="font-medium">
                               {review.user.nickname}
                             </span>
-                            {review.isLocalVerified && (
+                            {review.localVerificationId && (
                               <span className="px-2 py-0.5 bg-local-100 text-local-700 text-xs rounded-full">
                                 Local
                               </span>

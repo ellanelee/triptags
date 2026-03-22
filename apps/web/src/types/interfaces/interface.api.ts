@@ -26,7 +26,19 @@ export interface IVenueImage {
   id: string
   imageUrl: string
 }
-export interface IGetVenueAll {
+
+export interface IReviewsMetric {
+  count: number, 
+  averageRating: number, 
+}
+
+export interface IReviewResult {
+  total: IReviewsMetric
+  local: IReviewsMetric
+  normal: IReviewsMetric
+}
+
+export interface IGetVenueBase {
   id: string
   name: I18nText | null
   venueCategory: VenueCategory
@@ -39,16 +51,17 @@ export interface IGetVenueAll {
   venueDetail?: IVenueDetailResponse
   venueImages: IVenueImage[]
   venueStats: IVenueStats
+  reviewSummary: IReviewResult
 }
 
-export type IGetVenueAllResponse = IPaginatedResponse<IGetVenueAll>
+export type IGetVenueAllResponse = IPaginatedResponse<IGetVenueBase>
 
 export interface IGetReviewByVenueAll {
   id: string
   rating: number
   contents: Record<string, string>
   authorRole: UserRole
-  isLocalVerified: boolean
+  localVerificationId: string | null
   likeCount: number
   createdAt: Date
   updatedAt: Date

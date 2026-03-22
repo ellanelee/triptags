@@ -1,8 +1,8 @@
 import type { IVenueDetailResponse, VenuePaginationDto } from "@triptags/shared"
 import apiClient from "./api.client"
 import {
-  IGetVenueAll,
   IGetVenueAllResponse,
+  IGetVenueBase,
 } from "@/types/interfaces/interface.api"
 
 export const venueApi = {
@@ -21,7 +21,8 @@ export const venueApi = {
     return response.data.data as IGetVenueAllResponse
   },
 
-  getVenueById: async (venueId: string): Promise<IGetVenueAll> => {
+  //venueId로 venue전체 정보 받아오기 
+  getVenueById: async (venueId: string): Promise<IGetVenueBase> => {
     const response = await apiClient.get(`venues/${venueId}`)
     if (!response.data.success) {
       throw new Error(
