@@ -42,4 +42,8 @@ export const reviewApi = {
     console.log(response.data)
     return response.data.data
   },
+
+  deleteReview: async (reviewId: string) => {
+    await apiClient.delete(`/reviews/${reviewId}`)
+  }
 }
