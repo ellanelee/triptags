@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
@@ -90,5 +91,14 @@ export class ReviewController {
   ) {
     const response = await this.reviewService.createHelpful(reviewId, user.id);
     return createResponse(true, response);
+  }
+
+  @Delete(':reviewId')
+  @UseGuards(JwtAccessGuard)
+  async deleteReview(
+    @CurrentUser() user: User,
+    @Param('reviewId') reviewId: string,
+  ): Promise<void> {
+    await this.reviewService.deleteReview(user.id, reviewId);
   }
 }

@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '@/prisma/prisma.service';
 import {
   Language,
@@ -186,5 +190,19 @@ export class ReviewService {
       this.event.emit('helpful.received', pointInput);
       return { reviewHelpful: true };
     }
+  }
+
+  async deleteReview(userId: string, reviewId: string) {
+    const targetReview = await this.prisma.client.review.findUnique({
+      where: { id: reviewId },
+    });
+    if (!targetReview) {
+      throw new NotFoundException('리뷰를 찾을 수 없습니다.');
+    }
+    if (targetReview?.userId !== userId)
+      throw new ForbiddenException('삭제 권한이 없습니다');
+    await this.prisma.client.review.delete({
+      where: { id: reviewId },
+    });
   }
 }
