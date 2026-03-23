@@ -22,13 +22,17 @@ export default function VenueDetailPage({
   const tr = useTranslations("VenueDetailPage")
   const t = useTranslations("Common")
   const locale = useLocale() as Language
-  const { isAuthenticated } = useAuthStore()
+  const { isAuthenticated, user } = useAuthStore()
   const venue = useAsync<IGetVenueBase>(null)
   const reviews = useAsync<IGetReviewByVenueAllResponse>(null)
   const [reviewFilter, setReviewFilter] = useState<"all" | "LOCAL" | "USER">(
     "all",
   )
   const reviewPageInfo = { groupSize: 10, items: 9 }
+  const [selectReview, setSelectReview] = useState<{
+    userId: string
+    reviewId: string
+  } | null>(null)
 
   useEffect(() => {
     venue.run(() => venueApi.getVenueById(venueId))
@@ -43,6 +47,27 @@ export default function VenueDetailPage({
     )
   }, [venueId, reviewPageInfo.items])
 
+  const handleEditReview = async () => {
+    if (!selectReview) return
+    router.push(`/review/${selectReview}`)
+  }
+  const handleDeleteReview = async () => {
+    if (!selectReview) return
+    const ok = window.confirm("리뷰를 삭제하시겠습니까?")
+    if (!ok) return
+    try {
+      await reviewApi.deleteReview(selectReview.reviewId)
+      setSelectReview(null)
+      await reviews.run(() =>
+        reviewApi.getReviewByVenueId(venueId, {
+          page: 1,
+          items: 9,
+        }),
+      )
+    } catch (error) {
+      console.error("삭제 실패", error)
+    }
+  }
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Upper Section */}
@@ -213,17 +238,35 @@ export default function VenueDetailPage({
                               : review.contents[locale]}
                           </p>
                         </div>
-                        <div>
-                          <button
-                            onClick={() =>
-                              router.push(
-                                `/venues/${venueId}/review/${review.id}`,
-                              )
-                            }
-                            className="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-primary-700 transition-colors"
-                          >
-                            {t("transaction.edit")}
-                          </button>
+                        <div className="relative">
+                          {review.userId === user?.id && (
+                            <button
+                              onClick={() => {
+                                setSelectReview({
+                                  userId: user.id,
+                                  reviewId: review.id,
+                                })
+                              }}
+                            >
+                              ...
+                            </button>
+                          )}
+                          {selectReview?.reviewId === review.id && (
+                            <div className="absolute left-1/2 top-5 z-20 w-28 -translate-x-1/2 rounded-xl border border-gray-200 flex flex-col my-4 bg-white shadow-lg">
+                              <button
+                                className="text-sm py-2 text-gray-800 hover:bg-gray-100"
+                                onClick={() => handleEditReview()}
+                              >
+                                수정
+                              </button>
+                              <button
+                                className="text-sm py-2 text-gray-800 hover:bg-gray-100"
+                                onClick={() => handleDeleteReview()}
+                              >
+                                삭제
+                              </button>
+                            </div>
+                          )}
                         </div>
                       </div>
                     </div>
