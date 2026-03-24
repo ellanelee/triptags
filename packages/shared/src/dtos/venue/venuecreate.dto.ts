@@ -1,6 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger"
 import { Language, VenueCategory } from "../../common/types"
 import {
+  IsArray,
   IsIn,
   IsNotEmpty,
   IsNumber,
@@ -31,7 +32,6 @@ export class VenueCreateDto {
     description:
       "RESTAURANT(식당), CAFE(카페), HOTEL(호텔), STREET_FOOD(거리음식), BAR(바),SHOPPING(쇼핑), CULTURE(문화) 등등, 하단에서 적절한 영역으로 설정하세요",
   })
-  @IsNotEmpty()
   @IsOptional()
   venueCategory?: VenueCategory
 
@@ -107,5 +107,6 @@ export class VenueCreateDto {
     type: [String],
   })
   @IsOptional()
+  @IsArray()
   venueImage?: string[]
 }
