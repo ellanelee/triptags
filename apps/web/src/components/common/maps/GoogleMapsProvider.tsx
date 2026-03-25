@@ -1,5 +1,4 @@
 "use client"
-
 import { APIProvider } from "@vis.gl/react-google-maps"
 import { ReactNode } from "react"
 
@@ -15,6 +14,7 @@ export function GoogleMapsProvider({ children }: GoogleMapsProviderProps) {
   }
 
   return (
+    //API Provider로 places와 marker를 내려줌 (Google Maps JS SDK로딩)
     <APIProvider apiKey={apiKey} libraries={["places", "marker"]}>
       {children}
     </APIProvider>
