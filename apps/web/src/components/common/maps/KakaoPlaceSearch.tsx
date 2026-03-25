@@ -1,7 +1,7 @@
 "use client"
 
 import axios from "axios"
-import { useCallback, useState } from "react"
+import { useState } from "react"
 
 interface KakaoPlace {
   id: string
@@ -22,7 +22,6 @@ interface KakaoPlaceSearchProps {
     phone: string
     latitude: number
     longitude: number
-    category: string
     placeUrl: string
   }) => void
   placeholder?: string
