@@ -1,10 +1,9 @@
-import { IPaginatedResponse } from "src/common/interface"
-import { I18nText, Language, VenueCategory } from "src/common/types"
+import { Language, VenueCategory } from "src/common/types"
 
 export interface IVenueCreate {
   language: Language
   name: string
-  description: string
+  description: string | null
   venueCategory: VenueCategory | null
   country: string
   city: string
@@ -12,7 +11,6 @@ export interface IVenueCreate {
   details: string
   latitude: number | null
   longitude: number | null
-  googlePlaceId: string | null 
 }
 
 export interface IVenueSearchFilters {

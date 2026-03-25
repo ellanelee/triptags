@@ -1,10 +1,24 @@
 "use client"
 import { GoogleMapsProvider } from "@/components/common/maps/GoogleMapsProvider"
+import { KakaoPlaceSearch } from "@/components/common/maps/KakaoPlaceSearch"
+import { PlaceAutoComplete } from "@/components/common/maps/PlaceAutoComplete"
 import { useRouter } from "@/i18n/routing"
 import { useAuthStore } from "@/store/auth-store"
 import { IVenueCreate } from "@triptags/shared"
 import { useLocale, useTranslations } from "next-intl"
 import { useEffect, useState } from "react"
+
+export interface kakaoPlaceSelected {
+  id: string
+  name: string
+  address: string
+  roadAddress: string
+  phone: string
+  latitude: number
+  longitude: number
+  category: string
+  placeUrl: string
+}
 
 export default function CreateVenuePage() {
   const router = useRouter()
@@ -13,7 +27,7 @@ export default function CreateVenuePage() {
   const t = useTranslations("Common")
   const { isAuthenticated, user } = useAuthStore()
   const [venueCreateForm, setVenueCreateForm] = useState<IVenueCreate>({
-    language: "KR",
+    language: "ko",
     name: "",
     description: "",
     venueCategory: null,
@@ -23,13 +37,33 @@ export default function CreateVenuePage() {
     city: "",
     district: "",
     details: "",
-    googlePlaceId: null,
   })
   const [searchType, setSearchType] = useState<"kakao" | "google">("kakao")
+  const [city, setCity] = useState("")
+  const [district, setDistrict] = useState("")
 
   useEffect(() => {
     if (!isAuthenticated) router.replace("/venues")
   }, [isAuthenticated])
+
+  const handleKaKaoPlaceSelected = (place: kakaoPlaceSelected) => {
+    const address = place.roadAddress || place.address || ""
+    const addressParts = place.address.split(" ").filter(Boolean) // address format: 서울 강남구 역삼동 ...
+    const city = addressParts[0] || ""
+    const district = addressParts[1] || ""
+    const details = addressParts.slice(2).join(" ")
+    setVenueCreateForm((prev) => ({
+        ...prev,
+      language: "ko",
+      name: place.name,
+      latitude: place.latitude,
+      longitude: place.longitude,
+      country: "KR",
+      city:city,
+      district: district,
+      details: details,
+    }))
+  }
 
   return (
     <GoogleMapsProvider>
@@ -67,9 +101,11 @@ export default function CreateVenuePage() {
                     구글 (해외)
                   </button>
                 </div>
-                { searchType === "kakao" ? (
-                    <KakaoPlaceSearch></KakaoPlaceSearch>
-                ):()}
+                {searchType === "kakao" ? (
+                  <KakaoPlaceSearch onPlaceSelected={handleKaKaoPlaceSelected} placeholder="장소명을 검색하세요(예: 경복궁, 강남역 맛집)"></KakaoPlaceSearch>
+                ) : (
+                  <PlaceAutoComplete></PlaceAutoComplete>
+                )}
               </div>
             </form>
           </div>
