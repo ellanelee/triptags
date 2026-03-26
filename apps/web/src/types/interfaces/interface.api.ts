@@ -28,8 +28,8 @@ export interface IVenueImage {
 }
 
 export interface IReviewsMetric {
-  count: number, 
-  averageRating: number, 
+  count: number
+  averageRating: number
 }
 
 export interface IReviewResult {
@@ -75,3 +75,5 @@ export interface IGetReviewByVenueAll {
 
 export type IGetReviewByVenueAllResponse =
   IPaginatedResponse<IGetReviewByVenueAll>
+
+
