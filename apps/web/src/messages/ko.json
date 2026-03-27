@@ -156,10 +156,6 @@
     "phone": "전화번호",
     "website": "웹사이트",
     "priceRange": "가격대",
-    "cancel": "취소",
-    "create": "등록하기",
-    "creating": "등록 중...",
-    "error": "장소 등록에 실패했습니다.",
     "selectLocation": "지도에서 위치를 선택해주세요.",
     "categories": {
       "RESTAURANT": "레스토랑",
@@ -261,7 +257,9 @@
       "createdAt": "생성일",
       "submit": "작성 완료",
       "submitting": "작성 중...",
-      "error": "리뷰 작성에 실패했습니다.",
+      "create": "등록하기",
+      "creating": "등록 중...",
+      "error": "등록에 실패했습니다.",
       "verify": "인증하기",
       "verified": "✓ 위치 인증됨"
     },
