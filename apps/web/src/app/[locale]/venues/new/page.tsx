@@ -4,8 +4,9 @@ import { KakaoPlaceSearch } from "@/components/common/maps/KakaoPlaceSearch"
 import { PlaceAutoComplete } from "@/components/common/maps/PlaceAutoComplete"
 import { useRouter } from "@/i18n/routing"
 import { useAuthStore } from "@/store/auth-store"
+import { IGooglePlaceInfo } from "@/types/maps/google"
 import { IKakaoPlaceSelected } from "@/types/maps/kakao"
-import { IVenueCreate } from "@triptags/shared"
+import { IVenueCreate, IVenueDetailInput } from "@triptags/shared"
 import { useLocale, useTranslations } from "next-intl"
 import { useEffect, useState } from "react"
 
@@ -27,7 +28,24 @@ export default function CreateVenuePage() {
     district: "",
     details: "",
   })
-  const [googleDataForm, setGoogleDataForm] = useState<>()
+  const [googleDataForm, setGoogleDataForm] = useState<IGooglePlaceInfo>({
+    googlePlaceId: "",
+    googleName: "",
+    googleAddress: "",
+    googleTypes: [] as string[],
+    googleRating: undefined as number | undefined,
+    googleUrl: "",
+  })
+
+  const [venueDetail, setVenueDetail] = useState<IVenueDetailInput>({
+  phoneNumber: '',
+  priceRange: '',
+  subCategory: '',
+  websiteUrl: '',
+  workHour: {},
+  description: {},
+  })
+
   const [searchType, setSearchType] = useState<"kakao" | "google">("kakao")
   const [city, setCity] = useState("")
   const [district, setDistrict] = useState("")
@@ -56,15 +74,11 @@ export default function CreateVenuePage() {
     }))
   }
 
-  const handleMapClick = (location: {lat:number, lng: number}) => {
+  const handleMapClick = (location: { lat: number; lng: number }) => {
     const geocoder = new google.maps.Geocoder() // geocode 변환
-
-
   }
   const handleGooglePlaceSelected = (place: google.maps.places.PlaceResult) => {
-    if(!place.geometry?.location) return; 
-
-
+    if (!place.geometry?.location) return
   }
 
   return (
@@ -109,8 +123,74 @@ export default function CreateVenuePage() {
                     placeholder="장소명을 검색하세요(예: 경복궁, 강남역 맛집)"
                   ></KakaoPlaceSearch>
                 ) : (
-                  <PlaceAutoComplete></PlaceAutoComplete>
+                  <PlaceAutoComplete
+                    onPlaceSelected={handleGooglePlaceSelected}
+                    placeHolder={tr("searchPlaceHolder")}
+                  ></PlaceAutoComplete>
                 )}
+                <p className="text-sm text-gray-500 mt-1">
+                  {searchType === "kakao"
+                    ? "국내 장소는 카카오 검색을 추천합니다"
+                    : tr("searchHint")}
+                </p>
+              </div>
+              {/* map 구현*/}
+              <div>
+                <div className="flex justify-between items-center mb-2">
+                  <label className="text-sm font-medium text-gray-700">
+                    {t("selectOnMap")}
+                  </label>
+                  {formData.latitude !== 0 && formData.longitude !== 0 && (
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          latitude: 0,
+                          longitude: 0,
+                          address: "",
+                          city: "",
+                          district: "",
+                          googlePlaceId: "",
+                          googleName: "",
+                          googleAddress: "",
+                          name: {},
+                        }))
+                      }
+                      className="text-sm text-red-600 hover:text-red-800"
+                    >
+                      장소 선택 취소
+                    </button>
+                  )}
+                  {/*위치 선택*/}
+                  <MapPicker
+                    center={
+                      formData.latitude !== 0 && formData.longitude !== 0
+                        ? { lat: formData.latitude, lng: formData.longitude }
+                        : undefined
+                    }
+                    markerPosition={
+                      formData.latitude !== 0 && formData.longitude !== 0
+                        ? { lat: formData.latitude, lng: formData.longitude }
+                        : null
+                    }
+                    onLocationSelect={handleMapClick}
+                  />
+                </div>
+                {/*위치 표시 */}
+                <div className="text-sm text-gray-500 mt-2">
+                  {formData.latitude !== 0 && formData.longitude !== 0 ? (
+                    <>
+                      <p>{formData.address || "주소 정보 없음"}</p>
+                      <p className="text-xs text-gray-400">
+                        {t("coordinates")}: {formData.latitude.toFixed(6)},{" "}
+                        {formData.longitude.toFixed(6)}
+                      </p>
+                    </>
+                  ) : (
+                    <p>선택한 위치 없음</p>
+                  )}
+                </div>
               </div>
             </form>
           </div>
