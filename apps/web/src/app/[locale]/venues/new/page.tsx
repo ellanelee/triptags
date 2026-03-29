@@ -1,6 +1,7 @@
 "use client"
 import { GoogleMapsProvider } from "@/components/common/maps/GoogleMapsProvider"
 import { KakaoPlaceSearch } from "@/components/common/maps/KakaoPlaceSearch"
+import MapPicker from "@/components/common/maps/MapPicket"
 import { PlaceAutoComplete } from "@/components/common/maps/PlaceAutoComplete"
 import { useRouter } from "@/i18n/routing"
 import { useAuthStore } from "@/store/auth-store"
@@ -16,7 +17,10 @@ export default function CreateVenuePage() {
   const tr = useTranslations("CreateVenuePage")
   const t = useTranslations("Common")
   const { isAuthenticated, user } = useAuthStore()
-  const [venueCreateForm, setVenueCreateForm] = useState<IVenueCreate>({
+  const [searchType, setSearchType] = useState<"kakao" | "google">("kakao")
+  const [city, setCity] = useState("")
+  const [district, setDistrict] = useState("")
+  const [venueData, setVenueData] = useState<IVenueCreate>({
     language: "ko",
     name: "",
     description: "",
@@ -28,7 +32,7 @@ export default function CreateVenuePage() {
     district: "",
     details: "",
   })
-  const [googleDataForm, setGoogleDataForm] = useState<IGooglePlaceInfo>({
+  const [googleData, setGoogleData] = useState<IGooglePlaceInfo>({
     googlePlaceId: "",
     googleName: "",
     googleAddress: "",
@@ -36,31 +40,30 @@ export default function CreateVenuePage() {
     googleRating: undefined as number | undefined,
     googleUrl: "",
   })
-
   const [venueDetail, setVenueDetail] = useState<IVenueDetailInput>({
-  phoneNumber: '',
-  priceRange: '',
-  subCategory: '',
-  websiteUrl: '',
-  workHour: {},
-  description: {},
+    phoneNumber: "",
+    priceRange: "",
+    subCategory: "",
+    websiteUrl: "",
+    workHour: {},
+    description: {},
   })
-
-  const [searchType, setSearchType] = useState<"kakao" | "google">("kakao")
-  const [city, setCity] = useState("")
-  const [district, setDistrict] = useState("")
+  const mapPosition =
+    venueData.latitude !== null && venueData.longitude !== null
+      ? { lat: venueData.latitude, lng: venueData.longitude }
+      : null
 
   useEffect(() => {
     if (!isAuthenticated) router.replace("/venues")
   }, [isAuthenticated])
 
+  //카카오 지도객체에서 입력어 관련장소검색
   const handleKaKaoPlaceSelected = (place: IKakaoPlaceSelected) => {
-    const address = place.roadAddress || place.address || ""
     const addressParts = place.address.split(" ").filter(Boolean) // address format: 서울 강남구 역삼동 ...
     const city = addressParts[0] || ""
     const district = addressParts[1] || ""
     const details = addressParts.slice(2).join(" ")
-    setVenueCreateForm((prev) => ({
+    setVenueData((prev) => ({
       ...prev,
       language: "ko",
       name: place.name,
@@ -74,9 +77,56 @@ export default function CreateVenuePage() {
     }))
   }
 
-  const handleMapClick = (location: { lat: number; lng: number }) => {
-    const geocoder = new google.maps.Geocoder() // geocode 변환
+  //지도에서 위치를 선택하기 (역지오코딩,좌표를 주소로 변환)
+  const handleMapClick = async (location: { lat: number; lng: number }) => {
+    const geocoder = new google.maps.Geocoder() // geocode 변환 (lat, lng)
+    const { results } = await geocoder.geocode({ location })
+    const geocodeInfo = results[0]
+    let country = "KR"
+    let adminLevel1 = "" // 시/도
+    let locality = "" // 시 (경주시 등)
+    let sublocalityLevel1 = "" // 구 (강서구 등)
+    let adminLevel2 = "" // fallback
+    let route = ""
+    let streetNumber = ""
+    geocodeInfo.address_components?.forEach((component) => {
+      if (component.types.includes("country")) {
+        country = component.short_name
+      }
+      if (component.types.includes("administrative_area_level_1")) {
+        adminLevel1 = component.long_name
+      }
+      if (component.types.includes("locality")) {
+        locality = component.long_name
+      }
+      if (component.types.includes("sublocality_level_1")) {
+        sublocalityLevel1 = component.long_name
+      }
+      if (component.types.includes("administrative_area_level_2")) {
+        adminLevel2 = component.long_name
+      }
+      if (component.types.includes("route")) {
+        route = component.long_name
+      }
+      if (component.types.includes("street_number")) {
+        streetNumber = component.long_name
+      }
+      const city = adminLevel1 || ""
+      const district = locality || sublocalityLevel1 || adminLevel2 || ""
+      const details = [route, streetNumber].filter(Boolean).join(" ")
+      setVenueData((prev) => ({
+        ...prev,
+        latitude: location.lat,
+        longitude: location.lng,
+        city: city,
+        district: district,
+        country: country,
+        details: details,
+      }))
+    })
   }
+
+  //구글지도에서 선택
   const handleGooglePlaceSelected = (place: google.maps.places.PlaceResult) => {
     if (!place.geometry?.location) return
   }
@@ -138,23 +188,23 @@ export default function CreateVenuePage() {
               <div>
                 <div className="flex justify-between items-center mb-2">
                   <label className="text-sm font-medium text-gray-700">
-                    {t("selectOnMap")}
+                    {tr("selectOnMap")}
                   </label>
-                  {formData.latitude !== 0 && formData.longitude !== 0 && (
+                  {venueData.latitude !== 0 && venueData.longitude !== 0 && (
                     <button
                       type="button"
                       onClick={() =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          latitude: 0,
-                          longitude: 0,
-                          address: "",
+                        setVenueData((prev) => ({
+                          language: "ko",
+                          name: "",
+                          description: "",
+                          venueCategory: null,
+                          latitude: null,
+                          longitude: null,
+                          country: "",
                           city: "",
                           district: "",
-                          googlePlaceId: "",
-                          googleName: "",
-                          googleAddress: "",
-                          name: {},
+                          details: "",
                         }))
                       }
                       className="text-sm text-red-600 hover:text-red-800"
@@ -164,29 +214,21 @@ export default function CreateVenuePage() {
                   )}
                   {/*위치 선택*/}
                   <MapPicker
-                    center={
-                      formData.latitude !== 0 && formData.longitude !== 0
-                        ? { lat: formData.latitude, lng: formData.longitude }
-                        : undefined
-                    }
-                    markerPosition={
-                      formData.latitude !== 0 && formData.longitude !== 0
-                        ? { lat: formData.latitude, lng: formData.longitude }
-                        : null
-                    }
+                    center={mapPosition}
+                    markerPosition={mapPosition}
                     onLocationSelect={handleMapClick}
                   />
                 </div>
                 {/*위치 표시 */}
                 <div className="text-sm text-gray-500 mt-2">
-                  {formData.latitude !== 0 && formData.longitude !== 0 ? (
+                  {venueData.latitude !== 0 && venueData.longitude !== 0 ? (
                     <>
-                      <p>{formData.address || "주소 정보 없음"}</p>
+                      <p>{venueData.address || "주소 정보 없음"}</p>
                       <p className="text-xs text-gray-400">
-                        {t("coordinates")}: {formData.latitude.toFixed(6)},{" "}
-                        {formData.longitude.toFixed(6)}
-                      </p>
-                    </>
+                        {tr("coordinates")}: {venueData?.latitude.toFixed(6)},{" "}
+                        {venueData?.longitude.toFixed(6)}
+                      </p>venueData
+                    </>1
                   ) : (
                     <p>선택한 위치 없음</p>
                   )}
