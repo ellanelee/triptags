@@ -55,7 +55,7 @@ export function KakaoPlaceSearch({
       )
       const data = response.data
       console.log(data)
-      setResults(data.documents)
+      setResults(data.documents) //
     } catch (e) {
       console.error("카카오 장소 검색 실패", e)
       setResults([])
