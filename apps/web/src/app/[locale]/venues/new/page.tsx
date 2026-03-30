@@ -1,9 +1,10 @@
 "use client"
 import { GoogleMapsProvider } from "@/components/common/maps/GoogleMapsProvider"
 import { KakaoPlaceSearch } from "@/components/common/maps/KakaoPlaceSearch"
-import MapPicker from "@/components/common/maps/MapPicket"
+import MapPicker from "@/components/common/maps/MapPicker"
 import { PlaceAutoComplete } from "@/components/common/maps/PlaceAutoComplete"
 import { useRouter } from "@/i18n/routing"
+import { localeCountryName } from "@/lib/utils/country"
 import { useAuthStore } from "@/store/auth-store"
 import { IGooglePlaceInfo } from "@/types/maps/google"
 import { IKakaoPlaceSelected } from "@/types/maps/kakao"
@@ -48,8 +49,10 @@ export default function CreateVenuePage() {
     workHour: {},
     description: {},
   })
-  const mapPosition =
-    venueData.latitude !== null && venueData.longitude !== null
+
+  const { latitude: lat, longitude: lng } = venueData
+  const currentCoordinates =
+    venueData.latitude && venueData.longitude
       ? { lat: venueData.latitude, lng: venueData.longitude }
       : null
 
@@ -70,7 +73,7 @@ export default function CreateVenuePage() {
       venueCategory: place.category,
       latitude: place.latitude,
       longitude: place.longitude,
-      country: "KR",
+      country: localeCountryName("KR", locale),
       city: city,
       district: district,
       details: details,
@@ -82,7 +85,7 @@ export default function CreateVenuePage() {
     const geocoder = new google.maps.Geocoder() // geocode 변환 (lat, lng)
     const { results } = await geocoder.geocode({ location })
     const geocodeInfo = results[0]
-    let country = "KR"
+    let countryCode = localeCountryName("KR", locale)
     let adminLevel1 = "" // 시/도
     let locality = "" // 시 (경주시 등)
     let sublocalityLevel1 = "" // 구 (강서구 등)
@@ -91,7 +94,7 @@ export default function CreateVenuePage() {
     let streetNumber = ""
     geocodeInfo.address_components?.forEach((component) => {
       if (component.types.includes("country")) {
-        country = component.short_name
+        countryCode = component.short_name
       }
       if (component.types.includes("administrative_area_level_1")) {
         adminLevel1 = component.long_name
@@ -111,6 +114,7 @@ export default function CreateVenuePage() {
       if (component.types.includes("street_number")) {
         streetNumber = component.long_name
       }
+      const countryDisplayName = localeCountryName(countryCode, locale)
       const city = adminLevel1 || ""
       const district = locality || sublocalityLevel1 || adminLevel2 || ""
       const details = [route, streetNumber].filter(Boolean).join(" ")
@@ -120,7 +124,7 @@ export default function CreateVenuePage() {
         longitude: location.lng,
         city: city,
         district: district,
-        country: country,
+        country: countryDisplayName,
         details: details,
       }))
     })
@@ -164,7 +168,7 @@ export default function CreateVenuePage() {
                         : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                     }`}
                   >
-                    구글 (해외)x
+                    구글 (해외)
                   </button>
                 </div>
                 {searchType === "kakao" ? (
@@ -209,28 +213,31 @@ export default function CreateVenuePage() {
                       }
                       className="text-sm text-red-600 hover:text-red-800"
                     >
-                      장소 선택 취소
+                      {tr("selectInit")}
                     </button>
                   )}
-                  {/*위치 선택*/}
-                  <MapPicker
-                    center={mapPosition}
-                    markerPosition={mapPosition}
-                    onLocationSelect={handleMapClick}
-                  />
                 </div>
+                {/*위치 선택*/}
+                <MapPicker
+                  center={currentCoordinates ?? undefined}
+                  markerPosition={currentCoordinates}
+                  onLocationSelect={handleMapClick}
+                />
                 {/*위치 표시 */}
                 <div className="text-sm text-gray-500 mt-2">
                   {venueData.latitude !== 0 && venueData.longitude !== 0 ? (
                     <>
-                      <p>{venueData.address || "주소 정보 없음"}</p>
+                      <p>
+                        {`${venueData.country}, ${venueData.city} ${venueData.district} ${venueData.details}` ||
+                          `{tr("noLocationInfo")`}
+                      </p>
                       <p className="text-xs text-gray-400">
-                        {tr("coordinates")}: {venueData?.latitude.toFixed(6)},{" "}
-                        {venueData?.longitude.toFixed(6)}
-                      </p>venueData
-                    </>1
+                        {tr("coordinates")}: {venueData.latitude?.toFixed(6)},{" "}
+                        {venueData.longitude?.toFixed(6)}
+                      </p>
+                    </>
                   ) : (
-                    <p>선택한 위치 없음</p>
+                    <p>{tr("noLocationSelected")}</p>
                   )}
                 </div>
               </div>
