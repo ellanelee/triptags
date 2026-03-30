@@ -34,7 +34,9 @@ export default function MapPicker({
 
   return (
     <div>
-      <div className={`w-full h-100 rounded-lg overflow-hidden ${className}`}>
+      <div
+        className={`w-full h-[400px] rounded-lg overflow-hidden ${className}`}
+      >
         <Map
           defaultCenter={center}
           defaultZoom={zoom}
