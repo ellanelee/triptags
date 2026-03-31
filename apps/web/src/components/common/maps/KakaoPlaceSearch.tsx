@@ -17,24 +17,28 @@ export function KakaoPlaceSearch({
 
   //debounce 처리
   useEffect(() => {
-    if (!inputValue.trim()) return
+    const trimmedValue = inputValue.trim()
+    //입력값이 없는 경우 초기화
+    if (!trimmedValue) {
+      setResults([])
+      setExposeResults(false)
+      setLoading(false)
+      return
+    }
     const timeoutId = setTimeout(() => {
-      searchPlaces(inputValue)
+      searchPlaces(trimmedValue)
     }, 300)
     return () => clearTimeout(timeoutId)
   }, [inputValue])
 
   //검색어 (상태설정)
   const handleInputChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(e.target.value)
+    const targetValue = e.target.value
+    setInputValue(targetValue)
   }
 
   //Places반환 (검색결과 상태설정)
   const searchPlaces = async (query: string) => {
-    if (!query.trim()) {
-      setResults([])
-      return
-    }
     const apiKey = process.env.NEXT_PUBLIC_KAKAO_REST_API_KEY
     if (!apiKey) {
       console.error("Kakao Api Key is not configured")
@@ -53,12 +57,16 @@ export function KakaoPlaceSearch({
           },
         },
       )
-      const data = response.data
-      console.log(data)
-      setResults(data.documents) //
+      console.log(response)
+      const documents = response.data.documents ?? []
+      setResults(documents)
+      setExposeResults(documents.length > 0)
     } catch (e) {
       console.error("카카오 장소 검색 실패", e)
       setResults([])
+      setExposeResults(false)
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -81,13 +89,15 @@ export function KakaoPlaceSearch({
   }
 
   return (
-    <div>
+    <div className="relative">
       {/* 입력 */}
       <input
         type="text"
         value={inputValue}
         onChange={handleInputChange}
-        onFocus={() => results.length > 0 && setExposeResults(true)}
+        onFocus={() => {
+          if (results.length > 0) setExposeResults(true)
+        }}
         placeholder={placeholder}
         className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-primary-500 focus:border-primary-500"
       />
@@ -98,30 +108,41 @@ export function KakaoPlaceSearch({
       )}
 
       {/* 결과표시 */}
-      {exposeResults &&
-        results.length > 0 &&
-        results.map((place) => (
-          <ul>
-            <li
-              key={place.id}
-              onClick={() => handlePlaceClick(place)}
-              className=""
-            >
-              <p>{place.place_name}</p>
-              <p>{place.road_address_name}</p>
-              {place.category_group_name && <p>{place.category_group_name}</p>}
-            </li>
-          </ul>
-        ))}
+      {exposeResults && inputValue.trim() && (
+        <ul className="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
+          {results.length > 0
+            ? results.map((place) => (
+                <li
+                  key={place.id}
+                  onClick={() => handlePlaceClick(place)}
+                  className=""
+                >
+                  <span>{place.place_name}, </span>
+                  <span>{place.road_address_name} </span>
+                  {place.category_group_name && (
+                    <span>({place.category_group_name}) </span>
+                  )}
+                </li>
+              ))
+            : !loading && (
+                <li className="px-3 py-2 text-sm text-gray-500">
+                  {t("noResults")}
+                </li>
+              )}
+        </ul>
+      )}
       {exposeResults && results.length === 0 && inputValue && !loading && (
         <div>
           <p>{t("noResults")}</p>
         </div>
       )}
 
-      {/* 결과표시 */}
+      {/* 외부 클릭시 입력내용 제거 */}
       {exposeResults && (
-        <div className="" onClick={() => setExposeResults(false)} />
+        <div
+          onClick={() => setExposeResults(false)}
+          className="fixed inset-0 z-0"
+        />
       )}
     </div>
   )

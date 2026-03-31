@@ -1,3 +1,4 @@
+//i18n-iso에서 국가코드, 언어별 국가정보 연결
 import * as countries from "i18n-iso-countries"
 import ko from "i18n-iso-countries/langs/ko.json"
 import en from "i18n-iso-countries/langs/en.json"
@@ -20,7 +21,7 @@ function init() {
   countries.registerLocale(fr)
   countries.registerLocale(de)
 }
-//국가명 변환
+//언어별 국가명 변환
 export function localeCountryName(
   countryCode: string,
   lang: string = "ko",
