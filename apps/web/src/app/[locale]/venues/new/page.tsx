@@ -8,6 +8,7 @@ import { localeCountryName } from "@/lib/utils/country"
 import { useAuthStore } from "@/store/auth-store"
 import { IGooglePlaceInfo } from "@/types/maps/google"
 import { IKakaoPlaceSelected } from "@/types/maps/kakao"
+import { PositionInfo } from "@/types/types"
 import { IVenueCreate, IVenueDetailInput } from "@triptags/shared"
 import { useLocale, useTranslations } from "next-intl"
 import { useEffect, useState } from "react"
@@ -21,6 +22,7 @@ export default function CreateVenuePage() {
   const [searchType, setSearchType] = useState<"kakao" | "google">("kakao")
   const [city, setCity] = useState("")
   const [district, setDistrict] = useState("")
+  const [markerPosition, setMarkerPosition] = useState<PositionInfo>({})
   const [venueData, setVenueData] = useState<IVenueCreate>({
     language: "ko",
     name: "",
@@ -37,8 +39,8 @@ export default function CreateVenuePage() {
     googlePlaceId: "",
     googleName: "",
     googleAddress: "",
-    googleTypes: [] as string[],
-    googleRating: undefined as number | undefined,
+    googleTypes: [],
+    googleRating: undefined,
     googleUrl: "",
   })
   const [venueDetail, setVenueDetail] = useState<IVenueDetailInput>({
@@ -93,19 +95,16 @@ export default function CreateVenuePage() {
     let route = ""
     let streetNumber = ""
     geocodeInfo.address_components?.forEach((component) => {
-      if (component.types.includes("country")) {
+      if (component.types.includes("country")) {  //KR
         countryCode = component.short_name
       }
-      if (component.types.includes("administrative_area_level_1")) {
+      if (component.types.includes("administrative_area_level_1")) { //서울특별시 혹은 경기도
         adminLevel1 = component.long_name
       }
-      if (component.types.includes("locality")) {
-        locality = component.long_name
-      }
-      if (component.types.includes("sublocality_level_1")) {
+      if (component.types.includes("sublocality_level_1")) { //도로명 주소의 도로명
         sublocalityLevel1 = component.long_name
       }
-      if (component.types.includes("administrative_area_level_2")) {
+      if (component.types.includes("administrative_area_level_2")) { 
         adminLevel2 = component.long_name
       }
       if (component.types.includes("route")) {
@@ -114,20 +113,20 @@ export default function CreateVenuePage() {
       if (component.types.includes("street_number")) {
         streetNumber = component.long_name
       }
-      const countryDisplayName = localeCountryName(countryCode, locale)
-      const city = adminLevel1 || ""
-      const district = locality || sublocalityLevel1 || adminLevel2 || ""
-      const details = [route, streetNumber].filter(Boolean).join(" ")
-      setVenueData((prev) => ({
-        ...prev,
-        latitude: location.lat,
-        longitude: location.lng,
-        city: city,
-        district: district,
-        country: countryDisplayName,
-        details: details,
-      }))
     })
+    const countryDisplayName = localeCountryName(countryCode, locale)
+    const city = adminLevel1 || ""
+    const district = locality || sublocalityLevel1 || adminLevel2 || ""
+    const details = [route, streetNumber].filter(Boolean).join(" ")
+    setVenueData((prev) => ({
+      ...prev,
+      latitude: location.lat,
+      longitude: location.lng,
+      city: city,
+      district: district,
+      country: countryDisplayName,
+      details: details,
+    }))
   }
 
   //구글지도에서 선택
@@ -194,7 +193,7 @@ export default function CreateVenuePage() {
                   <label className="text-sm font-medium text-gray-700">
                     {tr("selectOnMap")}
                   </label>
-                  {venueData.latitude !== 0 && venueData.longitude !== 0 && (
+                  {venueData.latitude && venueData.longitude && (
                     <button
                       type="button"
                       onClick={() =>
@@ -223,13 +222,12 @@ export default function CreateVenuePage() {
                   markerPosition={currentCoordinates}
                   onLocationSelect={handleMapClick}
                 />
-                {/*위치 표시 */}
+                {/*위치에 대한 내용 표시 */}
                 <div className="text-sm text-gray-500 mt-2">
-                  {venueData.latitude !== 0 && venueData.longitude !== 0 ? (
+                  {venueData.latitude && venueData.longitude ? (
                     <>
                       <p>
-                        {`${venueData.country}, ${venueData.city} ${venueData.district} ${venueData.details}` ||
-                          `{tr("noLocationInfo")`}
+                        {`${venueData.country}, ${venueData.city} ${venueData.district} ${venueData.details}`}
                       </p>
                       <p className="text-xs text-gray-400">
                         {tr("coordinates")}: {venueData.latitude?.toFixed(6)},{" "}
