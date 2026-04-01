@@ -148,7 +148,7 @@
     "selectOnMap": "지도에서 위치 선택",
     "selectInit": "장소선택 취소",
     "noLocationSelected": "선택한 위치 없음",
-    "noLocationInfo": "주소 정보없음",
+    "noLocationInfo": "위치 정보없음",
     "coordinates": "좌표",
     "name": "장소 이름",
     "category": "카테고리",

@@ -60,7 +60,7 @@ export function KakaoPlaceSearch({
       console.log(response)
       const documents = response.data.documents ?? []
       setResults(documents)
-      setExposeResults(documents.length > 0)
+      setExposeResults(true)
     } catch (e) {
       console.error("카카오 장소 검색 실패", e)
       setResults([])
@@ -115,7 +115,7 @@ export function KakaoPlaceSearch({
                 <li
                   key={place.id}
                   onClick={() => handlePlaceClick(place)}
-                  className=""
+                  className="px-3 py-2 cursor-pointer hover:bg-gray-100"
                 >
                   <span>{place.place_name}, </span>
                   <span>{place.road_address_name} </span>
@@ -130,11 +130,6 @@ export function KakaoPlaceSearch({
                 </li>
               )}
         </ul>
-      )}
-      {exposeResults && results.length === 0 && inputValue && !loading && (
-        <div>
-          <p>{t("noResults")}</p>
-        </div>
       )}
 
       {/* 외부 클릭시 입력내용 제거 */}

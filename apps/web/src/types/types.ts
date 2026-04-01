@@ -30,3 +30,8 @@ export type RegionInfo = {
   level: number
   parent?: RegionInfo | null
 }
+
+export type PositionInfo = {
+  latitude?: number
+  longitude?: number
+}

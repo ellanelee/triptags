@@ -6,6 +6,7 @@ import { useCallback, useState } from "react"
 
 const defaultCenter = { lat: 37.5665, lng: 126.978 } //Seoul, KR(중심위치)
 
+//지도와 마커표시 ( Map Click시 Marker의 Latlng의 좌표가 
 export default function MapPicker({
   center = defaultCenter,
   zoom = 13,

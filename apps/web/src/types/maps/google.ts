@@ -6,3 +6,13 @@ export interface IGooglePlaceInfo {
   googleRating: number | undefined
   googleUrl: string
 }
+
+export interface IParsedGeocodeAddress {
+  countryCode: string
+  country: string
+  city: string
+  district: string
+  details: string
+  postalCode: string
+  formattedAddress: string 
+}
