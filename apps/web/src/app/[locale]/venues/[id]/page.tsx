@@ -48,8 +48,8 @@ export default function VenueDetailPage({
   }, [venueId, reviewPageInfo.items])
 
   const handleEditReview = async () => {
-    if (!selectReview) return
-    router.push(`/review/${selectReview}`)
+    if (!selectReview || !venue.data?.id) return
+    router.replace(`/venues/${venue.data.id}/review/${selectReview.reviewId}`)
   }
   const handleDeleteReview = async () => {
     if (!selectReview) return
