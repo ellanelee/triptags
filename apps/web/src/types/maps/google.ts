@@ -9,7 +9,7 @@ export interface IGooglePlaceInfo {
 
 export interface IParsedGeocodeAddress {
   countryCode: string
-  country: string
+  countryName: string
   city: string
   district: string
   details: string

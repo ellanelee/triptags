@@ -5,6 +5,7 @@ import MapPicker from "@/components/common/maps/MapPicker"
 import { PlaceAutoComplete } from "@/components/common/maps/PlaceAutoComplete"
 import { useRouter } from "@/i18n/routing"
 import { localeCountryName } from "@/lib/utils/country"
+import { parseGeoCodeAddress } from "@/lib/utils/getGoogleAddress"
 import { useAuthStore } from "@/store/auth-store"
 import { IGooglePlaceInfo } from "@/types/maps/google"
 import { IKakaoPlaceSelected } from "@/types/maps/kakao"
@@ -20,8 +21,7 @@ export default function CreateVenuePage() {
   const t = useTranslations("Common")
   const { isAuthenticated, user } = useAuthStore()
   const [searchType, setSearchType] = useState<"kakao" | "google">("kakao")
-  const [city, setCity] = useState("")
-  const [district, setDistrict] = useState("")
+  const [countryName, setCountryName] = useState("")
   const [markerPosition, setMarkerPosition] = useState<PositionInfo>({})
   const [venueData, setVenueData] = useState<IVenueCreate>({
     language: "ko",
@@ -87,46 +87,31 @@ export default function CreateVenuePage() {
     const geocoder = new google.maps.Geocoder() // geocode 변환 (lat, lng)
     const { results } = await geocoder.geocode({ location })
     const geocodeInfo = results[0]
-    let countryCode = localeCountryName("KR", locale)
+    if (geocodeInfo) return
+
+    let countryName = localeCountryName("KR", locale)
     let adminLevel1 = "" // 시/도
     let locality = "" // 시 (경주시 등)
     let sublocalityLevel1 = "" // 구 (강서구 등)
     let adminLevel2 = "" // fallback
     let route = ""
     let streetNumber = ""
-    geocodeInfo.address_components?.forEach((component) => {
-      if (component.types.includes("country")) {  //KR
-        countryCode = component.short_name
-      }
-      if (component.types.includes("administrative_area_level_1")) { //서울특별시 혹은 경기도
-        adminLevel1 = component.long_name
-      }
-      if (component.types.includes("sublocality_level_1")) { //도로명 주소의 도로명
-        sublocalityLevel1 = component.long_name
-      }
-      if (component.types.includes("administrative_area_level_2")) { 
-        adminLevel2 = component.long_name
-      }
-      if (component.types.includes("route")) {
-        route = component.long_name
-      }
-      if (component.types.includes("street_number")) {
-        streetNumber = component.long_name
-      }
+
+    const parsedResult = parseGeoCodeAddress({
+      result: geocodeInfo,
+      localeCountryName,
+      locale,
     })
-    const countryDisplayName = localeCountryName(countryCode, locale)
-    const city = adminLevel1 || ""
-    const district = locality || sublocalityLevel1 || adminLevel2 || ""
-    const details = [route, streetNumber].filter(Boolean).join(" ")
     setVenueData((prev) => ({
       ...prev,
       latitude: location.lat,
       longitude: location.lng,
-      city: city,
-      district: district,
-      country: countryDisplayName,
-      details: details,
+      city: parsedResult.countryCode,
+      district: parsedResult.district,
+      country: parsedResult.countryCode,
+      details: parsedResult.details,
     }))
+    setCountryName(parsedResult.countryName)
   }
 
   //구글지도에서 선택

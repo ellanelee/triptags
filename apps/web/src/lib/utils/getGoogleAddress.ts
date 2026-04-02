@@ -75,10 +75,10 @@ const details = Array.from(new Set(detailCandidates.filter(Boolean))).join(" ")
 
   return {
     countryCode,
-    country : country,
-    city: city,
-    district: district,
-    details: details,
+    countryName: country,
+    city,
+    district,
+    details,
   }
 }
 
