@@ -13,6 +13,4 @@ export interface IParsedGeocodeAddress {
   city: string
   district: string
   details: string
-  postalCode: string
-  formattedAddress: string 
 }
