@@ -6,7 +6,6 @@ export interface IVenueDetailInput {
   subCategory: string | null
   websiteUrl: string | null
   workHour: I18nText | null
-  description: I18nText | null
 }
 
 export interface IVenueDetailResponse {

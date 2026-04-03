@@ -20,7 +20,6 @@ export default function MapPicker({
   } | null>(null)
 
   const markerPosition = externalMarkerPosition ?? internalMarkerPosition
-
   const onMapClick = useCallback(
     (e: any) => {
       const latLng = e.detail?.latLng

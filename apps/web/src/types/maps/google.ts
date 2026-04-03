@@ -13,4 +13,5 @@ export interface IParsedGeocodeAddress {
   city: string
   district: string
   details: string
+  placeId?: string
 }
