@@ -75,11 +75,12 @@ export default function CreateVenuePage() {
       venueCategory: place.category,
       latitude: place.latitude,
       longitude: place.longitude,
-      country: localeCountryName("KR", locale),
+      country: "KR",
       city: city,
       district: district,
       details: details,
     }))
+    setCountryName(localeCountryName("KR", locale))
   }
 
   //지도에서 위치를 선택하기 (역지오코딩,좌표를 주소로 변환)
@@ -87,7 +88,7 @@ export default function CreateVenuePage() {
     const geocoder = new google.maps.Geocoder() // geocode 변환 (lat, lng)
     const { results } = await geocoder.geocode({ location })
     const geocodeInfo = results[0]
-    if (geocodeInfo) return
+    if (!geocodeInfo) return
 
     let countryName = localeCountryName("KR", locale)
     let adminLevel1 = "" // 시/도
@@ -102,13 +103,14 @@ export default function CreateVenuePage() {
       localeCountryName,
       locale,
     })
+    console.log(parsedResult)
     setVenueData((prev) => ({
       ...prev,
       latitude: location.lat,
       longitude: location.lng,
-      city: parsedResult.countryCode,
-      district: parsedResult.district,
       country: parsedResult.countryCode,
+      city: parsedResult.city,
+      district: parsedResult.district,
       details: parsedResult.details,
     }))
     setCountryName(parsedResult.countryName)
@@ -212,7 +214,8 @@ export default function CreateVenuePage() {
                   {venueData.latitude && venueData.longitude ? (
                     <>
                       <p>
-                        {`${venueData.country}, ${venueData.city} ${venueData.district} ${venueData.details}`}
+                        {`${countryName}, ${venueData.city} ${venueData.district} ${venueData.details}`}
+                        <span>{tr("checkAddress")}</span>
                       </p>
                       <p className="text-xs text-gray-400">
                         {tr("coordinates")}: {venueData.latitude?.toFixed(6)},{" "}

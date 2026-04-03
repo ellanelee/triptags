@@ -1,13 +1,13 @@
 import { IParsedGeocodeAddress } from "@/types/maps/google"
-import { isNotFoundError } from "next/dist/client/components/not-found"
 
 //googleGeoCodeAddress의 내용을 받아 내용 추출
-private function getAddressComponent(
+function getAddressComponent(
   components: google.maps.GeocoderAddressComponent[],
   type: string,
   valueType: "long_name" | "short_name" = "long_name",
 ) {
   const found = components.find((component) => component.types.includes(type))
+  console.log("addresss각 항목 세부내용", found)
   return found?.[valueType] ?? ""
 }
 
@@ -16,7 +16,7 @@ export function parseGeoCodeAddress(params: {
   result: google.maps.GeocoderResult
   localeCountryName: (code: string, locale: string) => string
   locale: string
-}):IParsedGeocodeAddress {
+}): IParsedGeocodeAddress {
   const { result, localeCountryName, locale } = params
   const components = result.address_components ?? []
 
@@ -31,14 +31,14 @@ export function parseGeoCodeAddress(params: {
   //광역행정구역
   const adminLevel1 = getAddressComponent(
     components,
-    "administratative_area_level_1",
+    "administrative_area_level_1",
   )
   const locality = getAddressComponent(components, "locality")
 
   //소단위 행정구역
   const adminLevel2 = getAddressComponent(
     components,
-    "administratative_area_level_2",
+    "administrative_area_level_2",
   )
 
   const sublocalityLevel1 = getAddressComponent(
@@ -66,13 +66,15 @@ export function parseGeoCodeAddress(params: {
       ? sublocalityLevel1 || adminLevel2 || ""
       : adminLevel2 || sublocalityLevel1 || neighborhood || ""
 
-const detailCandidates =
-   countryCode === "KR"
-   ? [sublocalityLevel2, route, streetNumber, premise, subpremise]
-    : [neighborhood, route, streetNumber, premise, subpremise]
+  const detailCandidates =
+    countryCode === "KR"
+      ? [sublocalityLevel2, route, streetNumber, premise, subpremise]
+      : [neighborhood, route, streetNumber, premise, subpremise]
 
-const details = Array.from(new Set(detailCandidates.filter(Boolean))).join(" ")
-
+  const details = Array.from(new Set(detailCandidates.filter(Boolean))).join(
+    " ",
+  )
+  console.log("parseGeoCodeAddress", country, city, district, details)
   return {
     countryCode,
     countryName: country,
@@ -81,4 +83,3 @@ const details = Array.from(new Set(detailCandidates.filter(Boolean))).join(" ")
     details,
   }
 }
-
