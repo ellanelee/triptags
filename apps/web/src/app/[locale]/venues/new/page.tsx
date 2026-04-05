@@ -5,11 +5,11 @@ import MapPicker from "@/components/common/maps/MapPicker"
 import { PlaceAutoComplete } from "@/components/common/maps/PlaceAutoComplete"
 import { useRouter } from "@/i18n/routing"
 import { localeCountryName } from "@/lib/utils/country"
-import { parseGeoCodeAddress } from "@/lib/utils/getGoogleAddress"
+import { parseGeoCodeAddress } from "@/lib/utils/googleaddress"
+import { syncGoogleVenueDetails } from "@/lib/utils/googledetails"
 import { useAuthStore } from "@/store/auth-store"
 import { IGooglePlaceInfo } from "@/types/maps/google"
 import { IKakaoPlaceSelected } from "@/types/maps/kakao"
-import { PositionInfo } from "@/types/types"
 import { IVenueCreate, IVenueDetailInput } from "@triptags/shared"
 import { useLocale, useTranslations } from "next-intl"
 import { useEffect, useState } from "react"
@@ -22,7 +22,7 @@ export default function CreateVenuePage() {
   const { isAuthenticated, user } = useAuthStore()
   const [searchType, setSearchType] = useState<"kakao" | "google">("kakao")
   const [countryName, setCountryName] = useState("")
-  const [markerPosition, setMarkerPosition] = useState<PositionInfo>({})
+  const [placeId, setPlaceId] = useState<string | null>(null)
   const [venueData, setVenueData] = useState<IVenueCreate>({
     language: "ko",
     name: "",
@@ -49,7 +49,6 @@ export default function CreateVenuePage() {
     subCategory: "",
     websiteUrl: "",
     workHour: {},
-    description: {},
   })
 
   const { latitude: lat, longitude: lng } = venueData
@@ -89,15 +88,6 @@ export default function CreateVenuePage() {
     const { results } = await geocoder.geocode({ location })
     const geocodeInfo = results[0]
     if (!geocodeInfo) return
-
-    let countryName = localeCountryName("KR", locale)
-    let adminLevel1 = "" // 시/도
-    let locality = "" // 시 (경주시 등)
-    let sublocalityLevel1 = "" // 구 (강서구 등)
-    let adminLevel2 = "" // fallback
-    let route = ""
-    let streetNumber = ""
-
     const parsedResult = parseGeoCodeAddress({
       result: geocodeInfo,
       localeCountryName,
@@ -114,6 +104,10 @@ export default function CreateVenuePage() {
       details: parsedResult.details,
     }))
     setCountryName(parsedResult.countryName)
+    if (parsedResult.placeId) setPlaceId(parsedResult.placeId)
+    if (placeId) {
+      syncGoogleVenueDetails(placeId, { setVenueData, setVenueDetails })
+    }
   }
 
   //구글지도에서 선택

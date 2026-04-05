@@ -1,6 +1,11 @@
 interface SyncCallback {
     onVenueUpdate: (data: {name: string}) => void
-    onDetailUpdate: (data: {phoneNumber: string, websiteUrl: string}) => void 
+    onDetailUpdate: (data: {
+      phoneNumber?: string, 
+      websiteUrl?: string,
+      priceRange?: string, 
+      workHour?: string    
+    }) => void 
 }
 
 export function syncGoogleVenueDetails(placeId: string, callbacks: SyncCallback ) {
@@ -20,6 +25,9 @@ export function syncGoogleVenueDetails(placeId: string, callbacks: SyncCallback 
         callbacks.onDetailUpdate(({
           phoneNumber: place.formatted_phone_number || "",
           websiteUrl: place.website ||"",
+          priceRange: place.price_level || "",
+          workHour:place.opening_hours ||"",
+
         }))
       }
     },
