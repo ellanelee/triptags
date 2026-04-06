@@ -1,34 +1,37 @@
 interface SyncCallback {
-    onVenueUpdate: (data: {name: string}) => void
-    onDetailUpdate: (data: {
-      phoneNumber?: string, 
-      websiteUrl?: string,
-      priceRange?: string, 
-      workHour?: string    
-    }) => void 
+  onVenueUpdate: (data: { name: string }) => void
+  onDetailUpdate: (data: {
+    phoneNumber?: string
+    websiteUrl?: string
+    workHour?: any
+  }) => void
 }
 
-export function syncGoogleVenueDetails(placeId: string, callbacks: SyncCallback ) {
+export function syncGoogleVenueDetails(
+  placeId: string,
+  callbacks: SyncCallback,
+) {
   if (!placeId) return
 
   const service = new google.maps.places.PlacesService(
-    document.createElement("div"),
+    document.createElement("div"), //placeService가 HTML요소를 참조하여 작동함
   )
   service.getDetails(
+    //설정 객체(placeId와 원하는 field)
     {
       placeId: placeId,
       fields: ["name", "formatted_phone_number", "website", "opening_hours"],
     },
     (place, status) => {
+      //place는 response 객체, status 상태
       if (status === google.maps.places.PlacesServiceStatus.OK && place) {
-        callbacks.onVenueUpdate({name: place.name || ""})
-        callbacks.onDetailUpdate(({
+        console.log("API Response: ", { place, status })
+        callbacks.onVenueUpdate({ name: place.name || "" })
+        callbacks.onDetailUpdate({
           phoneNumber: place.formatted_phone_number || "",
-          websiteUrl: place.website ||"",
-          priceRange: place.price_level || "",
-          workHour:place.opening_hours ||"",
-
-        }))
+          websiteUrl: place.website || "",
+          workHour: place.opening_hours || {},
+        })
       }
     },
   )

@@ -106,7 +106,14 @@ export default function CreateVenuePage() {
     setCountryName(parsedResult.countryName)
     if (parsedResult.placeId) setPlaceId(parsedResult.placeId)
     if (placeId) {
-      syncGoogleVenueDetails(placeId, { setVenueData, setVenueDetails })
+      syncGoogleVenueDetails(placeId, {
+        onVenueUpdate: (data) => {
+          setVenueData((prev) => ({ ...prev, ...data }))
+        },
+        onDetailUpdate: (data) => {
+          setVenueData((prev) => ({ ...prev, ...data }))
+        },
+      })
     }
   }
 
@@ -154,7 +161,7 @@ export default function CreateVenuePage() {
                 {searchType === "kakao" ? (
                   <KakaoPlaceSearch
                     onPlaceSelected={handleKaKaoPlaceSelected}
-                    placeholder="장소명을 검색하세요(예: 경복궁, 강남역 맛집)"
+                    placeholder={tr("searchPlaceHolder")}
                   ></KakaoPlaceSearch>
                 ) : (
                   <PlaceAutoComplete

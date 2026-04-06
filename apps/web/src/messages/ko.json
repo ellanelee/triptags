@@ -143,7 +143,7 @@
   "CreateVenuePage": {
     "title": "장소 등록하기",
     "searchPlace": "장소 검색",
-    "searchPlaceholder": "장소 이름이나 주소를 검색하세요...",
+    "searchPlaceHolder": "장소 이름이나 주소를 검색하세요...(예: 경복궁, 강남역 맛집)",
     "searchHint": "Google에서 장소를 검색하면 정보가 자동으로 입력됩니다",
     "selectOnMap": "지도에서 위치 선택",
     "selectInit": "장소선택 취소",
