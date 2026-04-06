@@ -61,6 +61,41 @@ export default function CreateVenuePage() {
     if (!isAuthenticated) router.replace("/venues")
   }, [isAuthenticated])
 
+  const updateVenueFromGoogle = (
+    result: google.maps.GeocoderResult | google.maps.places.PlaceResult,
+  ) => {
+    if (!result.geometry?.location) return
+    const parsedResult = parseGeoCodeAddress({
+      result: result as google.maps.GeocoderResult,
+      localeCountryName,
+      locale,
+    })
+    const lat = result.geometry.location.lat()
+    const lng = result.geometry.location.lng()
+    const placeId = result.place_id
+    console.log(parsedResult)
+    setVenueData((prev) => ({
+      ...prev,
+      latitude: lat,
+      longitude: lng,
+      country: parsedResult.countryCode,
+      city: parsedResult.city,
+      district: parsedResult.district,
+      details: parsedResult.details,
+    }))
+    setCountryName(parsedResult.countryName)
+    if (parsedResult.placeId) setPlaceId(parsedResult.placeId)
+    if (placeId) {
+      syncGoogleVenueDetails(placeId, {
+        onVenueUpdate: (data) => {
+          setVenueData((prev) => ({ ...prev, ...data }))
+        },
+        onDetailUpdate: (data) => {
+          setVenueData((prev) => ({ ...prev, ...data }))
+        },
+      })
+    }
+  }
   //카카오 지도객체에서 입력어 관련장소검색
   const handleKaKaoPlaceSelected = (place: IKakaoPlaceSelected) => {
     const addressParts = place.address.split(" ").filter(Boolean) // address format: 서울 강남구 역삼동 ...
@@ -86,40 +121,15 @@ export default function CreateVenuePage() {
   const handleMapClick = async (location: { lat: number; lng: number }) => {
     const geocoder = new google.maps.Geocoder() // geocode 변환 (lat, lng)
     const { results } = await geocoder.geocode({ location })
-    const geocodeInfo = results[0]
-    if (!geocodeInfo) return
-    const parsedResult = parseGeoCodeAddress({
-      result: geocodeInfo,
-      localeCountryName,
-      locale,
-    })
-    console.log(parsedResult)
-    setVenueData((prev) => ({
-      ...prev,
-      latitude: location.lat,
-      longitude: location.lng,
-      country: parsedResult.countryCode,
-      city: parsedResult.city,
-      district: parsedResult.district,
-      details: parsedResult.details,
-    }))
-    setCountryName(parsedResult.countryName)
-    if (parsedResult.placeId) setPlaceId(parsedResult.placeId)
-    if (placeId) {
-      syncGoogleVenueDetails(placeId, {
-        onVenueUpdate: (data) => {
-          setVenueData((prev) => ({ ...prev, ...data }))
-        },
-        onDetailUpdate: (data) => {
-          setVenueData((prev) => ({ ...prev, ...data }))
-        },
-      })
+    if(results[0]){
+       updateVenueFromGoogle(results[0])
     }
   }
 
   //구글지도에서 선택
   const handleGooglePlaceSelected = (place: google.maps.places.PlaceResult) => {
-    if (!place.geometry?.location) return
+    console.log("구글에서 찍은 장소 위치: ", place)
+    updateVenueFromGoogle(place)
   }
 
   return (

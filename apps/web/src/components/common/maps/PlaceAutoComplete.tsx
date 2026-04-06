@@ -50,7 +50,7 @@ export function PlaceAutoComplete({
         fields: [
           "geometry",
           "name",
-          "fotmatted_address",
+          "fortmatted_address",
           "place_id",
           "types",
           "address_components",
@@ -72,6 +72,8 @@ export function PlaceAutoComplete({
         ref={inputRef}
         type="text"
         value={inputValue}
+        onChange = {(e) => setInputValue(e.target.value)}
+        onFocus = {()=> inputValue && setExposePredictions(true)}
         placeholder={placeHolder}
         className={`w-full border  border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 ${className}`}
       />
