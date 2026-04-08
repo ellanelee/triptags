@@ -73,7 +73,7 @@ export default function CreateVenuePage() {
     const lat = result.geometry.location.lat()
     const lng = result.geometry.location.lng()
     const placeId = result.place_id
-    console.log(parsedResult)
+    console.log("google.maps.GeocoderResult 파싱결과", parsedResult)
     setVenueData((prev) => ({
       ...prev,
       latitude: lat,
@@ -121,14 +121,14 @@ export default function CreateVenuePage() {
   const handleMapClick = async (location: { lat: number; lng: number }) => {
     const geocoder = new google.maps.Geocoder() // geocode 변환 (lat, lng)
     const { results } = await geocoder.geocode({ location })
-    if(results[0]){
-       updateVenueFromGoogle(results[0])
+    if (results[0]) {
+      updateVenueFromGoogle(results[0])
     }
   }
 
   //구글지도에서 선택
   const handleGooglePlaceSelected = (place: google.maps.places.PlaceResult) => {
-    console.log("구글에서 찍은 장소 위치: ", place)
+    console.log("구글에서 선정한 장소 위치: ", place)
     updateVenueFromGoogle(place)
   }
 

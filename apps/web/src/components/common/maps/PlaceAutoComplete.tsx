@@ -41,7 +41,6 @@ export function PlaceAutoComplete({
 
   const handleSetPlace = (placeId: string) => {
     if (!places) return
-
     //조회된 place에 대한 상세정보 (name,geometry(lat/lng),addr,phone,url..)
     const service = new places.PlacesService(document.createElement("div")) //placeService는 DOM기반 (DOM context필요,지도 or 요소에 연결되어 동작)
     service.getDetails(
@@ -50,7 +49,7 @@ export function PlaceAutoComplete({
         fields: [
           "geometry",
           "name",
-          "fortmatted_address",
+          "formatted_address",
           "place_id",
           "types",
           "address_components",
@@ -60,6 +59,7 @@ export function PlaceAutoComplete({
         if (status === google.maps.places.PlacesServiceStatus.OK && result) {
           onPlaceSelected(result)
           setInputValue(result.name || "")
+          setPredictions([])
           setExposePredictions(false)
         }
       },
@@ -72,8 +72,10 @@ export function PlaceAutoComplete({
         ref={inputRef}
         type="text"
         value={inputValue}
-        onChange = {(e) => setInputValue(e.target.value)}
-        onFocus = {()=> inputValue && setExposePredictions(true)}
+        onChange={(e) => setInputValue(e.target.value)}
+        onFocus={() => {
+          if (predictions.length > 0) setExposePredictions(true)
+        }}
         placeholder={placeHolder}
         className={`w-full border  border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 ${className}`}
       />
@@ -90,6 +92,14 @@ export function PlaceAutoComplete({
             </li>
           ))}
         </ul>
+      )}
+
+      {/* 외부 클릭시 입력내용 제거 */}
+      {exposePredictions && (
+        <div
+          onClick={() => setExposePredictions(false)}
+          className="fixed inset-0 z-0"
+        />
       )}
     </div>
   )
