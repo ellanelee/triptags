@@ -11,7 +11,7 @@ function getAddressComponent(
   return found?.[valueType] ?? ""
 }
 
-//Address Parse
+//geocode를 region DB에 맞도록 파싱하는 함수
 export function parseGeoCodeAddress(params: {
   result: google.maps.GeocoderResult
   localeCountryName: (code: string, locale: string) => string

@@ -3,7 +3,7 @@ import { Language, VenueCategory } from "src/common/types"
 export interface IVenueCreate {
   language: Language
   name: string
-  description: string | null
+  description: string
   venueCategory: VenueCategory | null
   country: string
   city: string
@@ -11,6 +11,7 @@ export interface IVenueCreate {
   details: string
   latitude: number | null
   longitude: number | null
+  googlePlaceId?: string
 }
 
 export interface IVenueSearchFilters {
