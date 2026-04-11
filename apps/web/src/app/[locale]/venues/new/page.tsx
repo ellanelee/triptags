@@ -1,14 +1,14 @@
 "use client"
+import { venueCategories } from "@/components/common/const"
 import { GoogleMapsProvider } from "@/components/common/maps/GoogleMapsProvider"
 import { KakaoPlaceSearch } from "@/components/common/maps/KakaoPlaceSearch"
 import MapPicker from "@/components/common/maps/MapPicker"
 import { PlaceAutoComplete } from "@/components/common/maps/PlaceAutoComplete"
 import { useRouter } from "@/i18n/routing"
 import { localeCountryName } from "@/lib/utils/country"
-import { parseGeoCodeAddress } from "@/lib/utils/googleaddress"
 import { syncGoogleVenueDetails } from "@/lib/utils/googledetails"
+import { patchVenueFromGoogle } from "@/lib/utils/googlevenueupdate"
 import { useAuthStore } from "@/store/auth-store"
-import { IGooglePlaceInfo } from "@/types/maps/google"
 import { IKakaoPlaceSelected } from "@/types/maps/kakao"
 import { IVenueCreate, IVenueDetailInput } from "@triptags/shared"
 import { useLocale, useTranslations } from "next-intl"
@@ -22,7 +22,6 @@ export default function CreateVenuePage() {
   const { isAuthenticated, user } = useAuthStore()
   const [searchType, setSearchType] = useState<"kakao" | "google">("kakao")
   const [countryName, setCountryName] = useState("")
-  const [placeId, setPlaceId] = useState<string | null>(null)
   const [venueData, setVenueData] = useState<IVenueCreate>({
     language: "ko",
     name: "",
@@ -34,19 +33,10 @@ export default function CreateVenuePage() {
     city: "",
     district: "",
     details: "",
-  })
-  const [googleData, setGoogleData] = useState<IGooglePlaceInfo>({
     googlePlaceId: "",
-    googleName: "",
-    googleAddress: "",
-    googleTypes: [],
-    googleRating: undefined,
-    googleUrl: "",
   })
   const [venueDetail, setVenueDetail] = useState<IVenueDetailInput>({
     phoneNumber: "",
-    priceRange: "",
-    subCategory: "",
     websiteUrl: "",
     workHour: {},
   })
@@ -64,27 +54,23 @@ export default function CreateVenuePage() {
   const updateVenueFromGoogle = (
     result: google.maps.GeocoderResult | google.maps.places.PlaceResult,
   ) => {
-    if (!result.geometry?.location) return
-    const parsedResult = parseGeoCodeAddress({
-      result: result as google.maps.GeocoderResult,
-      localeCountryName,
-      locale,
-    })
+    if (!result.geometry?.location) return null
     const lat = result.geometry.location.lat()
     const lng = result.geometry.location.lng()
     const placeId = result.place_id
-    console.log("google.maps.GeocoderResult 파싱결과", parsedResult)
+    const patchedData = patchVenueFromGoogle(result, localeCountryName, locale)
+    const { country, city, district, details, countryName } = patchedData
     setVenueData((prev) => ({
       ...prev,
       latitude: lat,
       longitude: lng,
-      country: parsedResult.countryCode,
-      city: parsedResult.city,
-      district: parsedResult.district,
-      details: parsedResult.details,
+      country,
+      city,
+      district,
+      details,
+      googlePlaceId: placeId,
     }))
-    setCountryName(parsedResult.countryName)
-    if (parsedResult.placeId) setPlaceId(parsedResult.placeId)
+    setCountryName(countryName)
     if (placeId) {
       syncGoogleVenueDetails(placeId, {
         onVenueUpdate: (data) => {
@@ -106,7 +92,6 @@ export default function CreateVenuePage() {
       ...prev,
       language: "ko",
       name: place.name,
-      venueCategory: place.category,
       latitude: place.latitude,
       longitude: place.longitude,
       country: "KR",
@@ -117,7 +102,7 @@ export default function CreateVenuePage() {
     setCountryName(localeCountryName("KR", locale))
   }
 
-  //지도에서 위치를 선택하기 (역지오코딩,좌표를 주소로 변환)
+  //지도에서 위치를 선택하기 (역지오코딩,구글맵 좌표->주소변환)
   const handleMapClick = async (location: { lat: number; lng: number }) => {
     const geocoder = new google.maps.Geocoder() // geocode 변환 (lat, lng)
     const { results } = await geocoder.geocode({ location })
@@ -126,11 +111,13 @@ export default function CreateVenuePage() {
     }
   }
 
-  //구글지도에서 선택
+  //구글지도에서 선택 (역지오코딩, 구글 장소검색 결과 좌표->주소변환)
   const handleGooglePlaceSelected = (place: google.maps.places.PlaceResult) => {
     console.log("구글에서 선정한 장소 위치: ", place)
     updateVenueFromGoogle(place)
   }
+
+  const handleSubmit = () => {}
 
   return (
     <GoogleMapsProvider>
@@ -206,6 +193,7 @@ export default function CreateVenuePage() {
                           city: "",
                           district: "",
                           details: "",
+                          googlePlaceId: "",
                         }))
                       }
                       className="text-sm text-red-600 hover:text-red-800"
@@ -236,6 +224,117 @@ export default function CreateVenuePage() {
                   ) : (
                     <p>{tr("noLocationSelected")}</p>
                   )}
+                </div>
+                {/*이름표시*/}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    {tr("name")} (언어표시: {locale})
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                    value={venueData.name}
+                    onChange={(e) =>
+                      setVenueData((prev) => ({
+                        ...prev,
+                        name: e.target.value,
+                      }))
+                    }
+                  />
+                </div>
+              </div>
+              {/*카테고리 표시*/}
+              <div>
+                <label className="">{tr("category")}</label>
+                <select
+                  required
+                  className=""
+                  value={venueData.venueCategory}
+                  onChange={(e) =>
+                    setVenueData((prev) => ({
+                      ...prev,
+                      venueCategory: e.target.value,
+                    }))
+                  }
+                >
+                  <option>{tr("selectCategory")}</option>
+                  {venueCategories.map((el) => (
+                    <option key={el} value={el}>
+                      {t(`cateogies.${el}`)}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              {/*설명 표시*/}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  {tr("description")}
+                </label>
+                <textarea
+                  rows={4}
+                  className="w-full border border-gray-300 rounded-md px-3 py-2"
+                  value={venueData.description || ""}
+                  onChange={(e) =>
+                    setVenueData((prev) => ({
+                      ...prev,
+                      description: e.target.value,
+                    }))
+                  }
+                />
+              </div>
+              {/*주소표시 */}
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    {tr("city")} *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    className="w-full border border-gray-300 rounded-md px-3 py-2"
+                    value={venueData.city}
+                    onChange={(e) =>
+                      setVenueData((prev)=> ({ ...prev, city: e.target.value }))
+                    }
+                  />
+                </div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                    {tr("district")} *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    className="w-full border border-gray-300 rounded-md px-3 py-2"
+                    value={venueData.city}
+                    onChange={(e) =>
+                      setVenueData((prev)=> ({ ...prev, district: e.target.value }))
+                    }
+                  />
+              </div>
+              {/* 기타 정보 */}
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    {tr('phone')}
+                  </label>
+                  <input
+                    type="tel"
+                    className="w-full border border-gray-300 rounded-md px-3 py-2"
+                    value={venueDetail.phoneNumber}
+                    onChange={e => setFormData({ ...formData, phoneNumber: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    {t('website')}
+                  </label>
+                  <input
+                    type="url"
+                    className="w-full border border-gray-300 rounded-md px-3 py-2"
+                    value={formData.website}
+                    onChange={e => setFormData({ ...formData, website: e.target.value })}
+                  />
                 </div>
               </div>
             </form>

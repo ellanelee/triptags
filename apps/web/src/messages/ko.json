@@ -161,18 +161,6 @@
     "priceRange": "가격대",
     "selectLocation": "지도에서 위치를 선택해주세요.",
     "checkAddress": "  (도로등 세부 주소가 정확하지 않은 지역은 다시 선택해 주세요)",
-    "categories": {
-      "RESTAURANT": "레스토랑",
-      "CAFE": "카페",
-      "HOTEL": "호텔",
-      "STREET_FOOD": "길거리 음식",
-      "BAR": "바",
-      "ATTRACTION": "관광지",
-      "ACTIVITY": "액티비티",
-      "SHOPPING": "쇼핑",
-      "NATURE": "자연",
-      "CULTURE": "문화"
-    }
   },
   "VenuesPage": {
     "title": "장소 찾기",
