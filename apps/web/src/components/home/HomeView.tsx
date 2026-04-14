@@ -2,6 +2,7 @@
 import { Link, useRouter } from "@/i18n/routing"
 import { useAuthStore } from "@/store/auth-store"
 import { useLocale, useTranslations } from "next-intl"
+import { useEffect } from "react"
 
 export default function HomeView() {
   //next-intl, message에서 locale에 관련된 항목을 추출
@@ -10,10 +11,12 @@ export default function HomeView() {
   const locale = useLocale()
   const { isAuthenticated } = useAuthStore()
 
-  if (isAuthenticated) {
-    router.replace(`/venues`)
-  }
-  
+  useEffect(() => {
+    if (isAuthenticated) {
+      router.replace(`/venues`)
+    }
+  }, [isAuthenticated, router])
+
   //시작화면 구성
   return (
     <main className="relative min-h-screen">

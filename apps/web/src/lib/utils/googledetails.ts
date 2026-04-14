@@ -3,7 +3,7 @@ interface SyncCallback {
   onDetailUpdate: (data: {
     phoneNumber?: string
     websiteUrl?: string
-    workHour?: any
+    workHour?: string
   }) => void
 }
 
@@ -33,7 +33,7 @@ export function syncGoogleVenueDetails(
         callbacks.onDetailUpdate({
           phoneNumber: place.formatted_phone_number || "",
           websiteUrl: place.website || "",
-          workHour: place.opening_hours || {},
+          workHour: place.opening_hours?.weekday_text?.join("\n") || "",
         })
       }
     },
