@@ -12,7 +12,9 @@ export interface IFormErrors {
   latitude?: string
   longitude?: string
 }
-export function validateVenueCreateForm(params: { venueData: IVenueCreate }) :IFormErrors{
+export function validateVenueCreateForm(params: {
+  venueData: IVenueCreate
+}): IFormErrors {
   const { venueData } = params
   const errors: IFormErrors = {}
 
