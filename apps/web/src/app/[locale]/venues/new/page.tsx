@@ -10,13 +10,14 @@ import { KakaoPlaceSearch } from "@/components/common/maps/KakaoPlaceSearch"
 import MapPicker from "@/components/common/maps/MapPicker"
 import { PlaceAutoComplete } from "@/components/common/maps/PlaceAutoComplete"
 import { useRouter } from "@/i18n/routing"
+import { venueApi } from "@/lib/api/venue.api"
 import { localeCountryName } from "@/lib/utils/country"
 import { syncGoogleVenueDetails } from "@/lib/utils/googledetails"
 import { patchVenueFromGoogle } from "@/lib/utils/googlevenueupdate"
 import { IFormErrors, validateVenueCreateForm } from "@/lib/utils/validateVenue"
 import { useAuthStore } from "@/store/auth-store"
 import { IKakaoPlaceSelected } from "@/types/maps/kakao"
-import { IVenueCreate, IVenueDetailInput } from "@triptags/shared"
+import { IVenueCreate, IVenueDetailInput, VenueCreateDto } from "@triptags/shared"
 import { useLocale, useTranslations } from "next-intl"
 import { useEffect, useState } from "react"
 
@@ -34,7 +35,6 @@ export default function CreateVenuePage() {
   const [venueData, setVenueData] = useState<IVenueCreate>(INITIAL_VENUE_DATA)
   const [venueDetail, setVenueDetail] =
     useState<IVenueDetailInput>(INITIAL_VENUE_DETAIL)
-
   const { latitude: lat, longitude: lng } = venueData
   const currentCoordinates =
     venueData.latitude && venueData.longitude
@@ -78,7 +78,7 @@ export default function CreateVenuePage() {
   }
   //카카오 지도객체에서 입력어 관련장소검색
   const handleKaKaoPlaceSelected = (place: IKakaoPlaceSelected) => {
-    const addressParts = place.address.split(" ").filter(Boolean) // address format: 서울 강남구 역삼동 ...
+    const addressParts = place.roadAddress.split(" ").filter(Boolean) // address format: 서울 강남구 역삼동 ...
     const city = addressParts[0] || ""
     const district = addressParts[1] || ""
     const details = addressParts.slice(2).join(" ")
@@ -94,6 +94,12 @@ export default function CreateVenuePage() {
       details: details,
     }))
     setCountryName(localeCountryName("KR", locale))
+    setVenueDetail((prev) => ({
+      ...prev,
+      phoneNumber: place.phone,
+      subCategory: place.category,
+      websiteUrl: place.placeUrl,
+    }))
   }
 
   //지도에서 위치를 선택하기 (역지오코딩,구글맵 좌표->주소변환)
@@ -116,15 +122,25 @@ export default function CreateVenuePage() {
     setLoading(true)
     const inputErrors = validateVenueCreateForm({ venueData })
     setErrors(inputErrors)
+    setSubmitted(true)
     if (Object.keys(inputErrors).length > 0) {
-      setSubmitted(true)
+      console.log("Venue input검증 중 에러발생")
+      setLoading(false)
       return
-      console.log("검증 완료")
-      try {
-      } catch (error) {
-      } finally {
-        setLoading(false)
+    }
+    try {
+      const venuePayload: VenueCreateDto = {
+        ...venueData, 
+        latitude: venueData.latitude ?? undefined, 
+        longitude: venueData.longitude?? undefined, 
+        venueCategory: venueData.venueCategory?? undefined, 
       }
+      const response = await venueApi.createVenue(venuePayload)
+      await venueApi.createVenueDetail(response.id, venueDetail)
+    } catch (error) {
+      console.error(error)
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -249,7 +265,7 @@ export default function CreateVenuePage() {
                 </FormField>
                 {/*카테고리 표시*/}
                 <FormField error={submitted ? errors.venueCategory : ""}>
-                  <div className="flex my-2 align-middle">
+                  <div className="flex my-2 items-center">
                     <label className="block text-sm font-medium text-gray-700 my-2 mr-2">
                       {tr("category")} *
                     </label>
@@ -271,6 +287,10 @@ export default function CreateVenuePage() {
                         </option>
                       ))}
                     </select>
+                    <div className="text-sm font-medium text-gray-700 mx-2">
+                      ( "{venueDetail.subCategory}" cagegorized by Infomation
+                      provider )
+                    </div>
                   </div>
                 </FormField>
                 {/*설명 표시*/}
