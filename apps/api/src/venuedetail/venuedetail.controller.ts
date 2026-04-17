@@ -8,6 +8,7 @@ import { createResponse, VenueDetailDto } from '@triptags/shared';
 
 @Controller('venueDetail')
 @ApiTags('venueDetail')
+@ApiBearerAuth('access-token')
 export class VenueDetailController {
   constructor(private venueDetailService: VenueDetailService) {}
 
@@ -27,10 +28,11 @@ export class VenueDetailController {
     @Param('venueId') venueId: string,
     @Body() venueDetailDto: VenueDetailDto,
   ) {
-    return await this.venueDetailService.createVenueDetail(
+    const response = await this.venueDetailService.createVenueDetail(
       user,
       venueId,
       venueDetailDto,
     );
+    return createResponse(true, response);
   }
 }

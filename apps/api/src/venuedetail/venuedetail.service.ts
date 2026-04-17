@@ -46,6 +46,6 @@ export class VenueDetailService {
         },
       });
     }
-    return { false: '생성 맟 수정실패' };
+    return { false: '생성 및 수정실패' };
   }
 }
