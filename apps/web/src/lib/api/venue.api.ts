@@ -61,7 +61,7 @@ export const venueApi = {
   },
 
   createVenueDetail: async (venueId: string, createDto: VenueDetailDto) => {
-    const response = await apiClient.post(`venues/{venueId}`, createDto)
+    const response = await apiClient.post(`venueDetail/${venueId}`, createDto)
     if (!response.data.success) {
       throw new Error(
         response.data.message ?? response.data.error ?? "조회 실패",

@@ -1,7 +1,7 @@
 import { IVenueCreate, Language, VenueCategory } from "@triptags/shared"
 
 export interface IFormErrors {
-  language?: Language
+  language?: string
   name?: string
   description?: string
   venueCategory?: string
@@ -22,10 +22,10 @@ export function validateVenueCreateForm(params: {
     errors.name = "장소 이름을 입력해주세요."
   }
   if (!venueData.language.trim()) {
-    errors.name = "언어가 설정되지 않았습니다"
+    errors.language = "언어가 설정되지 않았습니다"
   }
   if (!venueData.description.trim()) {
-    errors.name = "장소의 설명을 입력해주세요"
+    errors.description = "장소의 설명을 입력해주세요"
   }
   if (!venueData.venueCategory.trim()) {
     errors.venueCategory = "카테고리를 선택해주세요."
