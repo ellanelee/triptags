@@ -17,7 +17,12 @@ import { patchVenueFromGoogle } from "@/lib/utils/googlevenueupdate"
 import { IFormErrors, validateVenueCreateForm } from "@/lib/utils/validateVenue"
 import { useAuthStore } from "@/store/auth-store"
 import { IKakaoPlaceSelected } from "@/types/maps/kakao"
-import { IVenueCreate, IVenueDetailInput, VenueCreateDto } from "@triptags/shared"
+import {
+  IVenueCreate,
+  IVenueDetailInput,
+  VenueCreateDto,
+  VenueDetailDto,
+} from "@triptags/shared"
 import { useLocale, useTranslations } from "next-intl"
 import { useEffect, useState } from "react"
 
@@ -130,13 +135,17 @@ export default function CreateVenuePage() {
     }
     try {
       const venuePayload: VenueCreateDto = {
-        ...venueData, 
-        latitude: venueData.latitude ?? undefined, 
-        longitude: venueData.longitude?? undefined, 
-        venueCategory: venueData.venueCategory?? undefined, 
+        ...venueData,
+        latitude: venueData.latitude ?? undefined,
+        longitude: venueData.longitude ?? undefined,
+        venueCategory: venueData.venueCategory ?? undefined,
+      }
+      const venueDetailsPayload: VenueDetailDto = {
+        ...venueDetail,
+        workHour: { [locale]: venueDetail.workHour ?? undefined },
       }
       const response = await venueApi.createVenue(venuePayload)
-      await venueApi.createVenueDetail(response.id, venueDetail)
+      await venueApi.createVenueDetail(response.id, venueDetailsPayload)
     } catch (error) {
       console.error(error)
     } finally {
