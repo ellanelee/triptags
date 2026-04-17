@@ -5,7 +5,7 @@ export interface IVenueDetailInput {
   priceRange?: string
   subCategory?: string
   websiteUrl?: string
-  workHour?: string
+  workHour?: I18nText
 }
 
 export interface IVenueDetailResponse {
