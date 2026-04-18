@@ -146,6 +146,7 @@ export default function CreateVenuePage() {
       }
       const response = await venueApi.createVenue(venuePayload)
       await venueApi.createVenueDetail(response.id, venueDetailsPayload)
+        router.replace(`/venues/${response.id}`)
     } catch (error) {
       console.error(error)
     } finally {
@@ -285,11 +286,11 @@ export default function CreateVenuePage() {
                       onChange={(e) =>
                         setVenueData((prev) => ({
                           ...prev,
-                          venueCategory: e.target.value,
+                          venueCategory: e.target.value || null,
                         }))
                       }
                     >
-                      <option>{tr("selectCategory")}</option>
+                      <option value="">{tr("selectCategory")}</option>
                       {venueCategories.map((el) => (
                         <option key={el} value={el} className="text-sm">
                           {t(`categories.${el}`)}
@@ -322,7 +323,7 @@ export default function CreateVenuePage() {
               </div>
               {/*주소표시 */}
               <div className="grid grid-cols-2 gap-3 bg-pink-50 rounded-md p-3">
-                <div>
+                <FormField error={submitted ? errors.city : ""}>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     {tr("city")} *
                   </label>
@@ -338,8 +339,8 @@ export default function CreateVenuePage() {
                       }))
                     }
                   />
-                </div>
-                <div>
+                </FormField>
+                <FormField error={submitted ? errors.district : ""}>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     {tr("district")} *
                   </label>
@@ -355,8 +356,8 @@ export default function CreateVenuePage() {
                       }))
                     }
                   />
-                </div>
-                <div>
+                </FormField>
+                <FormField error={submitted ? errors.details : ""}>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     {tr("details")} *
                   </label>
@@ -372,7 +373,7 @@ export default function CreateVenuePage() {
                       }))
                     }
                   />
-                </div>
+                </FormField>
               </div>
               {/* VenueDetail정보 */}
               <div className="grid grid-cols-2 gap-4  bg-pink-50 rounded-md p-3">

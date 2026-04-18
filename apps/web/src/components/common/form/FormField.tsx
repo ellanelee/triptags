@@ -4,6 +4,7 @@ interface FormFieldProps {
 }
 
 export function FormField({ error, children }: FormFieldProps) {
+  console.log("inputErrors: ", error)
   return (
     <div className="flex flex-col">
       {children}
