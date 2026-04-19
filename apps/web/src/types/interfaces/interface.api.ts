@@ -41,6 +41,7 @@ export interface IReviewResult {
 export interface IGetVenueBase {
   id: string
   name: I18nText | null
+  description?: I18nText
   venueCategory: VenueCategory
   longitude: number
   latitude: number

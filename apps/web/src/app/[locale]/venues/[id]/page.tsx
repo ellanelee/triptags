@@ -23,6 +23,7 @@ export default function VenueDetailPage({
   const t = useTranslations("Common")
   const locale = useLocale() as Language
   const { isAuthenticated, user } = useAuthStore()
+  const [currentImage, setCurrentImage] = useState(0)
   const venue = useAsync<IGetVenueBase>(null)
   const reviews = useAsync<IGetReviewByVenueAllResponse>(null)
   const [reviewFilter, setReviewFilter] = useState<"all" | "LOCAL" | "USER">(
@@ -139,12 +140,12 @@ export default function VenueDetailPage({
           {/* Main Content */}
           <div className="lg:col-span-2">
             {/* Description */}
-            {venue.data?.venueDetail?.description && (
+            {venue.data?.description && (
               <div className="bg-white rounded-lg shadow p-6 mb-6">
                 <h2 className="text-2xl font-bold mb-4">{tr("about")}</h2>
                 <p className="text-gray-700">
-                  {venue.data?.venueDetail?.description
-                    ? venue.data?.venueDetail?.description[locale]
+                  {venue.data?.description
+                    ? venue.data?.description[locale]
                     : ""}
                 </p>
               </div>
@@ -277,6 +278,14 @@ export default function VenueDetailPage({
           </div>
           {/* Sidebar */}
           <div className="lg:col-span-1">
+            {/* Image Section*/}
+            <div className="mb-6 overflow-hidden rounded-xl bg-gray-200 shadow-sm relative group"></div>
+            {(venue.data?.venueImages ?? []).length> 0 ? (
+            <div>
+              <img src={venue.data?.venueImages[currentImage].imageUrl}
+            </div>
+            ):()}
+            {/* Info */}
             <div className="bg-white rounded-lg shadow p-6 sticky top-4">
               <h3 className="text-lg font-bold mb-4">{tr("information")}</h3>
               <div className="space-y-3">
@@ -310,7 +319,7 @@ export default function VenueDetailPage({
                 )}
                 {venue.data?.venueDetail?.websiteUrl && (
                   <div>
-                    <p className="text-sm text-gray-600">{t("website")}</p>
+                    <p className="text-sm text-gray-600">{tr("website")}</p>
                     <a
                       href={venue.data?.venueDetail?.websiteUrl}
                       target="_blank"
