@@ -11,6 +11,7 @@ import {
 } from "@/types/interfaces/interface.api"
 import { reviewApi } from "@/lib/api/review.api"
 import { Language } from "@triptags/shared"
+import VenueImageSlider from "@/components/common/venue/VenueImageSlider"
 
 export default function VenueDetailPage({
   params,
@@ -279,12 +280,9 @@ export default function VenueDetailPage({
           {/* Sidebar */}
           <div className="lg:col-span-1">
             {/* Image Section*/}
-            <div className="mb-6 overflow-hidden rounded-xl bg-gray-200 shadow-sm relative group"></div>
-            {(venue.data?.venueImages ?? []).length> 0 ? (
-            <div>
-              <img src={venue.data?.venueImages[currentImage].imageUrl}
+            <div className="mb-6 overflow-hidden rounded-xl bg-gray-200 shadow-sm relative group">
+              <VenueImageSlider venueImages={venue.data?.venueImages ?? []} />
             </div>
-            ):()}
             {/* Info */}
             <div className="bg-white rounded-lg shadow p-6 sticky top-4">
               <h3 className="text-lg font-bold mb-4">{tr("information")}</h3>
