@@ -228,7 +228,9 @@
       "family": "가족",
       "friends": "친구",
       "business": "비즈니스"
-    }
+    },
+    "noVenueImage": "아직 등록된 이미지가 없습니다",
+    "venueImageRegister": "venueImage를 등록하세요"
   },
   "Common": {
     "languages": {
