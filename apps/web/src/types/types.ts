@@ -31,3 +31,7 @@ export type RegionInfo = {
   parent?: RegionInfo | null
 }
 
+export type PositionInfo = {
+  latitude?: number
+  longitude?: number
+}

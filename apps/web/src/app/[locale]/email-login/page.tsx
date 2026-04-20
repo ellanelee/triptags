@@ -1,11 +1,10 @@
 "use client"
 
-import { Link } from "@/i18n/routing"
+import { Link, useRouter } from "@/i18n/routing"
 import { authApi } from "@/lib/api/auth.api"
 import { useAuthStore } from "@/store/auth-store"
 import { IAuthResponse } from "@/types/interfaces/interface.dto"
 import { useTranslations } from "next-intl"
-import { useRouter } from "next/navigation"
 import { useState } from "react"
 
 export default function EmailLoginPage() {
@@ -35,7 +34,7 @@ export default function EmailLoginPage() {
       setAuth(accessToken, user)
       setUser(user)
 
-      router.replace(`/${response.user?.language}/mypage`)
+      router.replace(`/venues`)
     } catch (error) {
       const axiosError = error as any
       const errorMsg = (axiosError.response?.data?.message ||

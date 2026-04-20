@@ -73,6 +73,7 @@
   "MyPage": {
     "title": "My Page",
     "welcome": "Welcome, {nickname}!",
+    "address": "Address",
     "interestedDestinations": "Interested Destinations",
     "addDestination": "+ Add Destination",
     "noDestinations": "No interested destinations yet.",
@@ -144,16 +145,64 @@
     "searchPlaceholder": "Search by place name or description...",
     "category": "Category",
     "allCategories": "All",
-    "city": "City",
-    "cityPlaceholder": "Enter city name",
+    "city": "City/Province",
+    "cityPlaceholder": "Enter administrative region",
+    "district": "District",
+    "districtPlaceholder": "Enter city, county, or district",
     "sortBy": "Sort by",
     "sort": {
       "recent": "Most Recent",
       "rating": "Highest Rated",
-      "reviews": "Most Reviews"
+      "reviews": "Most Reviews",
+      "distance": "Distance"
     },
     "resultsCount": "{count} places",
-    "reviewsCount": "{count} reviews"
+    "reviewsCount": "{count} reviews",
+    "total": "found."
+  },
+  "VenueDetailPage": {
+    "notFound": "Place not found.",
+    "overallRating": "Overall Rating",
+    "localRating": "Local Rating",
+    "travelerRating": "Traveler Rating",
+    "about": "About",
+    "reviews": "Reviews",
+    "writeReview": "Write a Review",
+    "allReviews": "All",
+    "localReviews": "Local",
+    "travelerReviews": "Traveler",
+    "noReviews": "No reviews yet.",
+    "information": "Information",
+    "phone": "Phone",
+    "address": "Address",
+    "priceRange": "Price Range",
+    "website": "Website",
+    "visitWebsite": "Visit Website"
+  },
+  "WriteReviewPage": {
+    "title": "Write a Review",
+    "rating": "Overall Rating",
+    "content": "Review Content",
+    "contentPlaceholder": "Please share your experience at this place...",
+    "tips": "Local Tips",
+    "tipsPlaceholder": "Share special tips that only locals know...",
+    "optional": "Optional",
+    "detailedRatings": "Detailed Ratings",
+    "taste": "Taste",
+    "service": "Service",
+    "price": "Price",
+    "visitDate": "Visit Date",
+    "datePlaceHolder": "Select visit date",
+    "visitPurpose": "Purpose of Visit",
+    "LocalVerification": "Local Location Verification",
+    "LocalIndication": "Verifying your location will register this as a local review",
+    "purposes": {
+      "solo": "Solo",
+      "couple": "Couple",
+      "family": "Family",
+      "friends": "Friends",
+      "business": "Business"
+    }
   },
   "Common": {
     "languages": {
@@ -174,7 +223,10 @@
       "editContents": "Edit Content",
       "change": "Change",
       "delete": "Delete",
-      "createdAt": "Created Date"
+      "createdAt": "Created Date",
+      "submit": "Submit",
+      "submitting": "Submitting...",
+      "error": "Failed to submit review."
     },
     "categories": {
       "RESTAURANT": "Restaurant",

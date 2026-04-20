@@ -2,7 +2,7 @@ import { JwtAccessGuard } from '@/auth/jwt-auth.guard.ts/jwt-auth.access.guard';
 import { CurrentUser } from '@/common/decorator/current_user.decorator';
 import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { LocalVerificationCreateDto } from '@triptags/shared';
+import { createResponse, LocalVerificationCreateDto } from '@triptags/shared';
 import { LocalVerificationService } from './local.service';
 import { User } from '@prisma/client';
 
@@ -19,11 +19,13 @@ export class LocalVerificationController {
     @Param('venueId') venueId: string,
     @Body() createDto?: LocalVerificationCreateDto,
   ) {
-    await this.localVerificationService.createVerification(
+    const response = await this.localVerificationService.createVerification(
       user.id,
       venueId,
       createDto,
     );
+    console.log(response);
+    return createResponse(true, response);
   }
 
   @Get()

@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
@@ -11,9 +12,9 @@ import {
 import { ReviewService } from './review.service';
 import {
   createResponse,
-  ReviewCreateDto,
+  ReviewCreateWithDetailDto,
+  ReviewPaginationDto,
   ReviewUpdateDto,
-  VenuePaginationDto,
 } from '@triptags/shared';
 import { JwtAccessGuard } from '@/auth/jwt-auth.guard.ts/jwt-auth.access.guard';
 import { CurrentUser } from '@/common/decorator/current_user.decorator';
@@ -29,10 +30,20 @@ export class ReviewController {
   @Get(':venueId')
   async getReviewByVenueId(
     @Param('venueId') venueId: string,
-    @Query() paginationDto: VenuePaginationDto,
+    @Query() paginationDto: ReviewPaginationDto,
   ) {
-    return await this.reviewService.findReviewByVenueId(venueId, paginationDto);
+    const response = await this.reviewService.findReviewByVenueId(
+      venueId,
+      paginationDto,
+    );
+    return createResponse(true, response);
   }
+
+  //검색 조건에 따라 Venue검색
+  // @Get()
+  // async getReviewBySearch(@Query() paginationDto: VenuePaginationDto) {
+  //   return await this.reviewService.findReviewByInput(paginationDto);
+  // }
 
   @UseGuards(JwtAccessGuard)
   @Get()
@@ -47,13 +58,14 @@ export class ReviewController {
   async createReview(
     @CurrentUser() user: User,
     @Param('venueId') venueId: string,
-    @Body() reviewCreateDto: ReviewCreateDto,
+    @Body() reviewCreateDto: ReviewCreateWithDetailDto,
   ) {
-    return await this.reviewService.createReview(
+    const targetVenue = await this.reviewService.createReview(
       venueId,
       user.id,
       reviewCreateDto,
     );
+    return createResponse(true, targetVenue);
   }
 
   //사용자의 review수정 (평가점수, 평가내용수정)
@@ -64,7 +76,11 @@ export class ReviewController {
     @Param('reviewId') reviewId: string,
     @Body() reviewUpdateDto: ReviewUpdateDto,
   ) {
-    return await this.reviewService.UpdateReview(reviewId, reviewUpdateDto);
+    const response = await this.reviewService.UpdateReview(
+      reviewId,
+      reviewUpdateDto,
+    );
+    return createResponse(true, response);
   }
 
   @Post(':reviewId/helpful')
@@ -73,6 +89,16 @@ export class ReviewController {
     @CurrentUser() user: User,
     @Param('reviewId') reviewId: string,
   ) {
-    return await this.reviewService.createHelpful(reviewId, user.id);
+    const response = await this.reviewService.createHelpful(reviewId, user.id);
+    return createResponse(true, response);
+  }
+
+  @Delete(':reviewId')
+  @UseGuards(JwtAccessGuard)
+  async deleteReview(
+    @CurrentUser() user: User,
+    @Param('reviewId') reviewId: string,
+  ): Promise<void> {
+    await this.reviewService.deleteReview(user.id, reviewId);
   }
 }

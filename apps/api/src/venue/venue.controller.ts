@@ -40,14 +40,16 @@ export class VenueController {
 
   //VenueId로 정보 불러오기
   @Get(':venueId')
-  async getVenueById(venueId: string) {
-    return await this.venueService.findVenueById(venueId);
+  async getVenueById(@Param('venueId') venueId: string) {
+    const result = await this.venueService.findVenueById(venueId);
+    return createResponse(true, result);
   }
 
   //VenueId로 이미지 불러오기
-  @Get(':venueId')
-  async getVenueImageById(venueId: string) {
-    return await this.venueService.findVenueImageById(venueId);
+  @Get(':venueId/image')
+  async getVenueImageById(@Param('venueId') venueId: string) {
+    const response = await this.venueService.findVenueImageById(venueId);
+    return createResponse(true, response);
   }
 
   //Venue생성하기
@@ -58,7 +60,11 @@ export class VenueController {
     @Body() venueCreateDto: VenueCreateDto,
   ) {
     console.log(user);
-    return await this.venueService.createVenue(user.id, venueCreateDto);
+    const response = await this.venueService.createVenue(
+      user.id,
+      venueCreateDto,
+    );
+    return createResponse(true, response);
   }
 
   //사용자의 venue수정 (언어별 이름/이미지 추가가능)
@@ -70,11 +76,12 @@ export class VenueController {
     @Body() venueUpdateDtoUser: VenueUpdateDtoUser,
   ) {
     console.log(user);
-    return await this.venueService.updateVenueByUser(
+    const response = await this.venueService.updateVenueByUser(
       user.id,
       venueId,
       venueUpdateDtoUser,
     );
+    return createResponse(true, response);
   }
 
   //관리자의 venue수정 (모든 필드 수정가능)
@@ -87,11 +94,12 @@ export class VenueController {
     @Body() venueUpdateDto: VenueUpdateDto,
   ) {
     console.log(user);
-    return await this.venueService.updateVenue(
+    const response = await this.venueService.updateVenue(
       user.id,
       venueId,
       venueUpdateDto,
     );
+    return createResponse(true, response);
   }
 
   //Venue비활성화
@@ -102,6 +110,7 @@ export class VenueController {
     @CurrentUser() user: User,
     @Param('id') venueId: string,
   ) {
-    return await this.venueService.deleteVenue(user.role, venueId);
+    const response = await this.venueService.deleteVenue(user.role, venueId);
+    return createResponse(true, response);
   }
 }

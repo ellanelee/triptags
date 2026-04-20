@@ -25,3 +25,11 @@ export type PointType =
   | "LOCAL_VERIFIED"
 
 export type VerificationMethod = "ADDRESS" | "GPS" | "ACTIVITY"
+
+export type VisitPurpose = 
+  | "solo"
+  | "couple"
+  | "family"
+  | "friends"
+  | "business"
+  | ""

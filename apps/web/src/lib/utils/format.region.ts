@@ -1,7 +1,7 @@
 import { RegionInfo } from "@/types/types"
-import { CountryUtils } from "@triptags/shared"
 import { localeCountryName } from "./country"
 
+//국가코드, 언어를 받아 언어별 국가명 반환 
 export function destinationName(
   region: RegionInfo | null | undefined,
   locale: string = "ko",

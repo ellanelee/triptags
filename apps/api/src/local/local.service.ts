@@ -31,13 +31,13 @@ export class LocalVerificationService {
     //사용자의 위치 정보로 인증하기 위한 설정
     if (!createDto?.verificationMethod)
       throw new BadRequestException('요청 정보를 찾을수 없습니다');
+
     if (createDto.verificationMethod === 'GPS') {
       if (!createDto.longitude || !createDto.latitude)
         throw new BadRequestException('위치 정보를 찾을수 없습니다');
       localLatitude = createDto.latitude;
       localLongitude = createDto.longitude;
-    }
-    if (createDto.verificationMethod === 'ADDRESS') {
+    } else if (createDto.verificationMethod === 'ADDRESS') {
       //사용자의 주소 정보로 인증
       const profile = await this.prisma.client.userProfile.findFirst({
         where: { id: userId, deletedAt: null },
@@ -54,33 +54,34 @@ export class LocalVerificationService {
         localLatitude = createDto?.latitude;
         localLongitude = createDto?.longitude;
       }
-
-      //위치 혹은 주소와 venue의 local인증을 위한 거리
-      const distance = calculateDistance({
-        baseLat: venue.latitude,
-        baseLng: venue.longitude,
-        localLat: localLatitude,
-        localLng: localLongitude,
-      });
-
-      //거리 15km초과 이내에서 로컬 인증
-      if (distance > 15000) {
-        throw new BadRequestException('허용된 거리범위를 벗어납니다');
-      }
-      if (!venue?.regionId)
-        throw new BadRequestException('데이터를 불러오지 못했습니다');
-
-      return await this.prisma.client.localVerification.create({
-        data: {
-          userId,
-          regionId: venue.regionId,
-          longitude: localLongitude,
-          latitude: localLatitude,
-          verificationMethod:
-            createDto.verificationMethod as VerificationMethod,
-        },
-      });
+    } else {
+      throw new BadRequestException('지원하지 않는 인증방식입니다');
     }
+
+    //위치 혹은 주소와 venue의 local인증을 위한 거리
+    const distance = calculateDistance({
+      baseLat: venue.latitude,
+      baseLng: venue.longitude,
+      localLat: localLatitude,
+      localLng: localLongitude,
+    });
+
+    //거리 15km초과 이내에서 로컬 인증
+    if (distance > 15000) {
+      throw new BadRequestException('허용된 거리범위를 벗어납니다');
+    }
+    if (!venue?.regionId)
+      throw new BadRequestException('데이터를 불러오지 못했습니다');
+
+    return await this.prisma.client.localVerification.create({
+      data: {
+        userId,
+        regionId: venue.regionId,
+        longitude: localLongitude,
+        latitude: localLatitude,
+        verificationMethod: createDto.verificationMethod as VerificationMethod,
+      },
+    });
   }
   async getVerification(userId: string) {
     await this.prisma.client.localVerification.findMany({

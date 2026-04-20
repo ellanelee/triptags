@@ -1,10 +1,14 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '@/prisma/prisma.service';
 import {
   Language,
-  ReviewCreateDto,
+  ReviewCreateWithDetailDto,
+  ReviewPaginationDto,
   ReviewUpdateDto,
-  VenuePaginationDto,
 } from '@triptags/shared';
 import { IUserPoint } from '@/common/type/types';
 import { PointType } from '@prisma/client';
@@ -33,8 +37,16 @@ export class ReviewService {
       orderBy: { createdAt: 'desc' },
     });
   }
+
+  //검색 조건에 의해 review받아오기
+  //  async findReviewByInput(pageDto: VenuePaginationDto){
+  //   return  return await this.prisma.client.review.findMany({
+
+  //   })
+  //  }
+
   //venue별 review 받아오기
-  async findReviewByVenueId(venueId: string, pageDto: VenuePaginationDto) {
+  async findReviewByVenueId(venueId: string, pageDto: ReviewPaginationDto) {
     const page = Number(pageDto.page) || 1;
     const items = Number(pageDto.items) || 10;
     const skip = (page - 1) * items;
@@ -45,6 +57,13 @@ export class ReviewService {
         skip,
         take: items,
         orderBy: { updatedAt: 'desc' },
+        include: {
+          user: {
+            select: {
+              nickname: true,
+            },
+          },
+        },
       }),
     ]);
     return {
@@ -63,7 +82,7 @@ export class ReviewService {
   async createReview(
     venueId: string,
     userId: string,
-    createDto: ReviewCreateDto,
+    createDto: ReviewCreateWithDetailDto,
   ) {
     const targetVenue = await this.prisma.client.venue.findFirst({
       where: { id: venueId, deletedAt: null },
@@ -75,12 +94,23 @@ export class ReviewService {
     if (!targetVenue)
       throw new NotFoundException('Review를 등록할 장소를 찾을수 없습니다');
     if (!targetUser) throw new NotFoundException('사용자를 찾을수 없습니다');
-    const review = this.prisma.client.review.create({
+    const review = await this.prisma.client.review.create({
       data: {
         rating: createDto.rating,
         contents: createDto.contents,
+        authorRole: createDto.authorRole,
+        localVerificationId: createDto.localVerificationId,
         venueId: venueId,
         userId: userId,
+        reviewDetail: {
+          create: {
+            tasteRating: createDto.reviewDetail.tasteRating,
+            serviceRating: createDto.reviewDetail.serviceRating,
+            priceRating: createDto.reviewDetail.priceRating,
+            visitPurpose: createDto.reviewDetail.visitPurpose,
+            visitDate: createDto.reviewDetail.visitDate ?? null,
+          },
+        },
       },
     });
 
@@ -160,5 +190,19 @@ export class ReviewService {
       this.event.emit('helpful.received', pointInput);
       return { reviewHelpful: true };
     }
+  }
+
+  async deleteReview(userId: string, reviewId: string) {
+    const targetReview = await this.prisma.client.review.findUnique({
+      where: { id: reviewId },
+    });
+    if (!targetReview) {
+      throw new NotFoundException('리뷰를 찾을 수 없습니다.');
+    }
+    if (targetReview?.userId !== userId)
+      throw new ForbiddenException('삭제 권한이 없습니다');
+    await this.prisma.client.review.delete({
+      where: { id: reviewId },
+    });
   }
 }

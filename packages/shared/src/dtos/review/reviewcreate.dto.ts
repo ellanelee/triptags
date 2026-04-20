@@ -1,6 +1,14 @@
 import { ApiProperty } from "@nestjs/swagger"
-import { IsInt, IsNotEmpty, Max, Min } from "class-validator"
+import {
+  IsInt,
+  IsNotEmpty,
+  IsOptional,
+  IsUUID,
+  Max,
+  Min,
+} from "class-validator"
 import { I18nText } from "../../common/types"
+import { UserRole } from "@triptags/database"
 
 export class ReviewCreateDto {
   @ApiProperty({
@@ -20,4 +28,19 @@ export class ReviewCreateDto {
   })
   @IsNotEmpty()
   contents!: I18nText
+
+  @ApiProperty({
+    example: ["USER", "USER_LOCAL", "BUSINESS", "ADMIN"],
+    description: "USER, USER_LOCAL , BUSINESS , ADMIN 중 택1",
+  })
+  @IsNotEmpty()
+  authorRole!: UserRole
+
+  @ApiProperty({
+    description: "로컬 인증이 완료된 경우 연결할 인증 ID",
+    example: "a3b2c1d4-e5f6-7890-abcd-ef1234567890",
+  })
+  @IsOptional()
+  @IsUUID()
+  localVerificationId?: string
 }

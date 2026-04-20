@@ -18,6 +18,29 @@ import { UserPointService } from '@/userpoint/userpoint.service';
 import { IUserPoint } from '@/common/type/types';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 
+const venueBaseInclude = {
+  venueDetail: true,
+  region: {
+    include: {
+      parent: {
+        include: {
+          parent: true,
+        },
+      },
+    },
+  },
+  venueImages: {
+    where: {
+      isThumbnail: true,
+    },
+    take: 1,
+  },
+  venueStats: true,
+  _count: {
+    select: { review: true },
+  },
+};
+
 @Injectable()
 export class VenueService {
   constructor(
@@ -27,18 +50,57 @@ export class VenueService {
     private readonly event: EventEmitter2,
   ) {}
 
+  //local과 일반 review를 구분하여 처리
+  private async getVenueReviewData(venueId: string) {
+    const [total, local, normal] = await Promise.all([
+      this.prisma.client.review.aggregate({
+        where: {
+          venueId,
+          deletedAt: null,
+        },
+        _count: { id: true },
+        _avg: { rating: true },
+      }),
+      this.prisma.client.review.aggregate({
+        where: { venueId, localVerificationId: { not: null } },
+        _count: { id: true },
+        _avg: { rating: true },
+      }),
+      this.prisma.client.review.aggregate({
+        where: { venueId, localVerificationId: null },
+        _count: { id: true },
+        _avg: { rating: true },
+      }),
+    ]);
+    return {
+      total: { count: total._count.id, averageRating: total._avg.rating ?? 0 },
+      local: { count: local._count.id, averageRating: local._avg.rating ?? 0 },
+      normal: {
+        count: normal._count.id,
+        averageRating: normal._avg.rating ?? 0,
+      },
+    };
+  }
+
+  //venueId로 기본정보조회
   private findActiveVenueById(venueId: string) {
     return this.prisma.client.venue.findFirst({
       where: { id: venueId, deletedAt: null },
     });
   }
 
+  //venueId로 venue기본정보 및 관련 정보찾기
   async findVenueById(venueId: string) {
-    return await this.prisma.client.venue.findFirst({
-      where: {
-        id: venueId,
-      },
+    const response = await this.prisma.client.venue.findFirst({
+      where: { id: venueId, deletedAt: null },
+      include: venueBaseInclude,
     });
+    const reviewSummary = await this.getVenueReviewData(venueId);
+
+    return {
+      ...response,
+      reviewSummary,
+    };
   }
 
   //검색어, 카테고리, 지역정보 검색후 조회 (페이지 반영한 response)
@@ -83,28 +145,7 @@ export class VenueService {
         where,
         skip,
         take: items,
-        include: {
-          venueDetail: true,
-          region: {
-            include: {
-              parent: {
-                include: {
-                  parent: true,
-                },
-              },
-            },
-          },
-          venueImages: {
-            where: {
-              isThumbnail: true,
-            },
-            take: 1,
-          },
-          venueStats: true,
-          _count: {
-            select: { review: true },
-          },
-        },
+        include: venueBaseInclude,
         orderBy: { createdAt: 'desc' },
       }),
     ]);
@@ -223,6 +264,14 @@ export class VenueService {
         googlePlaceId: venueCreateDto.googlePlaceId,
         regionId: newRegionId,
         createdBy: userId,
+        venueImages: venueCreateDto.venueImage?.length
+          ? {
+              create: venueCreateDto.venueImage.map((image, index) => ({
+                imageUrl: image,
+                isThumbnail: index === 0,
+              })),
+            }
+          : undefined,
       },
     });
     const pointInput: IUserPoint = {

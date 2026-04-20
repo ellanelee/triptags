@@ -120,6 +120,7 @@ model LocalVerification {
   regionId           String?            @map("region_id") @db.Uuid
   region             Region?            @relation(fields: [regionId], references: [id], onDelete: Cascade)
   userPoint          UserPoint[]
+  review             Review? 
 
   @@map("local_verifications")
 }
@@ -214,7 +215,7 @@ model VenueDetail {
   priceRange  String?    @map("price_range") @db.VarChar(100)
   subCategory String?    @map("sub_category") @db.VarChar(100)
   websiteUrl  String?    @map("website_url") @db.VarChar(100)
-  work_hour   Json?      @map("work_hour")
+  workHour   Json?      @map("work_hour")
   description Json?
   createdAt   DateTime  @default(now()) @map("created_at")
   updatedAt   DateTime  @updatedAt @map("updated_at")
@@ -291,22 +292,23 @@ model VenueTag {
 
 // ====== Review Table ======
 model Review {
-  id              String          @id @default(uuid()) @db.Uuid
-  rating          Int             @default(0)
-  contents        Json
-  authorRole      UserRole        @default(USER) @map("author_role")
-  isLocalVerified Boolean         @default(false) @map("is_local_verified")
-  likeCount       Int             @default(0) @map("like_count")
-  createdAt       DateTime        @default(now()) @map("created_at")
-  updatedAt       DateTime        @updatedAt @map("updated_at")
-  deletedAt       DateTime?       @map("deleted_at")
-  venueId         String          @map("venue_id") @db.Uuid
-  venue           Venue           @relation(fields: [venueId], references: [id], onDelete: Cascade)
-  userId          String          @map("user_id") @db.Uuid
-  user            User            @relation(fields: [userId], references: [id], onDelete: Cascade)
-  reviewHelpfuls  ReviewHelpful[]
-  reviewImages    ReviewImage[]
-  reviewDetail    ReviewDetail?
+  id                   String               @id @default(uuid()) @db.Uuid
+  rating               Int                  @default(0)
+  contents             Json     
+  authorRole           UserRole             @default(USER) @map("author_role")
+  likeCount            Int                  @default(0) @map("like_count")
+  createdAt            DateTime             @default(now()) @map("created_at")
+  updatedAt            DateTime             @updatedAt @map("updated_at")
+  deletedAt            DateTime?            @map("deleted_at")
+  venueId              String               @map("venue_id") @db.Uuid
+  venue                Venue                @relation(fields: [venueId], references: [id], onDelete: Cascade)
+  userId               String               @map("user_id") @db.Uuid
+  user                 User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  localVerificationId  String?              @unique @map("local_verification_id") @db.Uuid
+  localVerification    LocalVerification?   @relation(fields:[localVerificationId], references:[id])   
+  reviewHelpfuls       ReviewHelpful[]
+  reviewImages         ReviewImage[]
+  reviewDetail         ReviewDetail?
 
   @@map("reviews")
 }

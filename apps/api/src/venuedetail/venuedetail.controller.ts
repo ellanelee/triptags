@@ -4,16 +4,19 @@ import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { User } from '@prisma/client';
 import { VenueDetailService } from './venuedetail.service';
-import { VenueDetailDto } from '@triptags/shared';
+import { createResponse, VenueDetailDto } from '@triptags/shared';
 
 @Controller('venueDetail')
 @ApiTags('venueDetail')
+@ApiBearerAuth('access-token')
 export class VenueDetailController {
   constructor(private venueDetailService: VenueDetailService) {}
 
   @Get(':venueId')
   async getVenueDetails(@Param('venueId') venueId: string) {
-    return await this.venueDetailService.getVenueDetailById(venueId);
+    const venueDetail =
+      await this.venueDetailService.getVenueDetailById(venueId);
+    return createResponse(true, venueDetail);
   }
 
   //VenueDetail(관리자와 Venue등록자만 등록/수정 가능)
@@ -25,10 +28,11 @@ export class VenueDetailController {
     @Param('venueId') venueId: string,
     @Body() venueDetailDto: VenueDetailDto,
   ) {
-    return await this.venueDetailService.createVenueDetail(
+    const response = await this.venueDetailService.createVenueDetail(
       user,
       venueId,
       venueDetailDto,
     );
+    return createResponse(true, response);
   }
 }

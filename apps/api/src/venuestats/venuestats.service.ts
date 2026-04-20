@@ -10,14 +10,22 @@ export class VenueStatsService {
   @OnEvent('reviewrating.created')
   @OnEvent('reviewrating.updated')
   async handleUpdateVanueStats(venueId: string) {
+    //review에서 평가값의 평균치 (특정 venue기준)
     const stats = await this.prisma.client.review.aggregate({
       where: { venueId: venueId, deletedAt: null },
       _count: { id: true },
       _avg: { rating: true },
     });
 
+    //local인증한 사람의 평균치
     const localStats = await this.prisma.client.review.aggregate({
-      where: { venueId: venueId, deletedAt: null, isLocalVerified: true },
+      where: {
+        venueId: venueId,
+        deletedAt: null,
+        localVerificationId: {
+          not: null,
+        },
+      },
       _avg: { rating: true },
     });
 

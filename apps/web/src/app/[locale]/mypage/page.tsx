@@ -130,6 +130,7 @@ export default function MyPage() {
                 <p className="text-gray-600 pr-10">
                   {tr("welcome", { nickname: user?.nickname || "guest" })}
                 </p>
+                {/* 사용자권한 */}
                 <p className="text-gray-600 pr-10">
                   {tr("role")} : {user?.role}
                 </p>
@@ -137,6 +138,7 @@ export default function MyPage() {
                   <p className="text-gray-600 pr-10 whitespace-nowrap">
                     {tr("language")}: {user?.language}
                   </p>
+                  {/* 언어 설정 */}
                   <LanguageSelect
                     label={tr("languageOption")}
                     value={user?.language ?? "ko"}
@@ -145,8 +147,9 @@ export default function MyPage() {
                   />
                 </div>
               </div>
+              {/* 주소 설정 */}
               <div className="flex items-center px-1 pb-1">
-                <p className="text-gray-600 px-5">주소 : </p>
+                <p className="text-gray-600 px-5">{tr("address")} : </p>
                 {addressRegion && (
                   <p className="bg-gray-100 text-gray-800">
                     {destinationName(addressRegion.data)}{" "}

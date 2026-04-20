@@ -13,7 +13,6 @@ export * from "./dtos/venue/venueupdate.dto"
 export * from "./dtos/venue/venueupdateuser.dto"
 export * from "./dtos/venue/venuepagination.dto"
 export * from "./dtos/review/reviewcreate.dto"
-export * from "./dtos/review/reviewdetailcreate.dto"
 export * from "./dtos/review/reviewupdate.dto"
 export * from "./dtos/venuedetail/venuedetail.dto"
 export * from "./dtos/tag/tagcreate.dto"
@@ -23,6 +22,8 @@ export * from "./dtos/destination/destinationcreate.dto"
 export * from "./dtos/region/regioncreate.dto"
 export * from "./dtos/region/regionsearch.dto"
 export * from "./dtos/reviewdetail/reviewdetailcreate.dto"
+export * from "./dtos/review/reviewpagination.dto"
+export * from "./dtos/review/reviewcreatewithdetail.dto"
 
 //Common
 export * from "./common/types"
@@ -37,6 +38,7 @@ export * from "./types/user.interface"
 export * from "./types/userpoint.interface"
 export * from "./types/review.interface"
 export * from "./types/venue.interface"
+export * from "./types/venueDetail.interface"
 
 //Model
 export type {

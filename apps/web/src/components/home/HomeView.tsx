@@ -1,9 +1,21 @@
-import { Link } from "@/i18n/routing"
-import { useTranslations } from "next-intl"
+"use client"
+import { Link, useRouter } from "@/i18n/routing"
+import { useAuthStore } from "@/store/auth-store"
+import { useLocale, useTranslations } from "next-intl"
+import { useEffect } from "react"
 
 export default function HomeView() {
   //next-intl, message에서 locale에 관련된 항목을 추출
   const tr = useTranslations("HomePage")
+  const router = useRouter()
+  const locale = useLocale()
+  const { isAuthenticated } = useAuthStore()
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      router.replace(`/venues`)
+    }
+  }, [isAuthenticated, router])
 
   //시작화면 구성
   return (

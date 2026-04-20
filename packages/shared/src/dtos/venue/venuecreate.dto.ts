@@ -1,6 +1,13 @@
 import { ApiProperty } from "@nestjs/swagger"
 import { Language, VenueCategory } from "../../common/types"
-import { IsIn, IsNotEmpty, IsNumber, IsString } from "class-validator"
+import {
+  IsArray,
+  IsIn,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from "class-validator"
 
 export class VenueCreateDto {
   @ApiProperty({
@@ -16,6 +23,8 @@ export class VenueCreateDto {
     example: "진주집",
     description: "장소의 이름",
   })
+  @IsNotEmpty()
+  @IsString()
   name!: string
 
   @ApiProperty({
@@ -23,12 +32,15 @@ export class VenueCreateDto {
     description:
       "RESTAURANT(식당), CAFE(카페), HOTEL(호텔), STREET_FOOD(거리음식), BAR(바),SHOPPING(쇼핑), CULTURE(문화) 등등, 하단에서 적절한 영역으로 설정하세요",
   })
+  @IsOptional()
   venueCategory?: VenueCategory
 
   @ApiProperty({
     example: "여의도의 유명한 콩국수 전문점, 줄서는 집",
     description: "설명을 작성하세요",
   })
+  @IsNotEmpty()
+  @IsOptional()
   description?: string
 
   @ApiProperty({
@@ -68,31 +80,33 @@ export class VenueCreateDto {
     description: "사용자 위치(위도)",
   })
   @IsNumber()
-  @IsNotEmpty()
-  latitude!: number
+  @IsOptional()
+  latitude?: number
 
   @ApiProperty({
     example: 126.927,
     description: "사용자 위치(경도)",
   })
   @IsNumber()
-  @IsNotEmpty()
-  longitude!: number
+  @IsOptional()
+  longitude?: number
 
   @ApiProperty({
-    example: 126.927,
-    description: "사용자 위치(경도)",
+    example: 12345,
+    description: "구글 PlaceID",
   })
-  @IsNumber()
-  @IsNotEmpty()
+  @IsString()
+  @IsOptional()
   googlePlaceId?: string
 
   @ApiProperty({
-    example: {
-      1: "https://previews.123rf.com/images/breakingdots/breakingdots2304/breakingdots230400781/202938341-cat-kawaii-character-cartoon-vector-illustration.jpg",
-    },
+    example: [
+      "https://previews.123rf.com/images/breakingdots/breakingdots2304/breakingdots230400781/202938341-cat-kawaii-character-cartoon-vector-illustration.jpg",
+    ],
     description: "장소의 이미지를 등록해주세요",
     type: [String],
   })
+  @IsOptional()
+  @IsArray()
   venueImage?: string[]
 }
