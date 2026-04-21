@@ -17,6 +17,7 @@ import { PointType, Prisma, UserRole } from '@prisma/client';
 import { UserPointService } from '@/userpoint/userpoint.service';
 import { IUserPoint } from '@/common/type/types';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { UserService } from '@/user/user.service';
 
 const venueBaseInclude = {
   venueDetail: true,
@@ -45,6 +46,7 @@ const venueBaseInclude = {
 export class VenueService {
   constructor(
     private prisma: PrismaService,
+    private user: UserService,
     private region: RegionService,
     private userPoint: UserPointService,
     private readonly event: EventEmitter2,
@@ -259,6 +261,7 @@ export class VenueService {
         name: venueNameJson,
         description: descriptionJson,
         venueCategory: venueCreateDto.venueCategory,
+        detailedAddress: venueCreateDto.details,
         longitude: venueCreateDto.longitude,
         latitude: venueCreateDto.latitude,
         googlePlaceId: venueCreateDto.googlePlaceId,
@@ -321,7 +324,12 @@ export class VenueService {
     updateDto: VenueUpdateDto,
   ) {
     const targetVenue = await this.findActiveVenueById(venueId);
+    const adminUser = await this.prisma.client.user.findUnique({
+      where: { id: userId },
+    });
     if (!targetVenue) throw new NotFoundException('데이터가 존재하지 않습니다');
+    if (adminUser?.role !== 'ADMIN')
+      throw new UnauthorizedException('업데이트 권한이 없습니다');
 
     //venue의 이름 수정
     if (updateDto.name) {

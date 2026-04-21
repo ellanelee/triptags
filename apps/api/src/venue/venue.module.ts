@@ -3,9 +3,10 @@ import { VenueController } from './venue.controller';
 import { VenueService } from './venue.service';
 import { RegionModule } from '@/region/region.module';
 import { UserPointModule } from '@/userpoint/userpoint.module';
+import { UserModule } from '@/user/user.module';
 
 @Module({
-  imports: [RegionModule, UserPointModule],
+  imports: [RegionModule, UserPointModule, UserModule],
   controllers: [VenueController],
   providers: [VenueService],
   exports: [VenueService],

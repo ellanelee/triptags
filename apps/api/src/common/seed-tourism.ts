@@ -15,7 +15,7 @@ const CONTENT_TYPE_MAP: Record<string, VenueCategory> = {
 
 //AREA Code for Major City
 const AREA_CODES = [
-  { code: '1', name: '서울' },
+  { code: '1', name: '서울특별시' },
   { code: '6', name: '부산' },
   { code: '4', name: '대구' },
   { code: '2', name: '인천' },
@@ -127,6 +127,7 @@ function getRegionLevels(addr: string): string[] | null {
   return [country, city, district].filter(Boolean);
 }
 
+//Region조회, 조회불가 시 생성
 async function getOrCreateRegion(levels: string[]): Promise<string> {
   let parentId: string | null = null;
 
@@ -158,6 +159,7 @@ async function getOrCreateRegion(levels: string[]): Promise<string> {
   return parentId;
 }
 
+//Data Fetching
 async function main() {
   if (!TOUR_API_KEY) {
     console.error('API_KEY not found');
@@ -237,13 +239,21 @@ async function main() {
           console.warn('주소가 없는 데이터는 표시할수 없어 Skip합니다');
           continue;
         }
+        const addrComponent = address.split(' ').filter(Boolean);
+        const city = regionLevels[1];
+        const district = regionLevels[2];
+        const cityIdx = addrComponent.indexOf(city);
+        const districtIdx = addrComponent.indexOf(district);
+        const detailsIdxStart =
+          districtIdx !== -1 ? districtIdx + 1 : cityIdx + 1;
+        const details = addrComponent.slice(detailsIdxStart).join(' ');
         try {
           const currentRegionId = await getOrCreateRegion(regionLevels);
           await prisma.venue.create({
             data: {
               name: { ko: item.title, en: '' },
               venueCategory: category,
-              detailedAddress: address || null,
+              detailedAddress: details || null,
               latitude,
               longitude,
               tourApiContentId: item.contentid,
