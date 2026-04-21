@@ -30,12 +30,7 @@ const venueBaseInclude = {
       },
     },
   },
-  venueImages: {
-    where: {
-      isThumbnail: true,
-    },
-    take: 1,
-  },
+  venueImages: true,
   venueStats: true,
   _count: {
     select: { review: true },

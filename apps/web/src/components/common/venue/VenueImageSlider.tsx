@@ -47,22 +47,24 @@ export default function VenueImageSlider({
         {venueImages.length > 1 && (
           <div className="absolute inset-0 flex items-center justify-between px-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
             <button
+              className="p-2 rounded-full bg-white/80 text-gray-800 shadow-md hover:bg-white hover:text-black transition-all"
               onClick={() =>
                 setCurrentIdx((prev) =>
                   prev === venueImages.length - 1 ? 0 : prev + 1,
                 )
               }
             >
-              <ChevronRightIcon />
+              <ChevronLeftIcon />
             </button>
             <button
+             className="p-2 rounded-full bg-white/80 text-gray-800 shadow-md hover:bg-white hover:text-black transition-all"
               onClick={() =>
                 setCurrentIdx((prev) =>
                   prev === 0 ? venueImages.length - 1 : prev - 1,
                 )
               }
             >
-              <ChevronLeftIcon />
+              <ChevronRightIcon />
             </button>
           </div>
         )}
