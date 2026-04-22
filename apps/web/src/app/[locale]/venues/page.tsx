@@ -3,12 +3,16 @@ import { Link } from "@/i18n/routing"
 import { venueApi } from "@/lib/api/venue.api"
 import { useAsync } from "@/lib/hooks/use.async"
 import type { Language, VenueCategory } from "@triptags/shared"
-import { venueCategories } from "@/components/common/const"
+import {
+  INTITIAL_VENUE_FILTER,
+} from "@/components/common/const"
 import { useLocale, useTranslations } from "next-intl"
 import { useEffect, useState } from "react"
 import { IGetVenueAllResponse } from "@/types/interfaces/interface.api"
 import PageGroups from "@/components/common/pages/PageGroups"
 import { PageProps } from "@/types/interfaces/interface.props"
+import VenueSearchFilter from "@/components/venue/VenueSearchFilter"
+import VenueCard from "@/components/venue/VenueCard"
 
 export default function VenuePage() {
   const tr = useTranslations("VenuesPage")
@@ -17,13 +21,7 @@ export default function VenuePage() {
   const locale = useLocale() as Language
   const venues = useAsync<IGetVenueAllResponse>(null)
   const [currentPage, setCurrentPage] = useState<number>(1)
-  const [filters, setFilters] = useState({
-    category: "" as VenueCategory | "",
-    city: "",
-    district: "",
-    search: "",
-    sortBy: "recent" as "rating" | "reviews" | "recent" | "distance",
-  })
+  const [filters, setFilters] = useState(INTITIAL_VENUE_FILTER)
 
   useEffect(() => {
     venues.run(() =>
@@ -35,160 +33,24 @@ export default function VenuePage() {
     setCurrentPage(newPage)
   }
 
-  const {
-    hasNextPage,
-    hasPrevPage,
-    page: CurrentPage,
-    totalCount,
-    totalPage,
-  } = venues.data?.meta ?? {
-    hasNextPage: false,
-    hasPrevPage: false,
-    totalCount: 0,
-    totalPage: 0,
-  }
+  const totalCount = venues.data?.meta.totalCount ?? 0
+  const totalPage = venues.data?.meta.totalPage ?? 0
+
   const pageProps: PageProps = {
     groupSize: 10,
     totalCount,
     currentPage,
     totalPage,
-    hasNextPage,
-    hasPrevPage,
     onPageChange: handlePageChange,
   }
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header with Search */}
-      <div className="bg-white shadow">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-6">
-            {tr("title")}
-          </h1>
-          {/* Search Bar */}
-          <div className="relative">
-            <input
-              type="text"
-              className="w-full border-2 border-gray-300 rounded-lg px-5 py-4 pl-12 text-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-              placeholder={tr("searchPlaceholder")}
-              value={filters.search}
-              onChange={(e) =>
-                setFilters({ ...filters, search: e.target.value })
-              }
-            />
-            <svg
-              className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              />
-            </svg>
-          </div>
-        </div>
-      </div>
-
+      <VenueSearchFilter
+        filters={filters}
+        setFilters={setFilters}
+      ></VenueSearchFilter>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Category Filter - Button Style */}
-        <div className="bg-white p-6 rounded-lg shadow mb-6">
-          <h3 className="text-sm font-semibold text-gray-700 mb-4">
-            {tr("category")}
-          </h3>
-          <div className="flex flex-wrap gap-2">
-            <button
-              onClick={() => setFilters({ ...filters, category: "" })}
-              className={`px-4 py-2 rounded-lg font-medium transition-all ${
-                filters.category === ""
-                  ? "bg-primary-600 text-white shadow-md"
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-              }`}
-            >
-              {tr("allCategories")}
-            </button>
-            {venueCategories.map((cat) => (
-              <button
-                key={cat}
-                onClick={() =>
-                  setFilters({ ...filters, category: cat as VenueCategory })
-                }
-                className={`px-4 py-2 rounded-lg font-medium transition-all ${
-                  filters.category === cat
-                    ? "bg-primary-600 text-white shadow-md"
-                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                }`}
-              >
-                {t(`categories.${cat}`)}
-              </button>
-            ))}
-          </div>
-        </div>
-        {/* Additional Filters */}
-        <div className="bg-white p-6 rounded-lg shadow mb-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {/* City Filter */}
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
-                {tr("city")}
-              </label>
-              <input
-                type="text"
-                className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                placeholder={tr("cityPlaceholder")}
-                value={filters.city}
-                onChange={(e) =>
-                  setFilters({ ...filters, city: e.target.value })
-                }
-              />
-            </div>
-
-            {/* District Filter */}
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
-                {tr("district")}
-              </label>
-              <input
-                type="text"
-                className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                placeholder={tr("cityPlaceholder")}
-                value={filters.city}
-                onChange={(e) =>
-                  setFilters({ ...filters, city: e.target.value })
-                }
-              />
-            </div>
-
-            {/* Sort Filter */}
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
-                {tr("sortBy")}
-              </label>
-              <select
-                className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                value={filters.sortBy}
-                onChange={(e) =>
-                  setFilters({
-                    ...filters,
-                    sortBy: e.target.value as
-                      | "rating"
-                      | "reviews"
-                      | "recent"
-                      | "distance",
-                  })
-                }
-              >
-                <option value="recent">{tr("sort.recent")}</option>
-                <option value="rating">{tr("sort.rating")}</option>
-                <option value="reviews">{tr("sort.reviews")}</option>
-                <option value="reviews">{tr("sort.distance")}</option>
-              </select>
-            </div>
-          </div>
-        </div>
         {/* Venue List */}
         <div className="m-4 text-xl">
           {totalCount} {tr("total")}
@@ -214,6 +76,7 @@ export default function VenuePage() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {venues.data?.items.map((venue) => (
+              <VenueCard venue={venue}/>
               <Link
                 key={venue.id}
                 href={`/venues/${venue.id}`}
