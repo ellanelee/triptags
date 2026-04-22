@@ -1,4 +1,4 @@
-import { IVenueCreate, IVenueDetailInput } from "@triptags/shared";
+import { IVenueCreate, IVenueDetailInput, IVenueSearchFilters } from "@triptags/shared";
 
 export const venueCategories = [
   "RESTAURANT",
@@ -34,3 +34,14 @@ export const INITIAL_VENUE_DETAIL: IVenueDetailInput = {
   websiteUrl: "",
   workHour: ""
 };
+
+export const INTITIAL_VENUE_FILTER: IVenueSearchFilters = ({
+    search: "",
+    category: null,
+    city: "",
+    district: "",
+    tags: [],
+    rating: null,
+    sortBy: "recent"
+  })
+

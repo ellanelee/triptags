@@ -1,3 +1,4 @@
+import { VenueCategory } from "@triptags/database"
 import { I18nText } from "src/common/types"
 
 export interface IVenueDetailInput {

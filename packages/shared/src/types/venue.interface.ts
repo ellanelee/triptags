@@ -18,9 +18,9 @@ export interface IVenueSearchFilters {
   search?: string
   city?: string
   district?: string
-  category?: VenueCategory
+  category?: VenueCategory | null 
   tags?: string[]
-  rating?: number
+  rating?: number | null
   sortBy?: SortBy
 }
 

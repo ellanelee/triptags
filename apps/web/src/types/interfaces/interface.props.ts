@@ -19,8 +19,6 @@ export interface PageProps {
   totalCount: number
   currentPage: number
   totalPage: number
-  hasNextPage: boolean
-  hasPrevPage: boolean
   onPageChange: (newPage: number) => void
 }
 
@@ -29,4 +27,3 @@ export interface ILocalVerificationProps {
   localVerificationId: string | null
   setLocalVerificationId: Dispatch<SetStateAction<string | null>>
 }
-

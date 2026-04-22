@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl"
 import Image from "next/image"
 
 import { useState } from "react"
-import { ChevronLeftIcon, ChevronRightIcon } from "../icons/cheronIton"
+import { ChevronLeftIcon, ChevronRightIcon } from "../common/icons/cheronIton"
 
 interface IVenueImageSliderProps {
   venueImages: IVenueImage[]
