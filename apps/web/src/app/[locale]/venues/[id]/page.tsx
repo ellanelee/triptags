@@ -11,7 +11,10 @@ import {
 } from "@/types/interfaces/interface.api"
 import { reviewApi } from "@/lib/api/review.api"
 import { Language } from "@triptags/shared"
-import VenueImageSlider from "@/components/common/venue/VenueImageSlider"
+import VenueImageSlider from "@/components/venue/VenueImageSlider"
+import { ReviewCard } from "@/components/review/ReveiwCard"
+import { ISelectReview } from "@/types/interfaces/interface.props"
+import { INITIAL_ISELECT_REVIEW } from "@/components/common/const"
 
 export default function VenueDetailPage({
   params,
@@ -21,20 +24,17 @@ export default function VenueDetailPage({
   const venueId = params.id
   const router = useRouter()
   const tr = useTranslations("VenueDetailPage")
-  const t = useTranslations("Common")
   const locale = useLocale() as Language
   const { isAuthenticated, user } = useAuthStore()
-  const [currentImage, setCurrentImage] = useState(0)
   const venue = useAsync<IGetVenueBase>(null)
   const reviews = useAsync<IGetReviewByVenueAllResponse>(null)
   const [reviewFilter, setReviewFilter] = useState<"all" | "LOCAL" | "USER">(
     "all",
   )
   const reviewPageInfo = { groupSize: 10, items: 9 }
-  const [selectReview, setSelectReview] = useState<{
-    userId: string
-    reviewId: string
-  } | null>(null)
+  const [selectReview, setSelectReview] = useState<ISelectReview>(
+    INITIAL_ISELECT_REVIEW,
+  )
 
   useEffect(() => {
     venue.run(() => venueApi.getVenueById(venueId))
@@ -54,12 +54,12 @@ export default function VenueDetailPage({
     router.replace(`/venues/${venue.data.id}/review/${selectReview.reviewId}`)
   }
   const handleDeleteReview = async () => {
-    if (!selectReview) return
+    if (!selectReview.userId || !selectReview.reviewId) return
     const ok = window.confirm("리뷰를 삭제하시겠습니까?")
     if (!ok) return
     try {
       await reviewApi.deleteReview(selectReview.reviewId)
-      setSelectReview(null)
+      setSelectReview(INITIAL_ISELECT_REVIEW)
       await reviews.run(() =>
         reviewApi.getReviewByVenueId(venueId, {
           page: 1,
@@ -70,6 +70,7 @@ export default function VenueDetailPage({
       console.error("삭제 실패", error)
     }
   }
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Upper Section */}
@@ -208,69 +209,27 @@ export default function VenueDetailPage({
                   </p>
                 ) : (
                   reviews.data?.items.map((review) => (
-                    <div
-                      key={review.id}
-                      className="border-b border-gray-200 pb-6 last:border-0"
-                    >
-                      <div className="flex items-start justify-between mb-2">
-                        <div className="flex flex-col item-center">
-                          <div className="flex items-center gap-2">
-                            <span className="font-medium mx-2">
-                              {review.user.nickname}
-                            </span>
-                            <div className="flex items-center gap-2 mt-1">
-                              <span className="text-yellow-500">
-                                {"★".repeat(review.rating)}
-                              </span>
-                              <span className="text-gray-400 text-sm">
-                                {new Date(
-                                  review.createdAt,
-                                ).toLocaleDateString()}
-                              </span>
-                              {review.localVerificationId && (
-                                <span className="px-2 py-1 bg-green-50 text-local-700 text-xs rounded-full">
-                                  Local
-                                </span>
-                              )}
-                            </div>
-                          </div>
-                          <p className="text-gray-700 mt-2 mx-2">
-                            {typeof review.contents === "string"
-                              ? review.contents
-                              : review.contents[locale]}
-                          </p>
+                    <div>
+                      <ReviewCard
+                        review={review}
+                        setSelectReview={setSelectReview}
+                      />
+                      {selectReview?.reviewId === review.id && (
+                        <div className="absolute left-1/2 top-5 z-20 w-28 -translate-x-1/2 rounded-xl border border-gray-200 flex flex-col my-4 bg-white shadow-lg">
+                          <button
+                            className="text-sm py-2 text-gray-800 hover:bg-gray-100"
+                            onClick={handleEditReview}
+                          >
+                            수정
+                          </button>
+                          <button
+                            className="text-sm py-2 text-gray-800 hover:bg-gray-100"
+                            onClick={handleDeleteReview}
+                          >
+                            삭제
+                          </button>
                         </div>
-                        <div className="relative">
-                          {review.userId === user?.id && (
-                            <button
-                              onClick={() => {
-                                setSelectReview({
-                                  userId: user.id,
-                                  reviewId: review.id,
-                                })
-                              }}
-                            >
-                              ...
-                            </button>
-                          )}
-                          {selectReview?.reviewId === review.id && (
-                            <div className="absolute left-1/2 top-5 z-20 w-28 -translate-x-1/2 rounded-xl border border-gray-200 flex flex-col my-4 bg-white shadow-lg">
-                              <button
-                                className="text-sm py-2 text-gray-800 hover:bg-gray-100"
-                                onClick={() => handleEditReview()}
-                              >
-                                수정
-                              </button>
-                              <button
-                                className="text-sm py-2 text-gray-800 hover:bg-gray-100"
-                                onClick={() => handleDeleteReview()}
-                              >
-                                삭제
-                              </button>
-                            </div>
-                          )}
-                        </div>
-                      </div>
+                      )}
                     </div>
                   ))
                 )}
@@ -287,47 +246,47 @@ export default function VenueDetailPage({
             <div className="bg-white rounded-lg shadow p-6 sticky top-4">
               <h3 className="text-lg font-bold mb-4">{tr("information")}</h3>
               <div className="space-y-3">
-                {venue.data?.venueDetail?.phoneNumber && (
-                  <div>
-                    <p className="text-sm text-gray-600">{tr("phone")}</p>
-                    <p className="font-medium">
-                      {venue.data?.venueDetail?.phoneNumber}
-                    </p>
-                  </div>
-                )}
                 <div>
                   <p className="text-sm text-gray-600">{tr("address")}</p>
                   <span className="font-medium">
                     {venue.data?.region?.parent?.name}
                   </span>
                   <span className="font-medium">
-                    {venue.data?.region && `, ${venue.data.region.name}`}
+                    {venue.data?.region && `, ${venue.data.region.name} `}
                   </span>
                   <span className="font-medium">
                     {venue.data?.detailedAddress}
                   </span>
                 </div>
-                {venue.data?.venueDetail?.priceRange && (
-                  <div>
-                    <p className="text-sm text-gray-600">{tr("priceRange")}</p>
-                    <p className="font-medium text-lg">
-                      {venue.data.venueDetail.priceRange}
-                    </p>
-                  </div>
-                )}
-                {venue.data?.venueDetail?.websiteUrl && (
-                  <div>
-                    <p className="text-sm text-gray-600">{tr("website")}</p>
-                    <a
-                      href={venue.data?.venueDetail?.websiteUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-primary-600 hover:underline"
-                    >
-                      {tr("visitWebsite")}
-                    </a>
-                  </div>
-                )}
+                <div>
+                  <p className="text-sm text-gray-600">{tr("phone")}</p>
+                  <p className="font-medium">
+                    {venue.data?.venueDetail?.phoneNumber ?? tr("noPhone")}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">{tr("priceRange")}</p>
+                  <p className="font-medium text-lg">
+                    {venue.data?.venueDetail?.priceRange ?? tr("noPrice")}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-600">{tr("website")}</p>
+                  {venue.data?.venueDetail?.websiteUrl ? (
+                    <span className="font-medium text-lg">
+                      <a
+                        href={venue.data?.venueDetail?.websiteUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-primary-600 hover:underline"
+                      >
+                        {tr("visitWebsite")}
+                      </a>
+                    </span>
+                  ) : (
+                    <span>{tr("noWebsite")}</span>
+                  )}
+                </div>
               </div>
             </div>
             {/* External Map Links */}

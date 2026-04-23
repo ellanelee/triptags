@@ -1,8 +1,7 @@
 "use client"
 
 import { useTranslations } from "next-intl"
-import { Link } from "@/i18n/routing"
-import { useRouter } from "next/navigation"
+import { Link, useRouter } from "@/i18n/routing"
 
 export default function LoginPage() {
   const tr = useTranslations("LoginPage")
