@@ -1,4 +1,3 @@
-import type { Metadata } from "next"
 import "@/app/globals.css"
 import "react-datepicker/dist/react-datepicker.css"
 import { routing } from "@/i18n/routing"
@@ -7,6 +6,7 @@ import { getMessages } from "next-intl/server"
 import { headers } from "next/headers"
 import { NextIntlClientProvider } from "next-intl"
 import { Header } from "@/components/common/layout/Header"
+import { LocalSync } from "@/lib/utils/localSync"
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }))
@@ -34,6 +34,7 @@ export default async function RootLayout({
     <html lang={locale}>
       <body>
         <NextIntlClientProvider messages={messages}>
+          <LocalSync />
           {!isAuthPage && <Header />}
           {children}
         </NextIntlClientProvider>

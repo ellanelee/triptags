@@ -72,8 +72,8 @@
   },
   "MyPage": {
     "title": "My Page",
-    "welcome": "Welcome, {nickname}!",
     "address": "Address",
+    "welcome": "Welcome, {nickname}!",
     "interestedDestinations": "Interested Destinations",
     "addDestination": "+ Add Destination",
     "noDestinations": "No interested destinations yet.",
@@ -140,6 +140,31 @@
     "rating": "Rating",
     "reviewHelpful": "Helpful Votes"
   },
+  "CreateVenuePage": {
+    "title": "Add a New Place",
+    "searchPlace": "Search Place",
+    "searchPlaceHolder": "Search by name or address... (e.g., Gyeongbokgung Palace)",
+    "searchHint": "Information will be auto-filled when you search for a place on Google",
+    "selectOnMap": "Select on Map",
+    "selectInit": "Cancel Selection",
+    "noLocationSelected": "No location selected",
+    "noLocationInfo": "No location information",
+    "coordinates": "Coordinates",
+    "name": "Place Name",
+    "language": "Display Language",
+    "category": "Category",
+    "selectCategory": "Select a category",
+    "description": "Description",
+    "city": "Region (e.g., Seoul, California)",
+    "district": "District/City (e.g., Gangnam-gu)",
+    "details": "Street Address",
+    "phone": "Phone Number (Numbers only)",
+    "website": "Website",
+    "priceRange": "Price Range (e.g., $10 ~ $20)",
+    "selectLocation": "Please select a location on the map.",
+    "workHour": "Operating Hours",
+    "checkAddress": "(If the address is inaccurate, please select the location again)"
+  },
   "VenuesPage": {
     "title": "Find Places",
     "searchPlaceholder": "Search by place name or description...",
@@ -174,10 +199,15 @@
     "noReviews": "No reviews yet.",
     "information": "Information",
     "phone": "Phone",
+    "noPhone": "No phone number registered",
     "address": "Address",
     "priceRange": "Price Range",
+    "noPrice": "No price information available",
     "website": "Website",
-    "visitWebsite": "Visit Website"
+    "noWebsite": "No website registered",
+    "visitWebsite": "Visit Website",
+    "noVenueImage": "No images registered yet",
+    "venueImageRegister": "Register Image"
   },
   "WriteReviewPage": {
     "title": "Write a Review",
@@ -196,6 +226,7 @@
     "visitPurpose": "Purpose of Visit",
     "LocalVerification": "Local Location Verification",
     "LocalIndication": "Verifying your location will register this as a local review",
+    "verfiedCondition": "It counts as a local review if the verified location is within 15km of the venue.",
     "purposes": {
       "solo": "Solo",
       "couple": "Couple",
@@ -226,7 +257,11 @@
       "createdAt": "Created Date",
       "submit": "Submit",
       "submitting": "Submitting...",
-      "error": "Failed to submit review."
+      "create": "Create",
+      "creating": "Creating...",
+      "error": "Failed to submit.",
+      "verify": "Verify",
+      "verified": "✓ Location Verified"
     },
     "categories": {
       "RESTAURANT": "Restaurant",
