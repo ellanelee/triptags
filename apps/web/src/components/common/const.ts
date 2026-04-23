@@ -45,3 +45,7 @@ export const INTITIAL_VENUE_FILTER: IVenueSearchFilters = ({
     sortBy: "recent"
   })
 
+export const INITIAL_ISELECT_REVIEW = ({
+  userId: null, 
+  reviewId: null
+})
