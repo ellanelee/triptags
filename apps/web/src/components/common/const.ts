@@ -1,4 +1,8 @@
-import { IVenueCreate, IVenueDetailInput, IVenueSearchFilters } from "@triptags/shared";
+import {
+  IVenueCreate,
+  IVenueDetailInput,
+  IVenueSearchFilters,
+} from "@triptags/shared"
 
 export const venueCategories = [
   "RESTAURANT",
@@ -25,27 +29,28 @@ export const INITIAL_VENUE_DATA: IVenueCreate = {
   district: "",
   details: "",
   googlePlaceId: "",
-};
+}
 
 export const INITIAL_VENUE_DETAIL: IVenueDetailInput = {
   phoneNumber: "",
   priceRange: "",
   subCategory: "",
   websiteUrl: "",
-  workHour: ""
-};
+  workHour: "",
+}
 
-export const INTITIAL_VENUE_FILTER: IVenueSearchFilters = ({
-    search: "",
-    category: null,
-    city: "",
-    district: "",
-    tags: [],
-    rating: null,
-    sortBy: "recent"
-  })
+export const INTITIAL_VENUE_FILTER: IVenueSearchFilters = {
+  search: "",
+  category: null,
+  country: "",
+  city: "",
+  district: "",
+  tags: [],
+  rating: null,
+  sortBy: "recent",
+}
 
-export const INITIAL_ISELECT_REVIEW = ({
-  userId: null, 
-  reviewId: null
-})
+export const INITIAL_ISELECT_REVIEW = {
+  userId: null,
+  reviewId: null,
+}

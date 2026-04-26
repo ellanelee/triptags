@@ -16,9 +16,10 @@ export interface IVenueCreate {
 
 export interface IVenueSearchFilters {
   search?: string
+  country?: string
   city?: string
   district?: string
-  category?: VenueCategory | null 
+  category?: VenueCategory | null
   tags?: string[]
   rating?: number | null
   sortBy?: SortBy
