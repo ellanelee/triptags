@@ -18,7 +18,7 @@ export default function VenueCard({ venue }: IVenueCardProps) {
         {/* Image */}
         <div className="relative h-56 bg-gradient-to-br from-gray-200 to-gray-300 overflow-hidden">
           {venue.venueImages[0] ? (
-            <img
+            <img 
               src={venue.venueImages[0].imageUrl}
               alt={venue?.name?.[locale]}
               className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"

@@ -1,6 +1,7 @@
 import { IVenueSearchFilters, VenueCategory } from "@triptags/shared"
 import { useTranslations } from "next-intl"
 import { venueCategories } from "../common/const"
+import BasicButton from "../common/button/BasicButton"
 
 interface IVenueSearchFilterProps {
   filters: IVenueSearchFilters
@@ -17,131 +18,171 @@ export default function VenueSearchFilter({
     <>
       {/* Header with Search */}
       <div className="bg-white shadow">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-2">
           <h1 className="text-3xl font-bold text-gray-900 mb-6">
             {tr("title")}
           </h1>
           {/* Search Bar */}
-          <div className="relative">
-            <input
-              type="text"
-              className="w-full border-2 border-gray-300 rounded-lg px-5 py-4 pl-12 text-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-              placeholder={tr("searchPlaceholder")}
-              value={filters.search}
-              onChange={(e) =>
-                setFilters({ ...filters, search: e.target.value })
-              }
-            />
-            <svg
-              className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              />
-            </svg>
-          </div>
-        </div>
-      </div>
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Category Filter - Button Style */}
-        <div className="bg-white p-6 rounded-lg shadow mb-6">
-          <h3 className="text-sm font-semibold text-gray-700 mb-4">
-            {tr("category")}
-          </h3>
-          <div className="flex flex-wrap gap-2">
-            <button
-              onClick={() => setFilters({ ...filters, category: "" })}
-              className={`px-4 py-2 rounded-lg font-medium transition-all ${
-                filters.category === ""
-                  ? "bg-primary-600 text-white shadow-md"
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-              }`}
-            >
-              {tr("allCategories")}
-            </button>
-            {venueCategories.map((cat) => (
-              <button
-                key={cat}
-                onClick={() =>
-                  setFilters({ ...filters, category: cat as VenueCategory })
-                }
-                className={`px-4 py-2 rounded-lg font-medium transition-all ${
-                  filters.category === cat
-                    ? "bg-primary-600 text-white shadow-md"
-                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                }`}
-              >
-                {t(`categories.${cat}`)}
-              </button>
-            ))}
-          </div>
-        </div>
-        {/* Additional Filters */}
-        <div className="bg-white p-6 rounded-lg shadow mb-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {/* City Filter */}
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
-                {tr("city")}
-              </label>
+          <div className="border border-gray-100 bg-gray-50">
+            <div className="relative m-4">
               <input
                 type="text"
-                className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                placeholder={tr("cityPlaceholder")}
-                value={filters.city}
+                className="w-full border-2 bg-white border-gray-300 rounded-lg px-5 py-4 pl-12 text-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                placeholder={tr("searchPlaceholder")}
+                value={filters.search}
                 onChange={(e) =>
-                  setFilters({ ...filters, city: e.target.value })
+                  setFilters({ ...filters, search: e.target.value })
                 }
               />
-            </div>
-
-            {/* District Filter */}
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
-                {tr("district")}
-              </label>
-              <input
-                type="text"
-                className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                placeholder={tr("cityPlaceholder")}
-                value={filters.city}
-                onChange={(e) =>
-                  setFilters({ ...filters, district: e.target.value })
-                }
-              />
-            </div>
-
-            {/* Sort Filter */}
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
-                {tr("sortBy")}
-              </label>
-              <select
-                className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                value={filters.sortBy}
-                onChange={(e) =>
-                  setFilters({
-                    ...filters,
-                    sortBy: e.target.value as
-                      | "rating"
-                      | "reviews"
-                      | "recent"
-                      | "distance",
-                  })
-                }
+              <svg
+                className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
               >
-                <option value="recent">{tr("sort.recent")}</option>
-                <option value="rating">{tr("sort.rating")}</option>
-                <option value="reviews">{tr("sort.reviews")}</option>
-                <option value="reviews">{tr("sort.distance")}</option>
-              </select>
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
+              </svg>
+            </div>
+            {/* Category Filter - Button Style */}
+            <div className="p-6 mb-6">
+              <h3 className="text-xl font-semibold text-gray-500 mb-4">
+                {tr("category")}
+              </h3>
+              <div className="flex flex-wrap gap-2">
+                <button
+                  onClick={() => setFilters({ ...filters, category: "" })}
+                  className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                    filters.category === ""
+                      ? "bg-primary-600 text-white shadow-md"
+                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                  }`}
+                >
+                  {tr("allCategories")}
+                </button>
+                {venueCategories.map((cat) => (
+                  <button
+                    key={cat}
+                    onClick={() =>
+                      setFilters({ ...filters, category: cat as VenueCategory })
+                    }
+                    className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                      filters.category === cat
+                        ? "bg-primary-600 text-white shadow-md"
+                        : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    }`}
+                  >
+                    {t(`categories.${cat}`)}
+                  </button>
+                ))}
+              </div>
+            </div>
+            {/* Additional Filters */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 m-6">
+              {/* Country Filter */}
+              <div>
+                <label className="block text-lg font-semibold text-gray-500 mb-2">
+                  {tr("country")}
+                </label>
+                <input
+                  type="text"
+                  className="w-full border bg-white border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                  placeholder={tr("countryPlaceholder")}
+                  value={filters.country}
+                  onChange={(e) =>
+                    setFilters({ ...filters, city: e.target.value })
+                  }
+                />
+              </div>
+
+              {/* City Filter */}
+              <div>
+                <label className="block text-lg font-semibold text-gray-500 mb-2">
+                  {tr("city")}
+                </label>
+                <input
+                  type="text"
+                  className="w-full border bg-white border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                  placeholder={tr("cityPlaceholder")}
+                  value={filters.city}
+                  onChange={(e) =>
+                    setFilters({ ...filters, city: e.target.value })
+                  }
+                />
+              </div>
+
+              {/* District Filter */}
+              <div>
+                <label className="block text-lg font-semibold text-gray-500 mb-2">
+                  {tr("district")}
+                </label>
+                <input
+                  type="text"
+                  className="w-full border bg-white border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                  placeholder={tr("cityPlaceholder")}
+                  value={filters.city}
+                  onChange={(e) =>
+                    setFilters({ ...filters, district: e.target.value })
+                  }
+                />
+              </div>
+
+              {/* Rating Filter */}
+              <div>
+                <label className="block text-lg font-semibold text-gray-500 mb-2">
+                  {tr("rating")}
+                </label>
+                <select
+                  className="w-full border bg-white border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                  value={Number(filters.rating)}
+                  onChange={(e) =>
+                    setFilters({ ...filters, rating: Number(e.target.value) })
+                  }
+                >
+                  <option value="">전체</option>
+                  {[1, 2, 3, 4, 5].map((rating) => (
+                    <option key={rating}>{rating}</option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Sort Filter */}
+              <div>
+                <label className="block text-lg font-semibold text-gray-500 mb-2">
+                  {tr("sortBy")}
+                </label>
+                <select
+                  className="w-full border bg-white border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                  value={filters.sortBy}
+                  onChange={(e) =>
+                    setFilters({
+                      ...filters,
+                      sortBy: e.target.value as
+                        | "rating"
+                        | "reviews"
+                        | "recent"
+                        | "distance",
+                    })
+                  }
+                >
+                  <option value="recent">{tr("sort.recent")}</option>
+                  <option value="rating">{tr("sort.rating")}</option>
+                  <option value="reviews">{tr("sort.reviews")}</option>
+                  <option value="distance">{tr("sort.distance")}</option>
+                </select>
+              </div>
+              <div className="flex">
+                <BasicButton className="mt-7 w-full mx-2">
+                  {tr("submitSearchForm")}
+                </BasicButton>
+                <BasicButton className="mt-7 w-full mx-2">
+                  {t("transaction.reset")}
+                </BasicButton>
+              </div>
             </div>
           </div>
         </div>
