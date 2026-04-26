@@ -102,6 +102,16 @@ export class VenueService {
 
   //검색어, 카테고리, 지역정보 검색후 조회 (페이지 반영한 response)
   async findAllAbstract(paginationDto: VenuePaginationDto) {
+    const SEARCH_LANGUAGES = [
+      'ko',
+      'en',
+      'ja',
+      'zh',
+      'es',
+      'fr',
+      'de',
+    ] as const;
+
     const {
       page = 1,
       items = 10,
@@ -130,10 +140,16 @@ export class VenueService {
     }
 
     if (search) {
-      where.name = {
-        path: ['ko'],
-        string_contains: search,
-      };
+      where.OR = SEARCH_LANGUAGES.flatMap((lang) => ({
+        name: {
+          path: [lang],
+          string_contains: search,
+        },
+        description: {
+          path: [lang],
+          string_contains: search,
+        },
+      }));
     }
 
     const [totalCount, data] = await Promise.all([
