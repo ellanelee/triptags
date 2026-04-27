@@ -21,7 +21,7 @@ export interface IVenueSearchFilters {
   district?: string
   category?: VenueCategory | null
   tags?: string[]
-  rating?: number | null
+  rating?: number
   sortBy?: SortBy
 }
 

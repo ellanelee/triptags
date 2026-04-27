@@ -41,12 +41,9 @@ export const INITIAL_VENUE_DETAIL: IVenueDetailInput = {
 
 export const INTITIAL_VENUE_FILTER: IVenueSearchFilters = {
   search: "",
-  category: null,
   country: "",
   city: "",
   district: "",
-  tags: [],
-  rating: null,
   sortBy: "recent",
 }
 
