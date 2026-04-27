@@ -140,20 +140,24 @@ export class VenueService {
     }
 
     if (search) {
-      where.OR = SEARCH_LANGUAGES.flatMap((lang) => ({
-        name: {
-          path: [lang],
-          string_contains: search,
+      where.OR = SEARCH_LANGUAGES.flatMap((lang) => [
+        {
+          name: {
+            path: [lang],
+            string_contains: search,
+          },
         },
-        description: {
-          path: [lang],
-          string_contains: search,
+        {
+          description: {
+            path: [lang],
+            string_contains: search,
+          },
         },
-      }));
+      ]);
     }
 
     const [totalCount, data] = await Promise.all([
-      this.prisma.client.venue.count(),
+      this.prisma.client.venue.count({ where }),
       this.prisma.client.venue.findMany({
         where,
         skip,
