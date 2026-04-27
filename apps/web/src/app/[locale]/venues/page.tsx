@@ -1,7 +1,7 @@
 "use client"
 import { venueApi } from "@/lib/api/venue.api"
 import { useAsync } from "@/lib/hooks/use.async"
-import type { Language } from "@triptags/shared"
+import type { IVenueSearchFilters, Language } from "@triptags/shared"
 import { INTITIAL_VENUE_FILTER } from "@/components/common/const"
 import { useLocale, useTranslations } from "next-intl"
 import { useEffect, useState } from "react"
@@ -15,16 +15,19 @@ export default function VenuePage() {
   const tr = useTranslations("VenuesPage")
   const t = useTranslations("Common")
   const pageInfo = { groupSize: 10, items: 9 }
-  const locale = useLocale() as Language
   const venues = useAsync<IGetVenueAllResponse>(null)
   const [currentPage, setCurrentPage] = useState<number>(1)
   const [filters, setFilters] = useState(INTITIAL_VENUE_FILTER)
 
   useEffect(() => {
     venues.run(() =>
-      venueApi.getAllVenue({ page: currentPage, items: pageInfo.items }),
+      venueApi.getAllVenue({
+        page: currentPage,
+        items: pageInfo.items,
+        ...filters,
+      }),
     )
-  }, [currentPage])
+  }, [currentPage, filters])
 
   const handlePageChange = (newPage: number) => {
     setCurrentPage(newPage)
@@ -41,11 +44,21 @@ export default function VenuePage() {
     onPageChange: handlePageChange,
   }
 
+  const handleSearch = (filters:IVenueSearchFilters) => {
+     setFilters(filters)
+     setCurrentPage(1)
+  }
+
+  const handleReset = () => {
+    setFilters(INTITIAL_VENUE_FILTER)
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       <VenueSearchFilter
-        filters={filters}
-        setFilters={setFilters}
+        initialFilters={filters}
+        onSubmitSearch={handleSearch}
+        onReset={handleReset}
       ></VenueSearchFilter>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Venue List */}
