@@ -17,7 +17,6 @@ export * from "./dtos/review/reviewupdate.dto"
 export * from "./dtos/venuedetail/venuedetail.dto"
 export * from "./dtos/tag/tagcreate.dto"
 export * from "./dtos/localverficiation/localverficationcreated.dto"
-export * from "./utils/country"
 export * from "./dtos/destination/destinationcreate.dto"
 export * from "./dtos/region/regioncreate.dto"
 export * from "./dtos/region/regionsearch.dto"
@@ -29,9 +28,11 @@ export * from "./dtos/review/reviewcreatewithdetail.dto"
 export * from "./common/types"
 export * from "./common/response"
 export * from "./common/interface"
+export * from "./common/const"
 
 //Utils
 export * from "./utils/match.decorator"
+export * from "./utils/country"
 
 //Types
 export * from "./types/user.interface"
@@ -39,15 +40,3 @@ export * from "./types/userpoint.interface"
 export * from "./types/review.interface"
 export * from "./types/venue.interface"
 export * from "./types/venueDetail.interface"
-
-//Model
-export type {
-  User,
-  UserProfile,
-  Venue,
-  VenueDetail,
-  VenueImage,
-  VenueCategory,
-  VenueStats,
-  Review,
-} from "@triptags/database"

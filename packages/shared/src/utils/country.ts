@@ -6,7 +6,8 @@ import zh from "i18n-iso-countries/langs/zh.json"
 import es from "i18n-iso-countries/langs/es.json"
 import fr from "i18n-iso-countries/langs/fr.json"
 import de from "i18n-iso-countries/langs/de.json"
-import { SUPPORTED_LANGUAGES } from "src/common/const"
+import { SUPPORTED_LANGUAGES } from "../common/const"
+
 
 let initialized = false
 
