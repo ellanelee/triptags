@@ -1,4 +1,4 @@
-import { PointType, VerificationMethod } from "@triptags/database";
+import { PointType, VerificationMethod } from "src/common/types";
 
 export interface IUserPointAll {
   id: string;

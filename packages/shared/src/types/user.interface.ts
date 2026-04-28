@@ -1,4 +1,3 @@
-import { Region } from "@triptags/database"
 import { Provider, UserRole } from "../common/types"
 
 export interface IUserResponse {
