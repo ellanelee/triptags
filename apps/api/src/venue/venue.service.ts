@@ -127,15 +127,11 @@ export class VenueService {
 
     if (category) where.venueCategory = category;
 
-    if (district) {
+    if (district || city) {
       where.region = {
-        name: { contains: district },
         level: 3,
-      };
-    } else if (city) {
-      where.region = {
-        name: { contains: city },
-        level: 2,
+        ...(district && { name: { contains: district } }),
+        ...(city && { parent: { name: { contains: city } } }),
       };
     }
 
