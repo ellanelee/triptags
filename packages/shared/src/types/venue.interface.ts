@@ -1,4 +1,4 @@
-import { Language, VenueCategory } from "src/common/types"
+import { Language, SortBy, VenueCategory } from "src/common/types"
 
 export interface IVenueCreate {
   language: Language
@@ -24,5 +24,3 @@ export interface IVenueSearchFilters {
   rating?: number
   sortBy?: SortBy
 }
-
-export type SortBy = "rating" | "reviews" | "recent" | "distance"
