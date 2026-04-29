@@ -1,10 +1,10 @@
 import { PrismaService } from '@/prisma/prisma.service';
+import { CountryUtils } from '@/utils/country.utils';
 import {
   BadRequestException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { CountryUtils } from '@triptags/shared';
 
 @Injectable()
 export class RegionService {

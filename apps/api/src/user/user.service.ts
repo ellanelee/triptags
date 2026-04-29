@@ -6,14 +6,12 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '@/prisma/prisma.service';
 import { USER_PERSONAL_SELECT } from '@/common/const/user.select';
-import {
-  Language,
-  UpdateNicknameDto,
-  UpdatePasswordDto,
-  UserAddressDto,
-} from '@triptags/shared';
+import { Language } from '@triptags/shared';
 import * as bcrypt from 'bcryptjs';
 import { RegionService } from '@/region/region.service';
+import { UpdateNicknameDto } from './dtos/nicknameupdate.dto';
+import { UpdatePasswordDto } from './dtos/passwordupdate.dto';
+import { UserAddressDto } from './dtos/useraddress.dto';
 
 @Injectable()
 export class UserService {

@@ -6,7 +6,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { User } from '@prisma/client';
-import { VenueDetailDto } from '@triptags/shared';
+import { VenueDetailDto } from './dtos/venuedetail.dto';
 
 @Injectable()
 export class VenueDetailService {

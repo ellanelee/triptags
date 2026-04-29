@@ -4,7 +4,8 @@ import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { User } from '@prisma/client';
 import { VenueDetailService } from './venuedetail.service';
-import { createResponse, VenueDetailDto } from '@triptags/shared';
+import { createResponse} from '@triptags/shared';
+import { VenueDetailDto } from './dtos/venuedetail.dto';
 
 @Controller('venueDetail')
 @ApiTags('venueDetail')

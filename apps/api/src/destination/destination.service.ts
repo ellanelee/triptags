@@ -5,7 +5,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { DestinationCreateDto } from '@triptags/shared';
+import { DestinationCreateDto } from './dtos/destinationcreate.dto';
 
 @Injectable()
 export class DestinationService {

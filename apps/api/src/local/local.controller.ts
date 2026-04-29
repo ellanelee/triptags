@@ -2,9 +2,10 @@ import { JwtAccessGuard } from '@/auth/jwt-auth.guard.ts/jwt-auth.access.guard';
 import { CurrentUser } from '@/common/decorator/current_user.decorator';
 import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { createResponse, LocalVerificationCreateDto } from '@triptags/shared';
+import { createResponse } from '@triptags/shared';
 import { LocalVerificationService } from './local.service';
 import { User } from '@prisma/client';
+import { LocalVerificationCreateDto } from './dto/localverficationcreated.dto';
 
 @Controller('local_verification')
 @ApiBearerAuth('access-token')

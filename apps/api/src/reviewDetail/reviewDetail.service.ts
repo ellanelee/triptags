@@ -1,6 +1,6 @@
 import { PrismaService } from '@/prisma/prisma.service';
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { ReviewDetailCreateDto } from '@triptags/shared';
+import { ReviewDetailCreateDto } from './dtos/reviewdetailcreate.dto';
 
 @Injectable()
 export class ReviewDetailService {

@@ -13,16 +13,14 @@ import { VenueService } from './venue.service';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { CurrentUser } from '@/common/decorator/current_user.decorator';
 import { User } from '@prisma/client';
-import {
-  createResponse,
-  VenueCreateDto,
-  VenuePaginationDto,
-  VenueUpdateDto,
-  VenueUpdateDtoUser,
-} from '@triptags/shared';
+import { createResponse } from '@triptags/shared';
 import { JwtAccessGuard } from '@/auth/jwt-auth.guard.ts/jwt-auth.access.guard';
 import { Roles } from '@/common/decorator/roles.decorator';
 import { RolesGuard } from '@/auth/jwt-auth.guard.ts/roels.guard';
+import { VenuePaginationDto } from './dtos/venuepagination.dto';
+import { VenueCreateDto } from './dtos/venuecreate.dto';
+import { VenueUpdateDtoUser } from './dtos/venueupdateuser.dto';
+import { VenueUpdateDto } from './dtos/venueupdate.dto';
 
 @ApiBearerAuth('access-token')
 @ApiTags('venues')

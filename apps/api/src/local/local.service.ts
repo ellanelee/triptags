@@ -6,7 +6,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { VerificationMethod } from '@prisma/client';
-import { LocalVerificationCreateDto } from '@triptags/shared';
+import { LocalVerificationCreateDto } from './dto/localverficationcreated.dto';
 
 @Injectable()
 export class LocalVerificationService {

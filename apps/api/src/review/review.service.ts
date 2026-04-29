@@ -4,15 +4,13 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from '@/prisma/prisma.service';
-import {
-  Language,
-  ReviewCreateWithDetailDto,
-  ReviewPaginationDto,
-  ReviewUpdateDto,
-} from '@triptags/shared';
+import { Language } from '@triptags/shared';
 import { IUserPoint } from '@/common/type/types';
 import { PointType } from '@prisma/client';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { ReviewPaginationDto } from './dtos/reviewpagination.dto';
+import { ReviewCreateWithDetailDto } from './dtos/reviewcreatewithdetail.dto';
+import { ReviewUpdateDto } from './dtos/reviewupdate.dto';
 
 @Injectable()
 export class ReviewService {

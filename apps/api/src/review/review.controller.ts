@@ -10,16 +10,14 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ReviewService } from './review.service';
-import {
-  createResponse,
-  ReviewCreateWithDetailDto,
-  ReviewPaginationDto,
-  ReviewUpdateDto,
-} from '@triptags/shared';
+import { createResponse } from '@triptags/shared';
 import { JwtAccessGuard } from '@/auth/jwt-auth.guard.ts/jwt-auth.access.guard';
 import { CurrentUser } from '@/common/decorator/current_user.decorator';
 import { User } from '@prisma/client';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ReviewPaginationDto } from './dtos/reviewpagination.dto';
+import { ReviewCreateWithDetailDto } from './dtos/reviewcreatewithdetail.dto';
+import { ReviewUpdateDto } from './dtos/reviewupdate.dto';
 
 @ApiBearerAuth('access-token')
 @ApiTags('reviews')

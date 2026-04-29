@@ -12,7 +12,8 @@ import { DestinationService } from './destination.service';
 import { JwtAccessGuard } from '@/auth/jwt-auth.guard.ts/jwt-auth.access.guard';
 import { CurrentUser } from '@/common/decorator/current_user.decorator';
 import { User } from '@prisma/client';
-import { createResponse, DestinationCreateDto } from '@triptags/shared';
+import { createResponse} from '@triptags/shared';
+import { DestinationCreateDto } from './dtos/destinationcreate.dto';
 
 @ApiBearerAuth('access-token')
 @Controller('destination')
