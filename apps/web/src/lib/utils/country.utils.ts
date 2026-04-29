@@ -6,12 +6,12 @@ import zh from "i18n-iso-countries/langs/zh.json"
 import es from "i18n-iso-countries/langs/es.json"
 import fr from "i18n-iso-countries/langs/fr.json"
 import de from "i18n-iso-countries/langs/de.json"
-import { SUPPORTED_LANGUAGES } from "../common/const"
-
+import { SUPPORTED_LANGUAGES } from "@triptags/shared"
 
 let initialized = false
 
 function init() {
+  if (initialized) return
   initialized = true
 
   countries.registerLocale(ko)
@@ -28,6 +28,18 @@ export const CountryUtils = {
   isValidCountryCode(countryCode: string): boolean {
     init()
     return countries.isValid(countryCode)
+  },
+
+  //모든 국가명 반환
+  getAllCountries(lang: string = "ko") {
+    init()
+    const names = countries.getNames(lang, { select: "official" })
+    return Object.entries(names)
+      .map(([code, name]) => ({
+        code,
+        name,
+      }))
+      .sort((a, b) => a.name.localeCompare(b.name))
   },
 
   //국가코드 -> 국가명 반환
@@ -53,7 +65,7 @@ export const CountryUtils = {
     }
   },
 
-  //List (프론트엔드 드롭다운)
+  //전체 List (프론트엔드 드롭다운)
   selectCountryOption(lang: string = "ko") {
     init()
     const countryNames = countries.getNames(lang)
