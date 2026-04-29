@@ -2,9 +2,8 @@
 
 import { destinationApi } from "@/lib/api/destination.api"
 import { regionApi } from "@/lib/api/region.api"
-import { userApi } from "@/lib/api/user.api"
 import { useAsync } from "@/lib/hooks/use.async"
-import { getAllCountries, toCountryLang } from "@/lib/utils/country"
+import { CountryUtils } from "@/lib/utils/country.utils"
 import { useAuthStore } from "@/store/auth-store"
 import { DestinationWithRegion, RegionInfo } from "@/types/types"
 import { useLocale, useTranslations } from "next-intl"
@@ -26,7 +25,7 @@ export default function MyDestination() {
     district: "",
     priority: 0,
   })
-  const countryList = getAllCountries(toCountryLang(locale))
+  const countryList = CountryUtils.getAllCountries(CountryUtils.toCountryLang(locale))
   const countryInfo = useAsync<string>("")
   const regionInfo = useAsync<RegionInfo[]>([])
   const destinationsInitials = useAsync<DestinationWithRegion[]>([])

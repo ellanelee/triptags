@@ -1,8 +1,7 @@
 "use client"
 
-import { IVenueSearchFilters, VenueCategory } from "@triptags/shared"
+import { IVenueSearchFilters, venueCategories, VenueCategory } from "@triptags/shared"
 import { useTranslations } from "next-intl"
-import { venueCategories } from "../common/const"
 import BasicButton from "../common/button/BasicButton"
 import { useState } from "react"
 

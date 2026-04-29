@@ -11,10 +11,10 @@ import { useAsync } from "@/lib/hooks/use.async"
 import { destinationName } from "@/lib/utils/format.region"
 import { useAuthStore } from "@/store/auth-store"
 import { DestinationWithRegion, RegionInfo } from "@/types/types"
-import { IUserPointAll, IUserResponse } from "@triptags/shared"
+import type { IUserPointAll, IUserResponse } from "@triptags/shared"
 import { useLocale, useTranslations } from "next-intl"
 import { useRouter } from "next/navigation"
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 
 export default function MyPage() {
   const tr = useTranslations("MyPage")
@@ -209,7 +209,8 @@ export default function MyPage() {
                 />
               </svg>
               <p className="mt-4 text-gray-600">
-                {tr("destination.noDestination") || "아직 관심 여행지가 없습니다."}
+                {tr("destination.noDestination") ||
+                  "아직 관심 여행지가 없습니다."}
               </p>
               <p className="text-sm text-gray-500">
                 {tr("destination.noDestinationsHint") ||

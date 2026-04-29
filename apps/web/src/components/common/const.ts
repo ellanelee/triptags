@@ -1,4 +1,4 @@
-import {
+import type {
   IVenueCreate,
   IVenueDetailInput,
   IVenueSearchFilters,

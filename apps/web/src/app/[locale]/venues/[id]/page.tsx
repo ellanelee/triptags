@@ -10,7 +10,7 @@ import {
   IGetVenueBase,
 } from "@/types/interfaces/interface.api"
 import { reviewApi } from "@/lib/api/review.api"
-import { Language } from "@triptags/shared"
+import type { Language } from "@triptags/shared"
 import VenueImageSlider from "@/components/venue/VenueImageSlider"
 import { ReviewCard } from "@/components/review/ReveiwCard"
 import { ISelectReview } from "@/types/interfaces/interface.props"

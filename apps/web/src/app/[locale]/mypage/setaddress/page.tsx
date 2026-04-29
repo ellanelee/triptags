@@ -4,11 +4,11 @@ import { useAuthStore } from "@/store/auth-store"
 import { useLocale, useTranslations } from "next-intl"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
-import { getAllCountries, toCountryLang } from "@/lib/utils/country"
 import { regionApi } from "@/lib/api/region.api"
 import { RegionInfo } from "@/types/types"
 import { useAsync } from "@/lib/hooks/use.async"
 import { userApi } from "@/lib/api/user.api"
+import { CountryUtils } from "@/lib/utils/country.utils"
 
 export default function SetAddress() {
   const tr = useTranslations("Address")
@@ -24,7 +24,9 @@ export default function SetAddress() {
   })
   const [cities, setCities] = useState<RegionInfo[]>([])
   const [districts, setDistricts] = useState<RegionInfo[]>([])
-  const countryList = getAllCountries(toCountryLang(locale))
+  const countryList = CountryUtils.getAllCountries(
+    CountryUtils.toCountryLang(locale),
+  )
   const countryInfo = useAsync<string>("")
   const regionInfo = useAsync<RegionInfo[]>([])
   const fullAddress =

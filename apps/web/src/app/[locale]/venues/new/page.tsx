@@ -11,13 +11,13 @@ import MapPicker from "@/components/common/maps/MapPicker"
 import { PlaceAutoComplete } from "@/components/common/maps/PlaceAutoComplete"
 import { useRouter } from "@/i18n/routing"
 import { venueApi } from "@/lib/api/venue.api"
-import { localeCountryName } from "@/lib/utils/country"
+import { CountryUtils } from "@/lib/utils/country.utils"
 import { syncGoogleVenueDetails } from "@/lib/utils/googledetails"
 import { patchVenueFromGoogle } from "@/lib/utils/googlevenueupdate"
 import { IFormErrors, validateVenueCreateForm } from "@/lib/utils/validateVenue"
 import { useAuthStore } from "@/store/auth-store"
 import { IKakaoPlaceSelected } from "@/types/maps/kakao"
-import {
+import type {
   IVenueCreate,
   IVenueDetailInput,
   VenueCreateDto,
@@ -57,7 +57,11 @@ export default function CreateVenuePage() {
     const lat = result.geometry.location.lat()
     const lng = result.geometry.location.lng()
     const placeId = result.place_id
-    const patchedData = patchVenueFromGoogle(result, localeCountryName, locale)
+    const patchedData = patchVenueFromGoogle(
+      result,
+      CountryUtils.getCountryName,
+      locale,
+    )
     const { country, city, district, details, countryName } = patchedData
     setVenueData((prev) => ({
       ...prev,
@@ -98,7 +102,7 @@ export default function CreateVenuePage() {
       district: district,
       details: details,
     }))
-    setCountryName(localeCountryName("KR", locale))
+    setCountryName(CountryUtils.getCountryName("KR", locale))
     setVenueDetail((prev) => ({
       ...prev,
       phoneNumber: place.phone,
@@ -146,7 +150,7 @@ export default function CreateVenuePage() {
       }
       const response = await venueApi.createVenue(venuePayload)
       await venueApi.createVenueDetail(response.id, venueDetailsPayload)
-        router.replace(`/venues/${response.id}`)
+      router.replace(`/venues/${response.id}`)
     } catch (error) {
       console.error(error)
     } finally {

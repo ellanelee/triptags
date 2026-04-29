@@ -1,7 +1,7 @@
 "use client"
 import { venueApi } from "@/lib/api/venue.api"
 import { useAsync } from "@/lib/hooks/use.async"
-import type { IVenueSearchFilters, Language } from "@triptags/shared"
+import type { IVenueSearchFilters } from "@triptags/shared"
 import { INTITIAL_VENUE_FILTER } from "@/components/common/const"
 import { useLocale, useTranslations } from "next-intl"
 import { useEffect, useState } from "react"

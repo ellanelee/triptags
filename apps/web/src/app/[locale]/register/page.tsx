@@ -3,9 +3,9 @@ import { authApi } from "@/lib/api/auth.api"
 import { useLocale, useTranslations } from "next-intl"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
-import { RegisterDto } from "@triptags/shared"
+import type { RegisterDto } from "@triptags/shared"
 import { Link } from "@/i18n/routing"
-import { getLocaleConfig, validateAgreements } from "@/i18n/localeConfig"
+import { getLocaleConfig } from "@/i18n/localeConfig"
 import { LanguageSelect } from "@/components/common/LanguageSelect"
 
 export default function RegisterPage() {
