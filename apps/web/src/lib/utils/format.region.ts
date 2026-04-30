@@ -1,7 +1,7 @@
 import { RegionInfo } from "@/types/types"
-import { localeCountryName } from "./country"
+import { CountryUtils } from "./country.utils"
 
-//국가코드, 언어를 받아 언어별 국가명 반환 
+//국가코드, 언어를 받아 언어별 국가명 반환
 export function destinationName(
   region: RegionInfo | null | undefined,
   locale: string = "ko",
@@ -13,7 +13,7 @@ export function destinationName(
 
   while (current) {
     if (current.level === 1) {
-      const localizedName = localeCountryName(current.name, locale)
+      const localizedName = CountryUtils.getCountryName(current.name, locale)
       name.push(localizedName)
     } else {
       name.push(current.name)
@@ -23,7 +23,3 @@ export function destinationName(
 
   return name.reverse().join(" ")
 }
-
-
-
-

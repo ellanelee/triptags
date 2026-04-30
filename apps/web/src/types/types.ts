@@ -1,5 +1,4 @@
-import { localeConfig } from "@/i18n/localeConfig"
-import type { RegisterDto } from "@triptags/shared"
+import { IVenueCreate, VenueCategory } from "@triptags/shared"
 
 export type LocaleConfigType = {
   requireTerms: boolean
@@ -34,4 +33,13 @@ export type RegionInfo = {
 export type PositionInfo = {
   latitude?: number
   longitude?: number
+}
+
+export type IVenueCreatePayload = Omit<
+  IVenueCreate,
+  "latitude" | "longitude" | "venueCategory"
+> & {
+  latitude?: number
+  longitude?: number
+  venueCategory?: VenueCategory
 }

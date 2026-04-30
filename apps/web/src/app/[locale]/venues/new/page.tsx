@@ -2,7 +2,6 @@
 import {
   INITIAL_VENUE_DATA,
   INITIAL_VENUE_DETAIL,
-  venueCategories,
 } from "@/components/common/const"
 import { FormField } from "@/components/common/form/FormField"
 import { GoogleMapsProvider } from "@/components/common/maps/GoogleMapsProvider"
@@ -17,11 +16,11 @@ import { patchVenueFromGoogle } from "@/lib/utils/googlevenueupdate"
 import { IFormErrors, validateVenueCreateForm } from "@/lib/utils/validateVenue"
 import { useAuthStore } from "@/store/auth-store"
 import { IKakaoPlaceSelected } from "@/types/maps/kakao"
-import type {
-  IVenueCreate,
-  IVenueDetailInput,
-  VenueCreateDto,
-  VenueDetailDto,
+import { IVenueCreatePayload } from "@/types/types"
+import {
+  venueCategories,
+  type IVenueCreate,
+  type IVenueDetailInput,
 } from "@triptags/shared"
 import { useLocale, useTranslations } from "next-intl"
 import { useEffect, useState } from "react"
@@ -138,13 +137,13 @@ export default function CreateVenuePage() {
       return
     }
     try {
-      const venuePayload: VenueCreateDto = {
+      const venuePayload: IVenueCreatePayload = {
         ...venueData,
         latitude: venueData.latitude ?? undefined,
         longitude: venueData.longitude ?? undefined,
         venueCategory: venueData.venueCategory ?? undefined,
       }
-      const venueDetailsPayload: VenueDetailDto = {
+      const venueDetailsPayload: IVenueDetailInput = {
         ...venueDetail,
         workHour: { [locale]: venueDetail.workHour ?? undefined },
       }
