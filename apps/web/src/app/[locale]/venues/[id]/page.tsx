@@ -291,14 +291,16 @@ export default function VenueDetailPage({
             </div>
             {/* External Map Links */}
             <div className="mt-4 pt-4 border-t border-gray-200 space-y-2">
-              <a
-                href={`https://map.kakao.com/link/map/${encodeURIComponent(venue.data?.name?.[locale])},${venue.data?.latitude},${venue.data?.longitude}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block w-full px-4 py-2 bg-yellow-400 text-black text-center rounded-md hover:bg-yellow-500 transition-colors"
-              >
-                카카오맵에서 보기
-              </a>
+              {venue.data?.name?.[locale] && (
+                <a
+                  href={`https://map.kakao.com/link/map/${encodeURIComponent(venue.data?.name?.[locale])},${venue.data?.latitude},${venue.data?.longitude}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block w-full px-4 py-2 bg-yellow-400 text-black text-center rounded-md hover:bg-yellow-500 transition-colors"
+                >
+                  카카오맵에서 보기 {venue.data?.name?.[locale]}
+                </a>
+              )}
               <a
                 href={`https://www.google.com/maps/search/?api=1&query=${venue.data?.latitude},${venue.data?.longitude}`}
                 target="_blank"

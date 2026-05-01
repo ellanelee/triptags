@@ -130,10 +130,11 @@
     "cityLabel": "자치도/특별시/광역시",
     "city": "광역행정구역(주/도/특별시/광역시)",
     "cityPlaceholder": "예: 서울특별시 혹은 제주특별자치도",
+    "priorityPlaceholder": "선호 여행지 우선 순위를 정해주세요. 0순위부터 검색돼요",
     "districtLabel": "시/군/구",
     "district": "개별행정구역(시/군/구)",
     "districtPlaceholder": "예: 강남구",
-    "priority": "우선 순위 (0~9 중에서 선택)"
+    "priority": "우선 순위 (1~9 중에서 선택)"
   },
   "MyReview": {
     "reviewTitle": "리뷰 내역",

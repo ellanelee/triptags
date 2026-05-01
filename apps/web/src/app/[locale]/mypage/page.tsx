@@ -188,7 +188,7 @@ export default function MyPage() {
               }}
               type="button"
             >
-              {tr("editDestinations") || "관심여행지 수정"}
+              {tr("addDestination") || "관심여행지 수정"}
             </BasicButton>
           </div>
 
