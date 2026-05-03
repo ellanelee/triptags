@@ -1,8 +1,8 @@
 import type {
   IVenueDetailResponse,
-  VenueCreateDto,
-  VenueDetailDto,
-  VenuePaginationDto,
+  IVenueCreateInput,
+  IVenueDetailInput,
+  IVenuePaginationInput,
 } from "@triptags/shared"
 import apiClient from "./api.client"
 import {
@@ -12,7 +12,7 @@ import {
 
 export const venueApi = {
   getAllVenue: async (
-    paginationDto: VenuePaginationDto,
+    paginationDto: IVenuePaginationInput,
   ): Promise<IGetVenueAllResponse> => {
     const response = await apiClient.get(`venues/all`, {
       params: paginationDto,
@@ -49,7 +49,7 @@ export const venueApi = {
     return response.data.data ?? null
   },
 
-  createVenue: async (createDto: VenueCreateDto) => {
+  createVenue: async (createDto: IVenueCreateInput) => {
     const response = await apiClient.post(`venues`, createDto)
     if (!response.data.success) {
       throw new Error(
@@ -60,7 +60,7 @@ export const venueApi = {
     return response.data.data
   },
 
-  createVenueDetail: async (venueId: string, createDto: VenueDetailDto) => {
+  createVenueDetail: async (venueId: string, createDto: IVenueDetailInput) => {
     const response = await apiClient.post(`venueDetail/${venueId}`, createDto)
     if (!response.data.success) {
       throw new Error(

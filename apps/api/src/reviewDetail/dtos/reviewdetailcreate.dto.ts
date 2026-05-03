@@ -10,9 +10,9 @@ import {
 } from 'class-validator';
 
 import { Type } from 'class-transformer';
-import { VisitPurpose } from '@triptags/shared';
+import { IReviewDetailCreateInput, VisitPurpose } from '@triptags/shared';
 
-export class ReviewDetailCreateDto {
+export class ReviewDetailCreateDto implements IReviewDetailCreateInput {
   @ApiProperty({
     example: 5,
     description: '장소에 대한 선호도 점수평가 (1~5)',

@@ -34,3 +34,27 @@ export interface ILocalVerification {
   verificationMethod: "ADDRESS" | "GPS" | "ACTIVITY"
   createdAt: string | Date
 }
+
+export interface IReviewPaginationInput {
+  page?: number
+  items?: number
+}
+
+export interface IReviewCreateInput {
+  rating: number
+  contents: I18nText
+  authorRole: UserRole
+  localVerificationId?: string
+}
+
+export interface IReviewDetailCreateInput {
+  tasteRating: number
+  serviceRating: number
+  priceRating: number
+  visitPurpose: VisitPurpose
+  visitDate?: Date
+}
+
+export interface IReviewCreateWithDetailInput extends IReviewCreateInput {
+  reviewDetail: IReviewDetailCreateInput
+}

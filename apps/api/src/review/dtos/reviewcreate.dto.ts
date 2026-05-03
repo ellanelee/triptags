@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { I18nText, UserRole } from '@triptags/shared';
+import { I18nText, IReviewCreateInput, UserRole } from '@triptags/shared';
 import {
   IsInt,
   IsNotEmpty,
@@ -9,7 +9,7 @@ import {
   Min,
 } from 'class-validator';
 
-export class ReviewCreateDto {
+export class ReviewCreateDto implements IReviewCreateInput {
   @ApiProperty({
     example: 5,
     description: '장소에 대한 선호도 점수평가 (1~5)',

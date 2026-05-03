@@ -1,6 +1,6 @@
 import {
-  ReviewCreateWithDetailDto,
-  ReviewPaginationDto,
+  IReviewCreateWithDetailInput,
+  IReviewPaginationInput,
 } from "@triptags/shared"
 import apiClient from "./api.client"
 
@@ -16,7 +16,7 @@ export const reviewApi = {
     return response.data.data ?? ""
   },
 
-  getReviewByVenueId: async (venueId: string, pageDto: ReviewPaginationDto) => {
+  getReviewByVenueId: async (venueId: string, pageDto: IReviewPaginationInput) => {
     const response = await apiClient.get(`/reviews/${venueId}`, {
       params: pageDto,
     })
@@ -31,7 +31,7 @@ export const reviewApi = {
 
   createReview: async (
     venueId: string,
-    createDto: ReviewCreateWithDetailDto,
+    createDto: IReviewCreateWithDetailInput,
   ) => {
     const response = await apiClient.post(`/reviews/${venueId}`, createDto)
     if (!response.data.success) {

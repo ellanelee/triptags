@@ -1,8 +1,9 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
+import { IReviewPaginationInput } from '@triptags/shared';
 import { Type } from 'class-transformer';
 import { IsInt, IsOptional, Min } from 'class-validator';
 
-export class ReviewPaginationDto {
+export class ReviewPaginationDto implements IReviewPaginationInput {
   @ApiPropertyOptional({ example: 1, description: '페이지 number' })
   @IsOptional()
   @Type(() => Number)
