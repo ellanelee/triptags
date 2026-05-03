@@ -3,7 +3,7 @@ import { authApi } from "@/lib/api/auth.api"
 import { useLocale, useTranslations } from "next-intl"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
-import type { RegisterDto } from "@triptags/shared"
+import type { IRegisterInput } from "@triptags/shared"
 import { Link } from "@/i18n/routing"
 import { getLocaleConfig } from "@/i18n/localeConfig"
 import { LanguageSelect } from "@/components/common/LanguageSelect"
@@ -14,7 +14,7 @@ export default function RegisterPage() {
   const locale = useLocale()
   const localeConfig = getLocaleConfig(locale)
   const router = useRouter()
-  const [formData, setFormData] = useState<RegisterDto>({
+  const [formData, setFormData] = useState<IRegisterInput>({
     email: "",
     password: "",
     passwordConfirm: "",
@@ -198,7 +198,7 @@ export default function RegisterPage() {
                   onChange={(val) =>
                     setFormData({
                       ...formData,
-                      language: val as RegisterDto["language"],
+                      language: val as IRegisterInput["language"],
                     })
                   }
                   tr={t}
