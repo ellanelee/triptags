@@ -1,8 +1,12 @@
 import { IsEmail, IsIn, IsString, IsStrongPassword } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { Language, SUPPORTED_LANGUAGES } from '@triptags/shared';
+import {
+  IRegisterInput,
+  Language,
+  SUPPORTED_LANGUAGES,
+} from '@triptags/shared';
 
-export class RegisterDto {
+export class RegisterDto implements IRegisterInput {
   @ApiProperty({
     example: 'user@example.com',
     description: '사용자 이메일 주소',

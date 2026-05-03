@@ -1,7 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { ILoginInput } from '@triptags/shared';
 import { IsEmail, IsString, IsStrongPassword } from 'class-validator';
 
-export class LoginDto {
+export class LoginDto implements ILoginInput {
   @ApiProperty({
     example: 'user@example.com',
     description: '사용자 이메일 주소',
