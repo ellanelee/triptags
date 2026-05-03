@@ -1,8 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsOptional, IsString } from 'class-validator';
 import { I18nText } from '../../../../../../../개인프로젝트/triptags/packages/shared/dist/cjs';
+import { IVenueDetailInput } from '@triptags/shared';
 
-export class VenueDetailDto {
+export class VenueDetailDto implements IVenueDetailInput {
   @ApiProperty({
     example: '010123445678',
     description: '업장의 전화번호를 등록해주세요',

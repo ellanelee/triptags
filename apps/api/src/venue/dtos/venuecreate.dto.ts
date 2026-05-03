@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Language, VenueCategory } from '@triptags/shared';
+import { IVenueCreateInput, Language, VenueCategory } from '@triptags/shared';
 
 import {
   IsArray,
@@ -10,7 +10,7 @@ import {
   IsString,
 } from 'class-validator';
 
-export class VenueCreateDto {
+export class VenueCreateDto implements IVenueCreateInput {
   @ApiProperty({
     example: 'ko',
     description: '언어코드',

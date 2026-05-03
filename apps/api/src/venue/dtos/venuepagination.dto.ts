@@ -1,5 +1,5 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { SortBy, VenueCategory } from '@triptags/shared';
+import { IVenuePaginationInput, SortBy, VenueCategory } from '@triptags/shared';
 import { Type } from 'class-transformer';
 import {
   IsInt,
@@ -10,7 +10,7 @@ import {
   Min,
 } from 'class-validator';
 
-export class VenuePaginationDto {
+export class VenuePaginationDto implements IVenuePaginationInput {
   @ApiPropertyOptional({ example: 1, description: '페이지 number' })
   @IsOptional()
   @Type(() => Number)
