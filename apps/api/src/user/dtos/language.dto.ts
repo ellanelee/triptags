@@ -1,8 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Language, SUPPORTED_LANGUAGES } from '@triptags/shared';
+import {
+  ILanguageInput,
+  Language,
+  SUPPORTED_LANGUAGES,
+} from '@triptags/shared';
 import { IsIn } from 'class-validator';
 
-export class LanguageDto {
+export class LanguageDto implements ILanguageInput {
   @ApiProperty({
     example: 'ko',
     description:

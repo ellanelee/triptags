@@ -1,7 +1,8 @@
 import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { IUserAddressInput } from '@triptags/shared';
 
-export class UserAddressDto {
+export class UserAddressDto implements IUserAddressInput {
   @ApiProperty({
     example: 'KR',
     description: '거주 국가명의 영문명, KR, UK, USA등등',

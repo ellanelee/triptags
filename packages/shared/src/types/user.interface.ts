@@ -1,4 +1,21 @@
-import { Provider, UserRole } from "../common/types"
+import { Language, Provider, UserRole } from "../common/types"
+
+export interface ILanguageInput {
+  language: Language
+}
+
+export interface IUserAddressInput {
+  country: string
+  city: string
+  district: string
+  details: string
+  latitude?: number
+  longitude?: number
+}
+
+export interface IUserIntroductionInput {
+  introduction: string
+}
 
 export interface IUserResponse {
   id: string
