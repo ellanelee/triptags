@@ -1,7 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { IDestinationCreateInput } from '@triptags/shared';
 import { IsInt, IsString, Max, Min } from 'class-validator';
 
-export class DestinationCreateDto {
+export class DestinationCreateDto implements IDestinationCreateInput {
   @ApiProperty({
     example: 'KR',
     description: '국가코드(ISO 3166-1 alpha-2, KR/US등으로 입력',

@@ -1,8 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsNumber, IsOptional } from 'class-validator';
-import { VerificationMethod } from '@triptags/shared';
+import {
+  ILocalVerificationCreateInput,
+  VerificationMethod,
+} from '@triptags/shared';
 
-export class LocalVerificationCreateDto {
+export class LocalVerificationCreateDto implements ILocalVerificationCreateInput {
   @ApiProperty({
     example: 'GPS',
     description: 'ADDRESS, GPS, ACTIVITY 중에서 선택하세요',
