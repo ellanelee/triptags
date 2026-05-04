@@ -5,6 +5,7 @@ import Image from "next/image"
 
 import { useState } from "react"
 import { ChevronLeftIcon, ChevronRightIcon } from "../common/icons/cheronIton"
+import { useRouter } from "@/i18n/routing"
 
 interface IVenueImageSliderProps {
   venueImages: IVenueImage[]
@@ -13,26 +14,9 @@ interface IVenueImageSliderProps {
 export default function VenueImageSlider({
   venueImages,
 }: IVenueImageSliderProps) {
+  const router = useRouter()
   const tr = useTranslations("VenueDetailPage")
   const [currentIdx, setCurrentIdx] = useState(0)
-
-  if (!venueImages || venueImages.length === 0) {
-    return (
-      <div className="aspect-[4/3] w-full bg-gray-100 rounded-xl flex items-center justify-center text-gray-400 border border-dashed border-gray-300">
-        <div className="flex flex-col items-center">
-          <span className="text-3xl mb-2">📸</span>
-          <p className="text-sm">{tr("noVenueImage")}</p>
-          <button
-            className="px-6 py-2.5 mt-3 bg-white border border-gray-200 rounded-xl text-gray-700 font-semibold shadow-sm 
-                       hover:bg-gray-50 hover:border-gray-300 hover:shadow-md active:scale-95 transition-all"
-            type="button"
-          >
-            {tr("venueImageRegister")}
-          </button>
-        </div>
-      </div>
-    )
-  }
 
   return (
     <div className="flex flex-col gap-3">
@@ -57,7 +41,7 @@ export default function VenueImageSlider({
               <ChevronLeftIcon />
             </button>
             <button
-             className="p-2 rounded-full bg-white/80 text-gray-800 shadow-md hover:bg-white hover:text-black transition-all"
+              className="p-2 rounded-full bg-white/80 text-gray-800 shadow-md hover:bg-white hover:text-black transition-all"
               onClick={() =>
                 setCurrentIdx((prev) =>
                   prev === 0 ? venueImages.length - 1 : prev - 1,
