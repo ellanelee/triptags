@@ -11,10 +11,11 @@ import {
 } from "@/types/interfaces/interface.api"
 import { reviewApi } from "@/lib/api/review.api"
 import type { Language } from "@triptags/shared"
-import VenueImageSlider from "@/components/venue/VenueImageSlider"
 import { ReviewCard } from "@/components/review/ReveiwCard"
 import { ISelectReview } from "@/types/interfaces/interface.props"
 import { INITIAL_ISELECT_REVIEW } from "@/components/common/const"
+import VenueImageManager from "@/components/venue/VenueImageManager"
+import BasicButton from "@/components/common/button/BasicButton"
 
 export default function VenueDetailPage({
   params,
@@ -36,6 +37,10 @@ export default function VenueDetailPage({
     INITIAL_ISELECT_REVIEW,
   )
 
+  const isAdmin = user?.role === "ADMIN"
+  const isCreator = user?.id === venue.data?.createdBy
+
+  //Venue설정값 불러오기
   useEffect(() => {
     venue.run(() => venueApi.getVenueById(venueId))
   }, [])
@@ -76,13 +81,28 @@ export default function VenueDetailPage({
       {/* Upper Section */}
       <div className="bg-white shadow">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">
-            {venue.data?.name ? venue.data?.name[locale] : ""}
-          </h1>
-          <p className="text-lg text-gray-600">
-            {venue.data?.region?.parent?.name}
-            {venue.data?.region && `, ${venue.data.region.name}`}
-          </p>
+          <div className="flex justify-between items-start">
+            <div>
+              <h1 className="text-4xl font-bold text-gray-900 mb-2">
+                {venue.data?.name ? venue.data?.name[locale] : ""}
+              </h1>
+              <p className="text-lg text-gray-600">
+                {venue.data?.region?.parent?.name}
+                {venue.data?.region && `, ${venue.data.region.name}`}
+              </p>
+            </div>
+            {/* Venue Detail Information Edit Exposure */}
+            {(isAdmin || isCreator) && (
+              <div className="m-6 overflow-hidden rounded-xl relative group">
+                <BasicButton
+                  onClick={() => router.push(`/venues/${venueId}/edit`)}
+                  className="px-5 py-2.5 whitespace-nowrap"
+                >
+                  {tr("updateVenue")}
+                </BasicButton>
+              </div>
+            )}
+          </div>
 
           {/* Ratings Summary */}
           <div className="mt-6 flex flex-wrap gap-6">
@@ -236,11 +256,15 @@ export default function VenueDetailPage({
               </div>
             </div>
           </div>
+
           {/* Sidebar */}
           <div className="lg:col-span-1">
             {/* Image Section*/}
             <div className="mb-6 overflow-hidden rounded-xl bg-gray-200 shadow-sm relative group">
-              <VenueImageSlider venueImages={venue.data?.venueImages ?? []} />
+              <VenueImageManager
+                venueImages={venue.data?.venueImages ?? []}
+                venueId={venue.data?.id ?? ""}
+              />
             </div>
             {/* Info */}
             <div className="bg-white rounded-lg shadow p-6 sticky top-4">
