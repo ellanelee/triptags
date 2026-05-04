@@ -212,7 +212,8 @@
     "noWebsite": "등록된 웹사이트가 없습니다",
     "visitWebsite": "웹사이트 방문",
     "noVenueImage": "아직 등록된 이미지가 없습니다",
-    "venueImageRegister": "이미지 등록하기"
+    "venueImageRegister": "이미지 등록하기",
+    "updateVenue": "장소 정보수정"
   },
   "WriteReviewPage": {
     "title": "리뷰 작성",

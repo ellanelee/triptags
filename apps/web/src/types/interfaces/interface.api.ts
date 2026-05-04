@@ -43,10 +43,10 @@ export interface IGetVenueBase {
   name: I18nText | null
   description?: I18nText
   venueCategory: VenueCategory
+  detailedAddress?: string
   longitude: number
   latitude: number
-  detailedAddress?: string
-  rating?: number
+  createdBy: string
   reviewCount?: number
   region: IVenueRegion
   venueDetail?: IVenueDetailResponse
@@ -76,5 +76,3 @@ export interface IGetReviewByVenueAll {
 
 export type IGetReviewByVenueAllResponse =
   IPaginatedResponse<IGetReviewByVenueAll>
-
-
