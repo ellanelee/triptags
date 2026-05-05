@@ -43,6 +43,17 @@ export class VenueController {
     return createResponse(true, result);
   }
 
+  //VenueId로 update를 위한 정보 불러오기
+  @UseGuards(JwtAccessGuard)
+  @Get(':venueId/edit')
+  async getVenueEditById(
+    @CurrentUser() user: User,
+    @Param('venueId') venueId: string,
+  ) {
+    const result = await this.venueService.findVenueEditById(user.id, venueId);
+    return createResponse(true, result);
+  }
+
   //VenueId로 이미지 불러오기
   @Get(':venueId/image')
   async getVenueImageById(@Param('venueId') venueId: string) {

@@ -1,4 +1,5 @@
 import {
+  ForbiddenException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -31,6 +32,20 @@ const venueBaseInclude = {
   _count: {
     select: { review: true },
   },
+};
+
+const venueEditBaseInclude = {
+  venueDetail: true,
+  region: {
+    include: {
+      parent: {
+        include: {
+          parent: true,
+        },
+      },
+    },
+  },
+  venueImages: true,
 };
 
 @Injectable()
@@ -92,6 +107,27 @@ export class VenueService {
       ...response,
       reviewSummary,
     };
+  }
+
+  async findVenueEditById(userId: string, venueId: string) {
+    const targetUser = await this.prisma.client.user.findUnique({
+      where: { id: userId },
+    });
+    if (!targetUser) throw new NotFoundException('사용자가 존재하지 않습니다');
+    const targetVenue = await this.prisma.client.venue.findFirst({
+      where: { id: venueId, deletedAt: null },
+      include: venueEditBaseInclude,
+    });
+
+    const isAdmin = targetUser.role === 'ADMIN';
+    const isCreator = targetVenue?.createdBy === userId;
+
+    if (isAdmin || isCreator) {
+      return targetVenue;
+    } else {
+      console.log('venue생성자나 관리자만 수정이 가능합니다.');
+      throw new ForbiddenException('Unauthorized User for Venue');
+    }
   }
 
   //검색어, 카테고리, 지역정보 검색후 조회 (페이지 반영한 response)
