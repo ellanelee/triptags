@@ -47,6 +47,7 @@ export interface IGetVenueBase {
   longitude: number
   latitude: number
   createdBy: string
+  googlePlaceId: string
   reviewCount?: number
   region: IVenueRegion
   venueDetail?: IVenueDetailResponse

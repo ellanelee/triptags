@@ -58,3 +58,20 @@ export interface IVenueSearchFilters {
   rating?: number
   sortBy?: SortBy
 }
+
+export interface IVenueAdminUpdate {
+  language: Language
+  name: string
+  description: string
+  venueCategory: VenueCategory | null
+  country: string
+  city: string
+  district: string
+  details: string
+  latitude: number | null
+  longitude: number | null
+  googlePlaceId?: string
+  phoneNumber?: string
+  priceRange?: string
+  websiteUrl?: string
+}
