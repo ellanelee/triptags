@@ -97,13 +97,13 @@ export class VenueController {
   @Patch(':id/admin')
   @Roles('ADMIN')
   @UseGuards(JwtAccessGuard, RolesGuard)
-  async updateVenue(
+  async updateVenueByAdmin(
     @CurrentUser() user: User,
     @Param('id') venueId: string,
     @Body() venueUpdateDto: VenueUpdateDto,
   ) {
     console.log(user);
-    const response = await this.venueService.updateVenue(
+    const response = await this.venueService.updateVenueByAdmin(
       user.id,
       venueId,
       venueUpdateDto,

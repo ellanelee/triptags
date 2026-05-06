@@ -358,7 +358,7 @@ export class VenueService {
   }
 
   //관리자의 venue update
-  async updateVenue(
+  async updateVenueByAdmin(
     userId: string,
     venueId: string,
     updateDto: VenueUpdateDto,
