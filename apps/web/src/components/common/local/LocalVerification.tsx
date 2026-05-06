@@ -1,7 +1,7 @@
 "use client"
 import { localApi } from "@/lib/api/local.api"
 import { useAsync } from "@/lib/hooks/use.async"
-import { getCurrentPosition } from "@/lib/utils/geolocation"
+import { getCurrentPosition } from "@/lib/utils/maps/geolocation"
 import { ILocalVerificationProps } from "@/types/interfaces/interface.props"
 import { ILocalVerification, VerificationMethod } from "@triptags/shared"
 import { useTranslations } from "next-intl"

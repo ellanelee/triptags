@@ -3,7 +3,7 @@
 import { destinationApi } from "@/lib/api/destination.api"
 import { regionApi } from "@/lib/api/region.api"
 import { useAsync } from "@/lib/hooks/use.async"
-import { CountryUtils } from "@/lib/utils/country.utils"
+import { CountryUtils } from "@/lib/utils/domain/country.utils"
 import { useAuthStore } from "@/store/auth-store"
 import { RegionInfo } from "@/types/types"
 import { useLocale, useTranslations } from "next-intl"
@@ -24,7 +24,9 @@ export default function MyDestination() {
     district: "",
     priority: 0,
   })
-  const countryList = CountryUtils.getAllCountries(CountryUtils.toCountryLang(locale))
+  const countryList = CountryUtils.getAllCountries(
+    CountryUtils.toCountryLang(locale),
+  )
   const regionInfo = useAsync<RegionInfo[]>([])
   // const destinationsInitials = useAsync<DestinationWithRegion[]>([])
   const fullAddress = [data.country, data.city, data.district].join(" ") || ""
@@ -40,7 +42,7 @@ export default function MyDestination() {
   const handleCountryInfo = async (e: React.ChangeEvent<HTMLSelectElement>) => {
     const code = e.target.value
     const selected = countryList.find((el) => el.code === code)
-    if(!selected) return; 
+    if (!selected) return
 
     setData((prev) => ({
       ...prev,

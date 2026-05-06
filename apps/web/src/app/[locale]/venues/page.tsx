@@ -2,7 +2,7 @@
 import { venueApi } from "@/lib/api/venue.api"
 import { useAsync } from "@/lib/hooks/use.async"
 import type { IVenueSearchFilters } from "@triptags/shared"
-import { INTITIAL_VENUE_FILTER } from "@/components/common/const"
+import { INTITIAL_VENUE_FILTER } from "@/lib/utils/common/const"
 import { useTranslations } from "next-intl"
 import { useEffect, useState } from "react"
 import { IGetVenueAllResponse } from "@/types/interfaces/interface.api"
@@ -44,9 +44,9 @@ export default function VenuePage() {
     onPageChange: handlePageChange,
   }
 
-  const handleSearch = (filters:IVenueSearchFilters) => {
-     setFilters(filters)
-     setCurrentPage(1)
+  const handleSearch = (filters: IVenueSearchFilters) => {
+    setFilters(filters)
+    setCurrentPage(1)
   }
 
   const handleReset = () => {

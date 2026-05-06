@@ -8,7 +8,7 @@ import { regionApi } from "@/lib/api/region.api"
 import { RegionInfo } from "@/types/types"
 import { useAsync } from "@/lib/hooks/use.async"
 import { userApi } from "@/lib/api/user.api"
-import { CountryUtils } from "@/lib/utils/country.utils"
+import { CountryUtils } from "@/lib/utils/domain/country.utils"
 
 export default function SetAddress() {
   const tr = useTranslations("Address")

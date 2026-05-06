@@ -1,6 +1,6 @@
 "use client"
 
-import { localeMap } from "@/lib/utils/dateLocales"
+import { localeMap } from "@/lib/utils/format/dateLocales"
 import DatePicker from "react-datepicker"
 import { useRouter } from "@/i18n/routing"
 import { reviewApi } from "@/lib/api/review.api"

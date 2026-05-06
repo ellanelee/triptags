@@ -1,5 +1,5 @@
 import { RegionInfo } from "@/types/types"
-import { CountryUtils } from "./country.utils"
+import { CountryUtils } from "../domain/country.utils"
 
 //국가코드, 언어를 받아 언어별 국가명 반환
 export function destinationName(

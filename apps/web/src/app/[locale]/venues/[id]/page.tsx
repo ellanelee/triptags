@@ -13,7 +13,7 @@ import { reviewApi } from "@/lib/api/review.api"
 import type { Language } from "@triptags/shared"
 import { ReviewCard } from "@/components/review/ReveiwCard"
 import { ISelectReview } from "@/types/interfaces/interface.props"
-import { INITIAL_ISELECT_REVIEW } from "@/components/common/const"
+import { INITIAL_ISELECT_REVIEW } from "@/lib/utils/common/const"
 import VenueImageManager from "@/components/venue/VenueImageManager"
 import BasicButton from "@/components/common/button/BasicButton"
 

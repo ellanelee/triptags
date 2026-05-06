@@ -1,4 +1,4 @@
-import { parseGeoCodeAddress } from "./googleaddress"
+import { parseGeoCodeAddress } from "./maps/googleaddress"
 
 interface IPatchVenueFromGoogle {
   country: string

@@ -6,7 +6,7 @@ import { getMessages } from "next-intl/server"
 import { headers } from "next/headers"
 import { NextIntlClientProvider } from "next-intl"
 import { Header } from "@/components/common/layout/Header"
-import { LocalSync } from "@/lib/utils/localSync"
+import { LocalSync } from "@/lib/utils/format/localSync"
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }))
