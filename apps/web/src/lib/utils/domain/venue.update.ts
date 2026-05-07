@@ -2,7 +2,6 @@ import { IGetVenueBase } from "@/types/interfaces/interface.api"
 import {
   IVenueAdminUpdate,
   Language,
-  venueCategories,
   VenueCategory,
 } from "@triptags/shared"
 import { requiredString, requiredValue } from "../common/validations"

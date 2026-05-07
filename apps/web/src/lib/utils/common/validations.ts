@@ -13,3 +13,10 @@ export function requiredValue<T>(
   if (value === null || value === undefined) throw new Error(message)
   return value
 }
+
+export class ForbiddenError extends Error {
+  constructor(message: string = "noPermission") {
+    super(message)
+    this.name = "ForbiddenError"
+  }
+}
