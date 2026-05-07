@@ -98,7 +98,7 @@ export default function VenueDetailPage({
                   onClick={() => router.push(`/venues/${venueId}/edit`)}
                   className="px-5 py-2.5 whitespace-nowrap"
                 >
-                  {tr("updateVenue")}
+                  {tr("")}
                 </BasicButton>
               </div>
             )}

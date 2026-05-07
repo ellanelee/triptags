@@ -2,7 +2,7 @@
 import {
   INITIAL_VENUE_DATA,
   INITIAL_VENUE_DETAIL,
-} from "@/components/common/const"
+} from "@/lib/utils/common/const"
 import { FormField } from "@/components/common/form/FormField"
 import { GoogleMapsProvider } from "@/components/common/maps/GoogleMapsProvider"
 import { KakaoPlaceSearch } from "@/components/common/maps/KakaoPlaceSearch"
@@ -10,10 +10,13 @@ import MapPicker from "@/components/common/maps/MapPicker"
 import { PlaceAutoComplete } from "@/components/common/maps/PlaceAutoComplete"
 import { useRouter } from "@/i18n/routing"
 import { venueApi } from "@/lib/api/venue.api"
-import { CountryUtils } from "@/lib/utils/country.utils"
-import { syncGoogleVenueDetails } from "@/lib/utils/googledetails"
-import { patchVenueFromGoogle } from "@/lib/utils/googlevenueupdate"
-import { IFormErrors, validateVenueCreateForm } from "@/lib/utils/validateVenue"
+import { CountryUtils } from "@/lib/utils/domain/country.utils"
+import { syncGoogleVenueDetails } from "@/lib/utils/maps/googledetails"
+import { patchVenueFromGoogle } from "@/lib/utils/maps/googlevenueupdate"
+import {
+  IFormErrors,
+  validateVenueCreateForm,
+} from "@/lib/utils/domain/validateVenue"
 import { useAuthStore } from "@/store/auth-store"
 import { IKakaoPlaceSelected } from "@/types/maps/kakao"
 import { IVenueCreatePayload } from "@/types/types"
@@ -49,6 +52,39 @@ export default function CreateVenuePage() {
     if (!isAuthenticated) router.replace("/venues")
   }, [isAuthenticated])
 
+  //카카오 지도객체에서 장소검색 및 선택
+  const handleKaKaoPlaceSelected = (place: IKakaoPlaceSelected) => {
+    const addressParts = place.roadAddress.split(" ").filter(Boolean) // address format: 서울 강남구 역삼동 ...
+    const city = addressParts[0] || ""
+    const district = addressParts[1] || ""
+    const details = addressParts.slice(2).join(" ")
+    setVenueData((prev) => ({
+      ...prev,
+      language: "ko",
+      name: place.name,
+      latitude: place.latitude,
+      longitude: place.longitude,
+      country: "KR",
+      city: city,
+      district: district,
+      details: details,
+    }))
+    setCountryName(CountryUtils.getCountryName("KR", locale))
+    setVenueDetail((prev) => ({
+      ...prev,
+      phoneNumber: place.phone,
+      subCategory: place.category,
+      websiteUrl: place.placeUrl,
+    }))
+  }
+
+  //구글검색결과에서 특정 장소 선택
+  const handleGooglePlaceSelected = (place: google.maps.places.PlaceResult) => {
+    console.log("구글에서 선정한 장소 위치: ", place)
+    updateVenueFromGoogle(place)
+  }
+
+  //구글의 검색결과에서 사용자 선택 장소의 정보를 가져옴
   const updateVenueFromGoogle = (
     result: google.maps.GeocoderResult | google.maps.places.PlaceResult,
   ) => {
@@ -84,45 +120,14 @@ export default function CreateVenuePage() {
       })
     }
   }
-  //카카오 지도객체에서 입력어 관련장소검색
-  const handleKaKaoPlaceSelected = (place: IKakaoPlaceSelected) => {
-    const addressParts = place.roadAddress.split(" ").filter(Boolean) // address format: 서울 강남구 역삼동 ...
-    const city = addressParts[0] || ""
-    const district = addressParts[1] || ""
-    const details = addressParts.slice(2).join(" ")
-    setVenueData((prev) => ({
-      ...prev,
-      language: "ko",
-      name: place.name,
-      latitude: place.latitude,
-      longitude: place.longitude,
-      country: "KR",
-      city: city,
-      district: district,
-      details: details,
-    }))
-    setCountryName(CountryUtils.getCountryName("KR", locale))
-    setVenueDetail((prev) => ({
-      ...prev,
-      phoneNumber: place.phone,
-      subCategory: place.category,
-      websiteUrl: place.placeUrl,
-    }))
-  }
 
-  //지도에서 위치를 선택하기 (역지오코딩,구글맵 좌표->주소변환)
+  //구글맵에서 직접 위치를 선택 (역지오코딩,구글맵 좌표->주소변환)
   const handleMapClick = async (location: { lat: number; lng: number }) => {
     const geocoder = new google.maps.Geocoder() // geocode 변환 (lat, lng)
     const { results } = await geocoder.geocode({ location })
     if (results[0]) {
       updateVenueFromGoogle(results[0])
     }
-  }
-
-  //구글지도에서 선택 (역지오코딩, 구글 장소검색 결과 좌표->주소변환)
-  const handleGooglePlaceSelected = (place: google.maps.places.PlaceResult) => {
-    console.log("구글에서 선정한 장소 위치: ", place)
-    updateVenueFromGoogle(place)
   }
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
