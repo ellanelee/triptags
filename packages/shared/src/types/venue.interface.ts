@@ -1,4 +1,4 @@
-import { Language, SortBy, VenueCategory } from "src/common/types"
+import { I18nText, Language, SortBy, VenueCategory } from "src/common/types"
 
 export interface IVenueCreateInput {
   language: Language
@@ -16,6 +16,23 @@ export interface IVenueCreateInput {
 
   googlePlaceId?: string
 
+  venueImage?: string[]
+}
+
+export interface IVenueUpdateInput {
+  name: I18nText
+  description?: I18nText
+  venueCategory?: VenueCategory
+
+  country: string
+  city: string
+  district: string
+  details: string
+
+  latitude?: number
+  longitude?: number
+
+  googlePlaceId?: string
   venueImage?: string[]
 }
 
