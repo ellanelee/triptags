@@ -1,29 +1,44 @@
-import { parseGeoCodeAddress } from "./maps/googleaddress"
+import { CountryUtils } from "../domain/country.utils"
+import { parseGeoCodeAddress } from "./googleaddress"
 
-interface IPatchVenueFromGoogle {
+interface IUpdateVenueFromGoogle {
+  latitude: number
+  longitude: number
   country: string
   city: string
   district: string
   details: string
   countryName: string
+  googlePlaceId?: string
 }
 
-export function patchVenueFromGoogle(
+//구글에서 가져온 징소객채정보를 place정보를 페이지 내부에 설정
+
+export const updateVenueFromGoogle = (
   result: google.maps.GeocoderResult | google.maps.places.PlaceResult,
-  localeCountryName: (code: string, locale: string) => string,
   locale: string,
-): IPatchVenueFromGoogle {
+): IUpdateVenueFromGoogle | null => {
+  if (!result.geometry?.location) return null
+
+  const lat = result.geometry.location.lat()
+  const lng = result.geometry.location.lng()
+  const placeId = result.place_id
+
   const parsedResult = parseGeoCodeAddress({
     result: result as google.maps.GeocoderResult,
-    localeCountryName,
+    localeCountryName: CountryUtils.getCountryName,
     locale,
   })
-  console.log("google.maps.GeocoderResult 파싱결과", parsedResult)
+
+  const { countryCode, city, district, details, countryName } = parsedResult
   return {
-    country: parsedResult.countryCode,
-    city: parsedResult.city,
-    district: parsedResult.district,
-    details: parsedResult.details,
-    countryName: parsedResult.countryName,
+    latitude: lat,
+    longitude: lng,
+    country: countryCode,
+    city,
+    district,
+    details,
+    googlePlaceId: placeId,
+    countryName,
   }
 }

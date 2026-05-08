@@ -12,7 +12,7 @@ import { useRouter } from "@/i18n/routing"
 import { venueApi } from "@/lib/api/venue.api"
 import { CountryUtils } from "@/lib/utils/domain/country.utils"
 import { syncGoogleVenueDetails } from "@/lib/utils/maps/googledetails"
-import { patchVenueFromGoogle } from "@/lib/utils/maps/googlevenueupdate"
+import { updateVenueFromGoogle } from "@/lib/utils/maps/googlevenueupdate"
 import {
   IFormErrors,
   validateVenueCreateForm,
@@ -42,7 +42,6 @@ export default function CreateVenuePage() {
   const [venueData, setVenueData] = useState<IVenueCreate>(INITIAL_VENUE_DATA)
   const [venueDetail, setVenueDetail] =
     useState<IVenueDetailInput>(INITIAL_VENUE_DETAIL)
-  const { latitude: lat, longitude: lng } = venueData
   const currentCoordinates =
     venueData.latitude && venueData.longitude
       ? { lat: venueData.latitude, lng: venueData.longitude }
@@ -78,55 +77,43 @@ export default function CreateVenuePage() {
     }))
   }
 
-  //구글검색결과에서 특정 장소 선택
+  //구글검색결과에서 특정 장소 선택시 객체정보 전달 및 변환 
   const handleGooglePlaceSelected = (place: google.maps.places.PlaceResult) => {
     console.log("구글에서 선정한 장소 위치: ", place)
-    updateVenueFromGoogle(place)
+    handleUpdateVenueFromGoogle(place)
   }
 
-  //구글의 검색결과에서 사용자 선택 장소의 정보를 가져옴
-  const updateVenueFromGoogle = (
+  //특정한 장소의 객체정보를 인자로 db용 정보추출, 상태로 저장
+  const handleUpdateVenueFromGoogle = (
     result: google.maps.GeocoderResult | google.maps.places.PlaceResult,
   ) => {
-    if (!result.geometry?.location) return null
-    const lat = result.geometry.location.lat()
-    const lng = result.geometry.location.lng()
-    const placeId = result.place_id
-    const patchedData = patchVenueFromGoogle(
-      result,
-      CountryUtils.getCountryName,
-      locale,
-    )
-    const { country, city, district, details, countryName } = patchedData
-    setVenueData((prev) => ({
-      ...prev,
-      latitude: lat,
-      longitude: lng,
-      country,
-      city,
-      district,
-      details,
-      googlePlaceId: placeId,
-    }))
-    setCountryName(countryName)
-    if (placeId) {
-      syncGoogleVenueDetails(placeId, {
-        onVenueUpdate: (data) => {
-          setVenueData((prev) => ({ ...prev, ...data }))
-        },
-        onDetailUpdate: (data) => {
-          setVenueDetail((prev) => ({ ...prev, ...data }))
-        },
-      })
+    const processedResult = updateVenueFromGoogle(result, locale)
+    if (processedResult) {
+      const { countryName, ...venueUpdateFromGoogle} = processedResult
+      setVenueData((prev) => ({
+        ...prev,
+        ...venueUpdateFromGoogle
+      }))
+      setCountryName(processedResult.countryName)
+      if (processedResult.googlePlaceId) {
+        syncGoogleVenueDetails(processedResult.googlePlaceId, {
+          onVenueUpdate: (data) => {
+            setVenueData((prev) => ({ ...prev, ...data }))
+          },
+          onDetailUpdate: (data) => {
+            setVenueDetail((prev) => ({ ...prev, ...data }))
+          },
+        })
+      }
     }
   }
 
-  //구글맵에서 직접 위치를 선택 (역지오코딩,구글맵 좌표->주소변환)
+  //구글맵에서 직접 위치 선택, 역지오코딩 후 정보추출 후 상태저장 (구글맵 좌표->주소변환->db용 정보변환->form상태저장)
   const handleMapClick = async (location: { lat: number; lng: number }) => {
     const geocoder = new google.maps.Geocoder() // geocode 변환 (lat, lng)
     const { results } = await geocoder.geocode({ location })
     if (results[0]) {
-      updateVenueFromGoogle(results[0])
+      handleUpdateVenueFromGoogle(results[0])
     }
   }
 
@@ -261,6 +248,26 @@ export default function CreateVenuePage() {
                 </div>
               </div>
               <div className="flex flex-col bg-pink-50 rounded-md px-3 py-2">
+                {/*언어표시*/}
+                <FormField error={submitted ? errors.name : ""}>
+                  <div className="flex items-center">
+                    <label className="text-sm font-medium text-gray-700 my-2 flex-shrink:0 whitespace-nowrap">
+                      {tr("name")} ({tr("language")}: {locale})
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      className="w-full border text-sm bg-white border-gray-300 rounded-md m-2 px-2 py-2 focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                      value={venueData.name}
+                      onChange={(e) =>
+                        setVenueData((prev) => ({
+                          ...prev,
+                          name: e.target.value,
+                        }))
+                      }
+                    />
+                  </div>
+                </FormField>
                 {/*이름표시*/}
                 <FormField error={submitted ? errors.name : ""}>
                   <div className="flex items-center">
