@@ -5,16 +5,26 @@ import MapPicker from "@/components/common/maps/MapPicker"
 import { useRouter } from "@/i18n/routing"
 import { venueApi } from "@/lib/api/venue.api"
 import { useAsync } from "@/lib/hooks/use.async"
-import { INITIAL_VENUE_UPDATE, INITIAL_VENUE_UPDATE_DATA } from "@/lib/utils/common/const"
+import {
+  INITIAL_VENUE_UPDATE,
+  INITIAL_VENUE_UPDATE_DATA,
+} from "@/lib/utils/common/const"
 import { ForbiddenError } from "@/lib/utils/common/validations"
-import { venueResponseForm } from "@/lib/utils/domain/venue.update"
+import { validateVenueCreateForm } from "@/lib/utils/domain/validateVenue"
+import { venueResponseForm } from "@/lib/utils/domain/venue.response.form"
+import { syncGoogleVenueDetails } from "@/lib/utils/maps/googledetails"
+import { updateVenueFromGoogle } from "@/lib/utils/maps/googlevenueupdate"
 import { useAuthStore } from "@/store/auth-store"
 import { IGetVenueBase } from "@/types/interfaces/interface.api"
 import { IVenueAdminUpdate, Language } from "@triptags/shared"
 import { useLocale, useTranslations } from "next-intl"
 import { useEffect, useState } from "react"
 
-export default function EditVenueDetailPage({ params }: { params: { id: string } }) {
+export default function EditVenueDetailPage({
+  params,
+}: {
+  params: { id: string }
+}) {
   const router = useRouter()
   const venueId = params.id
   const locale = useLocale()
@@ -22,6 +32,7 @@ export default function EditVenueDetailPage({ params }: { params: { id: string }
   const t = useTranslations("Common")
   const { isAuthenticated, user } = useAuthStore()
   const venue = useAsync<IGetVenueBase>(null)
+  const [countryName, setCountryName] = useState("")
   const [loading, setLoading] = useState(false)
   const [searchType, setSearchType] = useState<"kakao" | "google">("kakao")
   const [venueUpdateData, setVenueUpdateData] =
@@ -30,7 +41,11 @@ export default function EditVenueDetailPage({ params }: { params: { id: string }
 
   const isAdmin = user?.role === "ADMIN"
   const isCreator = user?.id === venue.data?.createdBy
-  
+  const currentCoordinates =
+    venueUpdateData.latitude && venueUpdateData.longitude
+      ? { lat: venueUpdateData.latitude, lng: venueUpdateData.longitude }
+      : null
+
   useEffect(() => {
     if (!isAuthenticated) router.replace("/venues")
     venue.run(() => venueApi.getVenueById(venueId))
@@ -50,11 +65,54 @@ export default function EditVenueDetailPage({ params }: { params: { id: string }
     }
   }, [venue.data, venue.loading, locale])
 
+  //구글맵에서 위치 Click reverse_geocode (좌표->주소변환)처리 및 db저장용 형식변환
+  const handleUpdateVenueFromGoogle = (
+    result: google.maps.GeocoderResult | google.maps.places.PlaceResult,
+  ) => {
+    const processedResult = updateVenueFromGoogle(result, locale)
+    if (processedResult) {
+      const { countryName, ...venueUpdateFromGoogle } = processedResult
+      setVenueUpdateData((prev) => ({
+        ...prev,
+        ...venueUpdateFromGoogle,
+      }))
+      setCountryName(processedResult.countryName)
+      if (processedResult.googlePlaceId) {
+        syncGoogleVenueDetails(processedResult.googlePlaceId, {
+          onVenueUpdate: (data) => {
+            setVenueUpdateData((prev) => ({ ...prev, ...data }))
+          },
+          onDetailUpdate: (data) => {
+            setVenueUpdateData((prev) => ({ ...prev, ...data }))
+          },
+        })
+      }
+    }
+  }
+
+  //구글맵에서 직접 위치를 선택 (역지오코딩,구글맵 좌표->주소변환)
+  const handleMapClick = async (location: { lat: number; lng: number }) => {
+    const geocoder = new google.maps.Geocoder() // geocode 변환 (lat, lng)
+    const { results } = await geocoder.geocode({ location })
+    if (results[0]) {
+      handleUpdateVenueFromGoogle(results[0])
+    }
+  }
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setLoading(true)
+    const inputErrors = validateVenueCreateForm({ venueData: venueUpdateData })
+    const { phoneNumber, priceRange, websiteUrl, ...venueBaseData } =
+      venueUpdateData
+    //locale과 다른 언어의 이름을 추가할수 있음, 관련 DTO도 create와는 다르게 I18nText
+    const venuePayload = {
+      ...venueBaseData,
+      name: { [venueUpdateData.language]: venueUpdateData.name },
+      description: { [venueUpdateData.language]: venueUpdateData.description },
+    }
     try {
-      const response = await venueApi.createVenue(venuePayload)
+      const response = await venueApi.updateVenue(venueId, venuePayload)
       await venueApi.createVenueDetail(response.id, venueDetailsPayload)
       router.replace(`/venues/${response.id}`)
     } catch (error) {
@@ -139,7 +197,7 @@ export default function EditVenueDetailPage({ params }: { params: { id: string }
                 </div>
                 {/*위치 선택*/}
                 <MapPicker
-                  center={currentCoordinates}
+                  center={currentCoordinates ?? undefined}
                   markerPosition={currentCoordinates}
                   onLocationSelect={handleMapClick}
                 />
