@@ -78,9 +78,9 @@ export class VenueUpdateDto {
   googlePlaceId?: string;
 
   @ApiProperty({
-    example: {
-      1: 'https://previews.123rf.com/images/breakingdots/breakingdots2304/breakingdots230400781/202938341-cat-kawaii-character-cartoon-vector-illustration.jpg',
-    },
+    example: [
+      'https://previews.123rf.com/images/breakingdots/breakingdots2304/breakingdots230400781/202938341-cat-kawaii-character-cartoon-vector-illustration.jpg',
+    ],
     description: '장소의 이미지를 등록해주세요',
     type: [String],
   })
