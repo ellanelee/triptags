@@ -11,7 +11,7 @@ import { useAsync } from "@/lib/hooks/use.async"
 import { destinationName } from "@/lib/utils/format/format.region"
 import { useAuthStore } from "@/store/auth-store"
 import { DestinationWithRegion, RegionInfo } from "@/types/types"
-import type { IUserPointAll, IUserResponse } from "@triptags/shared"
+import type { IUserPointAll, IUserResponse, Language } from "@triptags/shared"
 import { useLocale, useTranslations } from "next-intl"
 import { useRouter } from "next/navigation"
 import { useEffect } from "react"
@@ -64,7 +64,7 @@ export default function MyPage() {
   //언어 변경
   const handleLanguage = async (newLang: string) => {
     try {
-      const response = await userApi.updateLanguage({ language: newLang })
+      const response = await userApi.updateLanguage({ language: newLang as Language})
       if (response.success) {
         useAuthStore.getState()
       }
@@ -136,7 +136,7 @@ export default function MyPage() {
                 </p>
                 <div className="flex items-center">
                   <p className="text-gray-600 pr-10 whitespace-nowrap">
-                    {tr("language")}: {user?.language}
+                    {t("transaction.language")}: {user?.language}
                   </p>
                   {/* 언어 설정 */}
                   <LanguageSelect

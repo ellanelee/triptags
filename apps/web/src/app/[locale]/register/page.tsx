@@ -193,7 +193,7 @@ export default function RegisterPage() {
                 </div>
 
                 <LanguageSelect
-                  label={tr("language")}
+                  label={t("transaction.languageOption")}
                   value={formData.language}
                   onChange={(val) =>
                     setFormData({
@@ -203,37 +203,6 @@ export default function RegisterPage() {
                   }
                   tr={t}
                 />
-
-                {/* <div>
-                  <label
-                    htmlFor="languageSelection"
-                    className="block text-sm font-medium text-gray-700 mb-1.5"
-                  >
-                    {tr("language")}
-                  </label>
-                  <select
-                    id="language"
-                    name="language"
-                    autoComplete="language"
-                    required
-                    className="appearance-none block w-full px-4 py-2 border border-gray-300 rounded-lg placeholder-gray-400 text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm h-9"
-                    value={formData.language}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        language: e.target.value as RegisterDto["language"],
-                      })
-                    }
-                  >
-                    <option value="ko">{tr("languages.ko")}</option>
-                    <option value="en">{tr("languages.en")}</option>
-                    <option value="ja">{tr("languages.ja")}</option>
-                    <option value="zh">{tr("languages.zh")}</option>
-                    <option value="de">{tr("languages.de")}</option>
-                    <option value="es">{tr("languages.es")}</option>
-                    <option value="fr">{tr("languages.fr")}</option>
-                  </select>
-                </div> */}
 
                 <div className="pt-4">
                   <button

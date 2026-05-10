@@ -63,6 +63,7 @@ export interface IVenueCreate {
   latitude: number | null
   longitude: number | null
   googlePlaceId?: string
+
 }
 
 export interface IVenueSearchFilters {
@@ -76,7 +77,7 @@ export interface IVenueSearchFilters {
   sortBy?: SortBy
 }
 
-export interface IVenueAdminUpdate {
+export interface IVenueAdminUpdateInput{
   language: Language
   name: string
   description: string
@@ -91,5 +92,6 @@ export interface IVenueAdminUpdate {
   phoneNumber?: string
   priceRange?: string
   websiteUrl?: string
+  workHour?: string
   venueImage?: string[]
 }

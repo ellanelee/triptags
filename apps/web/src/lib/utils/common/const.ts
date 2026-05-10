@@ -1,5 +1,6 @@
 import type {
-  IVenueAdminUpdate,
+
+  IVenueAdminUpdateInput,
   IVenueCreate,
   IVenueDetailInput,
   IVenueSearchFilters,
@@ -40,7 +41,7 @@ export const INITIAL_ISELECT_REVIEW = {
   reviewId: null,
 }
 
-export const INITIAL_VENUE_UPDATE_DATA: IVenueAdminUpdate = {
+export const INITIAL_VENUE_UPDATE_DATA: IVenueAdminUpdateInput = {
   language: "ko",
   name: "",
   description: "",
@@ -55,9 +56,10 @@ export const INITIAL_VENUE_UPDATE_DATA: IVenueAdminUpdate = {
   phoneNumber: "",
   priceRange: "",
   websiteUrl: "",
+  venueImage: [],
 }
 
-export const INITIAL_VENUE_UPDATE: IVenueAdminUpdate = {
+export const INITIAL_VENUE_UPDATE: IVenueAdminUpdateInput = {
   language: "ko",
   name: "",
   description: "",
@@ -72,5 +74,5 @@ export const INITIAL_VENUE_UPDATE: IVenueAdminUpdate = {
   phoneNumber: undefined,
   priceRange: undefined,
   websiteUrl: undefined,
-  venueImage:[]
+  venueImage: [],
 }

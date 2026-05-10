@@ -20,7 +20,7 @@ export default function VenueImageSlider({
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="relative aspect-[4/3] w-full overflow-hidden rounded-xl bg-gray-200 group shadow-md">
+      <div className="relative aspect-4/3 w-full overflow-hidden rounded-xl bg-gray-200 group shadow-md">
         <Image
           src={venueImages[currentIdx].imageUrl}
           className="object-cover transition-all duration-500 ease-in-out"
