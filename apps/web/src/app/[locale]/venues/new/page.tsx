@@ -42,6 +42,7 @@ export default function CreateVenuePage() {
   const [submitted, setSubmitted] = useState(false)
   const [searchType, setSearchType] = useState<"kakao" | "google">("kakao")
   const [countryName, setCountryName] = useState("")
+  const [imageUrls, setImageUrls] = useState<string[]>([])
   const [venueData, setVenueData] = useState<IVenueCreate>(INITIAL_VENUE_DATA)
   const [venueDetail, setVenueDetail] =
     useState<IVenueDetailInput>(INITIAL_VENUE_DETAIL)
@@ -455,7 +456,13 @@ export default function CreateVenuePage() {
                   />
                 </div>
               </div>
-              <VenueImageEdit />
+              <VenueImageEdit
+                imageUrls={imageUrls}
+                onAdd={(url) => setImageUrls((prev) => [...prev, url])}
+                onDelete={(url) =>
+                  setImageUrls((prev) => prev.filter((item) => item !== url))
+                }
+              />
               {/* Submit */}
               <div className="flex gap-4 pt-4">
                 <button
