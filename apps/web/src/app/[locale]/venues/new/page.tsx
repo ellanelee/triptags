@@ -21,12 +21,15 @@ import { useAuthStore } from "@/store/auth-store"
 import { IKakaoPlaceSelected } from "@/types/maps/kakao"
 import { IVenueCreatePayload } from "@/types/types"
 import {
+  IRegisterInput,
   venueCategories,
   type IVenueCreate,
   type IVenueDetailInput,
 } from "@triptags/shared"
 import { useLocale, useTranslations } from "next-intl"
 import { useEffect, useState } from "react"
+import { LanguageSelect } from "@/components/common/LanguageSelect"
+import { VenueImageEdit } from "@/components/venue/VenueImageEditField"
 
 export default function CreateVenuePage() {
   const router = useRouter()
@@ -77,7 +80,7 @@ export default function CreateVenuePage() {
     }))
   }
 
-  //구글검색결과에서 특정 장소 선택시 객체정보 전달 및 변환 
+  //구글검색결과에서 특정 장소 선택시 객체정보 전달 및 변환
   const handleGooglePlaceSelected = (place: google.maps.places.PlaceResult) => {
     console.log("구글에서 선정한 장소 위치: ", place)
     handleUpdateVenueFromGoogle(place)
@@ -89,10 +92,10 @@ export default function CreateVenuePage() {
   ) => {
     const processedResult = updateVenueFromGoogle(result, locale)
     if (processedResult) {
-      const { countryName, ...venueUpdateFromGoogle} = processedResult
+      const { countryName, ...venueUpdateFromGoogle } = processedResult
       setVenueData((prev) => ({
         ...prev,
-        ...venueUpdateFromGoogle
+        ...venueUpdateFromGoogle,
       }))
       setCountryName(processedResult.countryName)
       if (processedResult.googlePlaceId) {
@@ -252,19 +255,18 @@ export default function CreateVenuePage() {
                 <FormField error={submitted ? errors.name : ""}>
                   <div className="flex items-center">
                     <label className="text-sm font-medium text-gray-700 my-2 flex-shrink:0 whitespace-nowrap">
-                      {tr("name")} ({tr("language")}: {locale})
+                      {t("transaction.language")}
                     </label>
-                    <input
-                      type="text"
-                      required
-                      className="w-full border text-sm bg-white border-gray-300 rounded-md m-2 px-2 py-2 focus:outline-none focus:ring-primary-500 focus:border-primary-500"
-                      value={venueData.name}
-                      onChange={(e) =>
-                        setVenueData((prev) => ({
-                          ...prev,
-                          name: e.target.value,
-                        }))
+                    <LanguageSelect
+                      label={t("transaction.language")}
+                      value={venueData.language}
+                      onChange={(val) =>
+                        setVenueData({
+                          ...venueData,
+                          language: val as IRegisterInput["language"],
+                        })
                       }
+                      tr={t}
                     />
                   </div>
                 </FormField>
@@ -272,7 +274,7 @@ export default function CreateVenuePage() {
                 <FormField error={submitted ? errors.name : ""}>
                   <div className="flex items-center">
                     <label className="text-sm font-medium text-gray-700 my-2 flex-shrink:0 whitespace-nowrap">
-                      {tr("name")} ({tr("language")}: {locale})
+                      {tr("name")} ({t("transaction.language")}: {locale})
                     </label>
                     <input
                       type="text"
@@ -312,10 +314,6 @@ export default function CreateVenuePage() {
                         </option>
                       ))}
                     </select>
-                    <div className="text-sm font-medium text-gray-700 mx-2">
-                      ( "{venueDetail.subCategory}" cagegorized by Infomation
-                      provider )
-                    </div>
                   </div>
                 </FormField>
                 {/*설명 표시*/}
@@ -457,6 +455,7 @@ export default function CreateVenuePage() {
                   />
                 </div>
               </div>
+              <VenueImageEdit />
               {/* Submit */}
               <div className="flex gap-4 pt-4">
                 <button
