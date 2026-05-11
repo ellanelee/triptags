@@ -14,6 +14,7 @@ export function VenueImageEdit({
 }: IVenueImageEdit) {
   const [imageUrlInput, setImageUrlInput] = useState<string>("")
   const tr = useTranslations("VenueDetailPage")
+  const t = useTranslations("Common")
 
   //Edit imageUrl
   const handleAdd = () => {
@@ -34,29 +35,33 @@ export function VenueImageEdit({
       </div>
 
       {/* add image url */}
-      <div className="flex gap-2">
-        <input
-          type="url"
-          className="flex-1 border bg-white border-gray-300 text-sm rounded-md px-3 py-2"
-          placeholder="https://example.com/image.jpg"
-          value={imageUrlInput}
-          onChange={(e) => setImageUrlInput(e.target.value)}
-        />
+      <div className="flex justify-between">
+        <div className="flex flex-1 mr-5 gap-3">
+          <input
+            type="url"
+            className="flex-1 border bg-white border-gray-300 text-sm rounded-md px-3 py-2"
+            placeholder="https://example.com/image.jpg"
+            value={imageUrlInput}
+            onChange={(e) => setImageUrlInput(e.target.value)}
+          />
+        </div>
+
+        <button
+          type="button"
+          className="px-4 py-2 bg-gray-800 text-white rounded-md text-sm"
+          onClick={handleAdd}
+        >
+          {t("transaction.create")}
+        </button>
       </div>
-
-      <button
-        type="button"
-        className="px-4 py-2 bg-gray-800 text-white rounded-md text-sm"
-        onClick={handleAdd}
-      >
-        {tr("transaction.create")}
-      </button>
-
       {/* display images */}
       {imageUrls.length > 0 && (
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-4">
           {imageUrls.map((el) => (
-            <div key={el} className="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-4">
+            <div
+              key={el}
+              className="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-4"
+            >
               <img
                 src={el}
                 alt={"venue preview"}

@@ -12,6 +12,7 @@ export interface IBasicButtonProps {
 export interface LanguageSelectProps {
   label?: string
   value: string
+  disabled: boolean
   onChange: (value: string) => void
   tr: (key: string) => string // 언어변역
 }

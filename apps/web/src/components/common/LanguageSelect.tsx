@@ -4,6 +4,7 @@ export const LanguageSelect = ({
   label,
   value,
   onChange,
+  disabled,
   tr,
 }: LanguageSelectProps) => {
   const languages = ["ko", "en", "ja", "zh", "de", "es", "fr"]
@@ -22,6 +23,7 @@ export const LanguageSelect = ({
         name="language"
         autoComplete="language"
         required
+        disabled={disabled}
         className="appearance-none block px-4 py-2 bg-gray-100 text-gray-800 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm h-9"
         value={value}
         onChange={(e) => onChange(e.target.value)}
