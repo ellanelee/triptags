@@ -30,6 +30,7 @@ import { useLocale, useTranslations } from "next-intl"
 import { useEffect, useState } from "react"
 import { LanguageSelect } from "@/components/common/LanguageSelect"
 import { VenueImageEdit } from "@/components/venue/VenueImageEditField"
+import { VenueBasicForm } from "@/components/venue/venueBasicForm"
 
 export default function CreateVenuePage() {
   const router = useRouter()
@@ -253,87 +254,13 @@ export default function CreateVenuePage() {
               </div>
               <div className="flex flex-col bg-pink-50 rounded-md px-3 py-2">
                 {/*언어표시*/}
-                <FormField error={submitted ? errors.name : ""}>
-                  <div className="flex items-center">
-                    <label className="text-sm font-medium text-gray-700 my-2 flex-shrink:0 whitespace-nowrap">
-                      {t("transaction.language")}
-                    </label>
-                    <LanguageSelect
-                      label={t("transaction.language")}
-                      value={venueData.language}
-                      onChange={(val) =>
-                        setVenueData({
-                          ...venueData,
-                          language: val as IRegisterInput["language"],
-                        })
-                      }
-                      tr={t}
-                    />
-                  </div>
-                </FormField>
-                {/*이름표시*/}
-                <FormField error={submitted ? errors.name : ""}>
-                  <div className="flex items-center">
-                    <label className="text-sm font-medium text-gray-700 my-2 flex-shrink:0 whitespace-nowrap">
-                      {tr("name")} ({t("transaction.language")}: {locale})
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      className="w-full border text-sm bg-white border-gray-300 rounded-md m-2 px-2 py-2 focus:outline-none focus:ring-primary-500 focus:border-primary-500"
-                      value={venueData.name}
-                      onChange={(e) =>
-                        setVenueData((prev) => ({
-                          ...prev,
-                          name: e.target.value,
-                        }))
-                      }
-                    />
-                  </div>
-                </FormField>
-                {/*카테고리 표시*/}
-                <FormField error={submitted ? errors.venueCategory : ""}>
-                  <div className="flex my-2 items-center">
-                    <label className="block text-sm font-medium text-gray-700 my-2 mr-2">
-                      {tr("category")} *
-                    </label>
-                    <select
-                      required
-                      className="text-sm font-medium text-gray-700"
-                      value={venueData.venueCategory ?? ""}
-                      onChange={(e) =>
-                        setVenueData((prev) => ({
-                          ...prev,
-                          venueCategory: e.target.value || null,
-                        }))
-                      }
-                    >
-                      <option value="">{tr("selectCategory")}</option>
-                      {venueCategories.map((el) => (
-                        <option key={el} value={el} className="text-sm">
-                          {t(`categories.${el}`)}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </FormField>
-                {/*설명 표시*/}
-                <FormField error={submitted ? errors.venueCategory : ""}>
-                  <label className="block text-sm font-medium text-gray-700 my-2">
-                    {tr("description")}
-                  </label>
-                  <textarea
-                    rows={4}
-                    className="w-full  bg-white border border-gray-300 text-sm rounded-md px-3 py-2"
-                    value={venueData.description || ""}
-                    onChange={(e) =>
-                      setVenueData((prev) => ({
-                        ...prev,
-                        description: e.target.value,
-                      }))
-                    }
-                  />
-                </FormField>
+                <VenueBasicForm
+                  venueData={venueData}
+                  setVenueData={setVenueData}
+                  errors={errors}
+                  submitted={submitted}
+                  locale={locale}
+                />
               </div>
               {/*주소표시 */}
               <div className="grid grid-cols-2 gap-3 bg-pink-50 rounded-md p-3">
