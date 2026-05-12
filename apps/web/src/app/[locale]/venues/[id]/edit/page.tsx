@@ -1,26 +1,37 @@
 "use client"
 
+import { FormField } from "@/components/common/form/FormField"
 import { GoogleMapsProvider } from "@/components/common/maps/GoogleMapsProvider"
+import { KakaoPlaceSearch } from "@/components/common/maps/KakaoPlaceSearch"
 import MapPicker from "@/components/common/maps/MapPicker"
+import { PlaceAutoComplete } from "@/components/common/maps/PlaceAutoComplete"
+import { VenueBasicForm } from "@/components/venue/venueForms/VenueBasicForm"
+import { VenueDetailForm } from "@/components/venue/venueForms/VenueDetailForm"
+import { VenueImageEdit } from "@/components/venue/venueImage/VenueImageEditField"
+import { VenueRegionForm } from "@/components/venue/venueForms/VenueRegionForm"
 import { useRouter } from "@/i18n/routing"
 import { venueApi } from "@/lib/api/venue.api"
 import { useAsync } from "@/lib/hooks/use.async"
-import {
-  INITIAL_VENUE_UPDATE,
-  INITIAL_VENUE_UPDATE_DATA,
-} from "@/lib/utils/common/const"
+import { INITIAL_VENUE_UPDATE_DATA } from "@/lib/utils/common/const"
 import { ForbiddenError } from "@/lib/utils/common/validations"
-import { validateVenueCreateForm } from "@/lib/utils/domain/validateVenue"
+import {
+  IFormErrors,
+  validateVenueCreateForm,
+} from "@/lib/utils/domain/validateVenue"
 import { venueResponseForm } from "@/lib/utils/domain/venue.response.form"
 import { syncGoogleVenueDetails } from "@/lib/utils/maps/googledetails"
 import { updateVenueFromGoogle } from "@/lib/utils/maps/googlevenueupdate"
 import { useAuthStore } from "@/store/auth-store"
 import { IGetVenueBase } from "@/types/interfaces/interface.api"
-import { IVenueAdminUpdate, Language } from "@triptags/shared"
+import {
+  IVenueAdminUpdateInput,
+  Language,
+  venueCategories,
+} from "@triptags/shared"
 import { useLocale, useTranslations } from "next-intl"
 import { useEffect, useState } from "react"
 
-export default function EditVenueDetailPage({
+export default function EditvenueUpdateDataPage({
   params,
 }: {
   params: { id: string }
@@ -28,23 +39,42 @@ export default function EditVenueDetailPage({
   const router = useRouter()
   const venueId = params.id
   const locale = useLocale()
-  const tr = useTranslations("VenueDetailPage")
+  const tr = useTranslations("venueUpdateDataPage")
   const t = useTranslations("Common")
   const { isAuthenticated, user } = useAuthStore()
   const venue = useAsync<IGetVenueBase>(null)
   const [countryName, setCountryName] = useState("")
   const [loading, setLoading] = useState(false)
+  const [errors, setErrors] = useState<IFormErrors>({})
   const [searchType, setSearchType] = useState<"kakao" | "google">("kakao")
+  const [imageUrls, setImageUrls] = useState<string[]>([])
   const [venueUpdateData, setVenueUpdateData] =
-    useState<IVenueAdminUpdate>(INITIAL_VENUE_UPDATE)
+    useState<IVenueAdminUpdateInput>(INITIAL_VENUE_UPDATE_DATA)
+  const [submitted, setSubmitted] = useState(false)
   const [formLoadError, setFormLoadError] = useState<string | null>(null)
 
+  //User Authority
   const isAdmin = user?.role === "ADMIN"
-  const isCreator = user?.id === venue.data?.createdBy
+  const isCreator = user?.id === (venue && venue.data?.createdBy) ? true : false
+  const canEditName = isAdmin || isCreator
+  const canEditCategory = isAdmin
+  const canEditDescription = isAdmin
+  const canEditImage = isAdmin || isCreator
+  const canEditRegion = isAdmin
+  const canEditVenueDetail = isAdmin
+
   const currentCoordinates =
     venueUpdateData.latitude && venueUpdateData.longitude
       ? { lat: venueUpdateData.latitude, lng: venueUpdateData.longitude }
       : null
+  const { phoneNumber, priceRange, websiteUrl, workHour, ...venueBaseData } =
+    venueUpdateData
+  //locale과 다른 언어의 이름을 추가할수 있음, 관련 DTO도 create와는 다르게 I18nText
+  const venuePayload = {
+    ...venueBaseData,
+    name: { [venueUpdateData.language]: venueUpdateData.name },
+    description: { [venueUpdateData.language]: venueUpdateData.description },
+  }
 
   useEffect(() => {
     if (!isAuthenticated) router.replace("/venues")
@@ -79,10 +109,10 @@ export default function EditVenueDetailPage({
       setCountryName(processedResult.countryName)
       if (processedResult.googlePlaceId) {
         syncGoogleVenueDetails(processedResult.googlePlaceId, {
-          onVenueUpdate: (data) => {
+          onVenueUpdate: (data: any) => {
             setVenueUpdateData((prev) => ({ ...prev, ...data }))
           },
-          onDetailUpdate: (data) => {
+          onDetailUpdate: (data: any) => {
             setVenueUpdateData((prev) => ({ ...prev, ...data }))
           },
         })
@@ -102,18 +132,12 @@ export default function EditVenueDetailPage({
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setLoading(true)
-    const inputErrors = validateVenueCreateForm({ venueData: venueUpdateData })
-    const { phoneNumber, priceRange, websiteUrl, ...venueBaseData } =
-      venueUpdateData
-    //locale과 다른 언어의 이름을 추가할수 있음, 관련 DTO도 create와는 다르게 I18nText
-    const venuePayload = {
-      ...venueBaseData,
-      name: { [venueUpdateData.language]: venueUpdateData.name },
-      description: { [venueUpdateData.language]: venueUpdateData.description },
-    }
+    const inputErrors = validateVenueCreateForm({
+      venueData: venueUpdateData,
+    })
     try {
       const response = await venueApi.updateVenue(venueId, venuePayload)
-      await venueApi.createVenueDetail(response.id, venueDetailsPayload)
+      await venueApi.venueUpdate(response.id, venueUpdateDataPayload)
       router.replace(`/venues/${response.id}`)
     } catch (error) {
       console.error(error)
@@ -203,15 +227,16 @@ export default function EditVenueDetailPage({
                 />
                 {/*위치에 대한 내용 표시 */}
                 <div className="text-sm text-gray-500 my-2">
-                  {venueData.latitude && venueData.longitude ? (
+                  {venueUpdateData.latitude && venueUpdateData.longitude ? (
                     <>
                       <p>
-                        {`${countryName}, ${venueData.city} ${venueData.district} ${venueData.details}`}
+                        {`${countryName}, ${venueUpdateData.city} ${venueUpdateData.district} ${venueUpdateData.details}`}
                         <span>{tr("checkAddress")}</span>
                       </p>
                       <p className="text-xs text-gray-400">
-                        {tr("coordinates")}: {venueData.latitude?.toFixed(6)},{" "}
-                        {venueData.longitude?.toFixed(6)}
+                        {tr("coordinates")}:{" "}
+                        {venueUpdateData.latitude?.toFixed(6)},{" "}
+                        {venueUpdateData.longitude?.toFixed(6)}
                       </p>
                     </>
                   ) : (
@@ -221,196 +246,38 @@ export default function EditVenueDetailPage({
                   )}
                 </div>
               </div>
-              <div className="flex flex-col bg-pink-50 rounded-md px-3 py-2">
-                {/*이름표시*/}
-                <FormField error={submitted ? errors.name : ""}>
-                  <div className="flex items-center">
-                    <label className="text-sm font-medium text-gray-700 my-2 flex-shrink:0 whitespace-nowrap">
-                      {tr("name")} ({tr("language")}: {locale})
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      className="w-full border text-sm bg-white border-gray-300 rounded-md m-2 px-2 py-2 focus:outline-none focus:ring-primary-500 focus:border-primary-500"
-                      value={venueData.name}
-                      onChange={(e) =>
-                        setVenueData((prev) => ({
-                          ...prev,
-                          name: e.target.value,
-                        }))
-                      }
-                    />
-                  </div>
-                </FormField>
-                {/*카테고리 표시*/}
-                <FormField error={submitted ? errors.venueCategory : ""}>
-                  <div className="flex my-2 items-center">
-                    <label className="block text-sm font-medium text-gray-700 my-2 mr-2">
-                      {tr("category")} *
-                    </label>
-                    <select
-                      required
-                      className="text-sm font-medium text-gray-700"
-                      value={venueData.venueCategory ?? ""}
-                      onChange={(e) =>
-                        setVenueData((prev) => ({
-                          ...prev,
-                          venueCategory: e.target.value || null,
-                        }))
-                      }
-                    >
-                      <option value="">{tr("selectCategory")}</option>
-                      {venueCategories.map((el) => (
-                        <option key={el} value={el} className="text-sm">
-                          {t(`categories.${el}`)}
-                        </option>
-                      ))}
-                    </select>
-                    <div className="text-sm font-medium text-gray-700 mx-2">
-                      ( "{venueDetail.subCategory}" cagegorized by Infomation
-                      provider )
-                    </div>
-                  </div>
-                </FormField>
-                {/*설명 표시*/}
-                <FormField error={submitted ? errors.venueCategory : ""}>
-                  <label className="block text-sm font-medium text-gray-700 my-2">
-                    {tr("description")}
-                  </label>
-                  <textarea
-                    rows={4}
-                    className="w-full  bg-white border border-gray-300 text-sm rounded-md px-3 py-2"
-                    value={venueData.description || ""}
-                    onChange={(e) =>
-                      setVenueData((prev) => ({
-                        ...prev,
-                        description: e.target.value,
-                      }))
-                    }
-                  />
-                </FormField>
-              </div>
+              {/*언어 및 기본사항 표시*/}
+              <VenueBasicForm
+                venueData={venueUpdateData}
+                setVenueData={setVenueUpdateData}
+                submitted={submitted}
+                locale={locale}
+                errors={errors}
+                canEditName={canEditName}
+                canEditCategory={canEditCategory}
+                canEditDescription={canEditDescription}
+              />
               {/*주소표시 */}
-              <div className="grid grid-cols-2 gap-3 bg-pink-50 rounded-md p-3">
-                <FormField error={submitted ? errors.city : ""}>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    {tr("city")} *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    className="w-full border bg-white border-gray-300 text-sm rounded-md px-3 py-2"
-                    value={venueData.city}
-                    onChange={(e) =>
-                      setVenueData((prev) => ({
-                        ...prev,
-                        city: e.target.value,
-                      }))
-                    }
-                  />
-                </FormField>
-                <FormField error={submitted ? errors.district : ""}>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    {tr("district")} *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    className="w-full border bg-white border-gray-300 text-sm rounded-md px-3 py-2"
-                    value={venueData.district}
-                    onChange={(e) =>
-                      setVenueData((prev) => ({
-                        ...prev,
-                        district: e.target.value,
-                      }))
-                    }
-                  />
-                </FormField>
-                <FormField error={submitted ? errors.details : ""}>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    {tr("details")} *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    className="w-full border bg-white border-gray-300 text-sm rounded-md px-3 py-2"
-                    value={venueData.details}
-                    onChange={(e) =>
-                      setVenueData((prev) => ({
-                        ...prev,
-                        details: e.target.value,
-                      }))
-                    }
-                  />
-                </FormField>
-              </div>
+              <VenueRegionForm
+                venueData={venueUpdateData}
+                setVenueData={setVenueUpdateData}
+                submitted={submitted}
+                errors={errors}
+                canEditRegion={canEditRegion}
+              />
               {/* VenueDetail정보 */}
-              <div className="grid grid-cols-2 gap-4  bg-pink-50 rounded-md p-3">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    {tr("phone")}
-                  </label>
-                  <input
-                    type="tel"
-                    className="w-full border bg-white border-gray-300 text-sm rounded-md px-3 py-2"
-                    value={venueDetail.phoneNumber || ""}
-                    onChange={(e) =>
-                      setVenueDetail((prev) => ({
-                        ...prev,
-                        phoneNumber: e.target.value,
-                      }))
-                    }
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    {tr("website")}
-                  </label>
-                  <input
-                    type="url"
-                    className="w-full border bg-white border-gray-300 text-sm rounded-md px-3 py-2"
-                    value={venueDetail.websiteUrl}
-                    onChange={(e) =>
-                      setVenueDetail((prev) => ({
-                        ...prev,
-                        websiteUrl: e.target.value,
-                      }))
-                    }
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    {tr("priceRange")}
-                  </label>
-                  <input
-                    type="text"
-                    className="w-full border  bg-white border-gray-300 text-sm rounded-md px-3 py-2"
-                    value={venueDetail.priceRange}
-                    onChange={(e) =>
-                      setVenueDetail((prev) => ({
-                        ...prev,
-                        priceRange: e.target.value,
-                      }))
-                    }
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    {tr("workHour")}
-                  </label>
-                  <input
-                    type="text"
-                    className="w-full border bg-white border-gray-300 text-sm rounded-md px-3 py-2"
-                    value={venueDetail.workHour ?? ""}
-                    onChange={(e) =>
-                      setVenueDetail((prev) => ({
-                        ...prev,
-                        workHour: e.target.value,
-                      }))
-                    }
-                  />
-                </div>
-              </div>
+              <VenueDetailForm
+                venueDetail={venueUpdateData}
+                setVenueDetail={setVenueUpdateData}
+                canEditVenueDetail={canEditVenueDetail}
+              />
+              <VenueImageEdit
+                imageUrls={imageUrls}
+                onAdd={(url) => setImageUrls((prev) => [...prev, url])}
+                onDelete={(url) =>
+                  setImageUrls((prev) => prev.filter((item) => item !== url))
+                }
+              />
               {/* Submit */}
               <div className="flex gap-4 pt-4">
                 <button

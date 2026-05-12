@@ -14,7 +14,7 @@ import type { Language } from "@triptags/shared"
 import { ReviewCard } from "@/components/review/ReveiwCard"
 import { ISelectReview } from "@/types/interfaces/interface.props"
 import { INITIAL_ISELECT_REVIEW } from "@/lib/utils/common/const"
-import VenueImageManager from "@/components/venue/VenueImageManager"
+import VenueImageManager from "@/components/venue/venueImage/VenueImageManager"
 import BasicButton from "@/components/common/button/BasicButton"
 
 export default function VenueDetailPage({
@@ -25,6 +25,7 @@ export default function VenueDetailPage({
   const venueId = params.id
   const router = useRouter()
   const tr = useTranslations("VenueDetailPage")
+  const t = useTranslations("Common")
   const locale = useLocale() as Language
   const { isAuthenticated, user } = useAuthStore()
   const venue = useAsync<IGetVenueBase>(null)
@@ -98,7 +99,7 @@ export default function VenueDetailPage({
                   onClick={() => router.push(`/venues/${venueId}/edit`)}
                   className="px-5 py-2.5 whitespace-nowrap"
                 >
-                  {tr("")}
+                  {t("transaction.edit")}
                 </BasicButton>
               </div>
             )}
