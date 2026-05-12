@@ -5,7 +5,7 @@ export interface IVenueDetailInput {
   priceRange?: string
   subCategory?: string
   websiteUrl?: string
-  workHour?: I18nText
+  workHour?: string
 }
 
 export interface IVenueDetailResponse {
@@ -17,4 +17,12 @@ export interface IVenueDetailResponse {
   workHour: I18nText | null
   description: I18nText | null
   venueId: string
+}
+
+export interface IVenueDetailPayload {
+  phoneNumber?: string
+  priceRange?: string
+  subCategory?: string
+  websiteUrl?: string
+  workHour?: I18nText
 }
