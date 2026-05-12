@@ -1,6 +1,5 @@
 import { Dispatch, SetStateAction } from "react"
-import { IGetReviewByVenueAll, IGetVenueBase } from "./interface.api"
-import { IUserPublicResponse } from "@triptags/shared"
+import { IGetReviewByVenueAll } from "./interface.api"
 
 export interface IBasicButtonProps {
   children?: React.ReactNode

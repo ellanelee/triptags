@@ -6,6 +6,7 @@ import type {
   VenueCategory,
 } from "@triptags/shared"
 
+//Region
 export interface IVenueRegion {
   id: string
   name: string
@@ -14,6 +15,7 @@ export interface IVenueRegion {
   parent?: IVenueRegion | null
 }
 
+//Statistics
 export interface IVenueStats {
   id: string
   localRatingAvg: number
@@ -22,11 +24,7 @@ export interface IVenueStats {
   venueId: string
 }
 
-export interface IVenueImage {
-  id: string
-  imageUrl: string
-}
-
+//Reviews
 export interface IReviewsMetric {
   count: number
   averageRating: number
@@ -37,26 +35,6 @@ export interface IReviewResult {
   local: IReviewsMetric
   normal: IReviewsMetric
 }
-
-export interface IGetVenueBase {
-  id: string
-  name: I18nText | null
-  description?: I18nText
-  venueCategory: VenueCategory
-  detailedAddress?: string
-  longitude: number
-  latitude: number
-  createdBy: string
-  googlePlaceId: string
-  reviewCount?: number
-  region: IVenueRegion
-  venueDetail?: IVenueDetailResponse
-  venueImages: IVenueImage[]
-  venueStats: IVenueStats
-  reviewSummary: IReviewResult
-}
-
-export type IGetVenueAllResponse = IPaginatedResponse<IGetVenueBase>
 
 export interface IGetReviewByVenueAll {
   id: string
@@ -77,3 +55,29 @@ export interface IGetReviewByVenueAll {
 
 export type IGetReviewByVenueAllResponse =
   IPaginatedResponse<IGetReviewByVenueAll>
+
+//Venues
+export interface IGetVenueBase {
+  id: string
+  name: I18nText | null
+  description?: I18nText
+  venueCategory: VenueCategory
+  detailedAddress?: string
+  longitude: number
+  latitude: number
+  createdBy: string
+  googlePlaceId: string
+  reviewCount?: number
+  region: IVenueRegion
+  venueDetail?: IVenueDetailResponse
+  venueImages: IVenueImage[]
+  venueStats: IVenueStats
+  reviewSummary: IReviewResult
+}
+
+export type IGetVenueAllResponse = IPaginatedResponse<IGetVenueBase>
+
+export interface IVenueImage {
+  id: string
+  imageUrl: string
+}

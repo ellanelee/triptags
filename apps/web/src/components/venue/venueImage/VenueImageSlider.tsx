@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl"
 import Image from "next/image"
 
 import { useState } from "react"
-import { ChevronLeftIcon, ChevronRightIcon } from "../common/icons/cheronIton"
+import { ChevronLeftIcon, ChevronRightIcon } from "../../common/icons/cheronIton"
 import { useRouter } from "@/i18n/routing"
 
 interface IVenueImageSliderProps {
@@ -58,7 +58,7 @@ export default function VenueImageSlider({
               <button
                 key={el.id}
                 onClick={() => setCurrentIdx(idx)}
-                className={`relative flex-shrink-0 w-20 h-16 rounded-lg overflow-hidden border-2 transition-all duration-200 ${
+                className={`relative shrink-0 w-20 h-16 rounded-lg overflow-hidden border-2 transition-all duration-200 ${
                   idx === currentIdx
                     ? "border-primary-600 ring-2 ring-primary-100 scale-105"
                     : "border-transparent opacity-50 hover:opacity-100"

@@ -5,8 +5,8 @@ import {
   venueCategories,
   VenueCategory,
 } from "@triptags/shared"
-import { FormField } from "../common/form/FormField"
-import { LanguageSelect } from "../common/LanguageSelect"
+import { FormField } from "@/components/common/form/FormField"
+import { LanguageSelect } from "@/components/common/LanguageSelect"
 import { useTranslations } from "next-intl"
 
 export interface IBasicVenueData extends Pick<
@@ -30,9 +30,9 @@ export function VenueBasicForm<T extends IBasicVenueData>({
   setVenueData,
   errors,
   submitted,
-  canEditName = true,
-  canEditDescription = true,
-  canEditCategory = true,
+  canEditName = false,
+  canEditDescription = false,
+  canEditCategory = false,
   locale,
 }: IBasicVenueProps<T>) {
   const tr = useTranslations("CreateVenuePage")

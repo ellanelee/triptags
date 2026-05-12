@@ -1,6 +1,6 @@
 import { IGetVenueBase } from "@/types/interfaces/interface.api"
 import {
-  IVenueAdminUpdate,
+  IVenueAdminUpdateInput,
   Language,
   VenueCategory,
 } from "@triptags/shared"
@@ -9,7 +9,7 @@ import { requiredString, requiredValue } from "../common/validations"
 export function venueResponseForm(
   venue: IGetVenueBase,
   language: Language,
-): IVenueAdminUpdate {
+): IVenueAdminUpdateInput {
 
   return {
     language,
