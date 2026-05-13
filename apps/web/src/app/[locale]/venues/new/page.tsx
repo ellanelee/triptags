@@ -18,7 +18,7 @@ import {
 } from "@/lib/utils/domain/validateVenue"
 import { useAuthStore } from "@/store/auth-store"
 import { IKakaoPlaceSelected } from "@/types/maps/kakao"
-import { IVenueCreatePayload } from "@/types/types"
+import { IVenueCreatePayload, SelectSearchType } from "@/types/types"
 import {
   IVenueDetailPayload,
   type IVenueCreate,
@@ -30,7 +30,7 @@ import { VenueImageEdit } from "@/components/venue/venueImage/VenueImageEditFiel
 import { VenueRegionForm } from "@/components/venue/venueForms/VenueRegionForm"
 import { VenueDetailForm } from "@/components/venue/venueForms/VenueDetailForm"
 import { VenueBasicForm } from "@/components/venue/venueForms/VenueBasicForm"
-
+import { VenuePlaceForm } from "@/components/venue/venueForms/VenuePlaceForm"
 
 export default function CreateVenuePage() {
   const router = useRouter()
@@ -41,7 +41,7 @@ export default function CreateVenuePage() {
   const [loading, setLoading] = useState(false)
   const [errors, setErrors] = useState<IFormErrors>({})
   const [submitted, setSubmitted] = useState(false)
-  const [searchType, setSearchType] = useState<"kakao" | "google">("kakao")
+  const [searchType, setSearchType] = useState<SelectSearchType>("kakao")
   const [countryName, setCountryName] = useState("")
   const [imageUrls, setImageUrls] = useState<string[]>([])
   const [venueData, setVenueData] = useState<IVenueCreate>(INITIAL_VENUE_DATA)
@@ -157,6 +157,11 @@ export default function CreateVenuePage() {
     }
   }
 
+  const handleReset = () => {
+    setVenueData(INITIAL_VENUE_DATA)
+    setVenueDetail(INITIAL_VENUE_DETAIL)
+  }
+
   return (
     <GoogleMapsProvider>
       <div className="min-h-screen bg-gray-50 py-8">
@@ -165,6 +170,19 @@ export default function CreateVenuePage() {
             <h1 className="text-3xl font-bold mb-8">{tr("title")}</h1>
             <form className="space-y-6" onSubmit={handleSubmit}>
               {/* 장소찾기 map 설정*/}
+              <VenuePlaceForm
+                searchType={searchType}
+                setSearchType={setSearchType}
+                venueData={venueData}
+                countryName={countryName}
+                setCountryName={setCountryName}
+                handleReset={handleReset}
+                handleKaKaoPlaceSelected={handleKaKaoPlaceSelected}
+                handleGooglePlaceSelected={handleGooglePlaceSelected}
+                handleMapClick={handleMapClick}
+                canEditMap={canEditAll}   
+                VenuePlaceFormTextNameSpace = {"CreateVenuePage"}
+              />
               <div>
                 <label className="block text-xl font-medium text-gray-700 mb-2">
                   {tr("searchPlace")}
@@ -219,10 +237,7 @@ export default function CreateVenuePage() {
                   {venueData.latitude && venueData.longitude && (
                     <button
                       type="button"
-                      onClick={() => {
-                        setVenueData(INITIAL_VENUE_DATA)
-                        setVenueDetail(INITIAL_VENUE_DETAIL)
-                      }}
+                      onClick={handleReset}
                       className="text-sm text-red-600 hover:text-red-800"
                     >
                       {tr("selectInit")}
@@ -281,72 +296,6 @@ export default function CreateVenuePage() {
                 setVenueDetail={setVenueDetail}
                 canEditVenueDetail={canEditAll}
               />
-              <div className="grid grid-cols-2 gap-4  bg-pink-50 rounded-md p-3">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    {tr("phone")}
-                  </label>
-                  <input
-                    type="tel"
-                    className="w-full border bg-white border-gray-300 text-sm rounded-md px-3 py-2"
-                    value={venueDetail.phoneNumber || ""}
-                    onChange={(e) =>
-                      setVenueDetail((prev) => ({
-                        ...prev,
-                        phoneNumber: e.target.value,
-                      }))
-                    }
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    {tr("website")}
-                  </label>
-                  <input
-                    type="url"
-                    className="w-full border bg-white border-gray-300 text-sm rounded-md px-3 py-2"
-                    value={venueDetail.websiteUrl}
-                    onChange={(e) =>
-                      setVenueDetail((prev) => ({
-                        ...prev,
-                        websiteUrl: e.target.value,
-                      }))
-                    }
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    {tr("priceRange")}
-                  </label>
-                  <input
-                    type="text"
-                    className="w-full border  bg-white border-gray-300 text-sm rounded-md px-3 py-2"
-                    value={venueDetail.priceRange}
-                    onChange={(e) =>
-                      setVenueDetail((prev) => ({
-                        ...prev,
-                        priceRange: e.target.value,
-                      }))
-                    }
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    {tr("workHour")}
-                  </label>
-                  <input
-                    type="text"
-                    className="w-full border bg-white border-gray-300 text-sm rounded-md px-3 py-2"
-                    value={venueDetail.workHour ?? ""}
-                    onChange={(e) =>
-                      setVenueDetail((prev) => ({
-                        ...prev,
-                        workHour: e.target.value,
-                      }))
-                    }
-                  />
-                </div>
-              </div>
               <VenueImageEdit
                 imageUrls={imageUrls}
                 onAdd={(url) => setImageUrls((prev) => [...prev, url])}
