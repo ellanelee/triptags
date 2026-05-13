@@ -63,7 +63,6 @@ export interface IVenueCreate {
   latitude: number | null
   longitude: number | null
   googlePlaceId?: string
-
 }
 
 export interface IVenueSearchFilters {

@@ -1,5 +1,4 @@
-import { IFormErrors } from "@/lib/utils/domain/validateVenue"
-import { IVenueAdminUpdateInput, IVenueDetailInput } from "@triptags/shared"
+import { IVenueAdminUpdateInput } from "@triptags/shared"
 import { useTranslations } from "next-intl"
 
 export interface IVenueDetailData extends Pick<
