@@ -4,9 +4,6 @@ import {
   INITIAL_VENUE_DETAIL,
 } from "@/lib/utils/common/const"
 import { GoogleMapsProvider } from "@/components/common/maps/GoogleMapsProvider"
-import { KakaoPlaceSearch } from "@/components/common/maps/KakaoPlaceSearch"
-import MapPicker from "@/components/common/maps/MapPicker"
-import { PlaceAutoComplete } from "@/components/common/maps/PlaceAutoComplete"
 import { useRouter } from "@/i18n/routing"
 import { venueApi } from "@/lib/api/venue.api"
 import { CountryUtils } from "@/lib/utils/domain/country.utils"
@@ -31,12 +28,12 @@ import { VenueRegionForm } from "@/components/venue/venueForms/VenueRegionForm"
 import { VenueDetailForm } from "@/components/venue/venueForms/VenueDetailForm"
 import { VenueBasicForm } from "@/components/venue/venueForms/VenueBasicForm"
 import { VenuePlaceForm } from "@/components/venue/venueForms/VenuePlaceForm"
+import { VenueSubmit } from "@/components/venue/venueForms/VenueSubmit"
 
 export default function CreateVenuePage() {
   const router = useRouter()
   const locale = useLocale()
   const tr = useTranslations("CreateVenuePage")
-  const t = useTranslations("Common")
   const { isAuthenticated, user } = useAuthStore()
   const [loading, setLoading] = useState(false)
   const [errors, setErrors] = useState<IFormErrors>({})
@@ -47,10 +44,6 @@ export default function CreateVenuePage() {
   const [venueData, setVenueData] = useState<IVenueCreate>(INITIAL_VENUE_DATA)
   const [venueDetail, setVenueDetail] =
     useState<IVenueDetailInput>(INITIAL_VENUE_DETAIL)
-  const currentCoordinates =
-    venueData.latitude && venueData.longitude
-      ? { lat: venueData.latitude, lng: venueData.longitude }
-      : null
 
   //User Authority
   const canEditAll = true
@@ -180,97 +173,9 @@ export default function CreateVenuePage() {
                 handleKaKaoPlaceSelected={handleKaKaoPlaceSelected}
                 handleGooglePlaceSelected={handleGooglePlaceSelected}
                 handleMapClick={handleMapClick}
-                canEditMap={canEditAll}   
-                VenuePlaceFormTextNameSpace = {"CreateVenuePage"}
+                canEditMap={canEditAll}
+                VenuePlaceFormTextNameSpace={"CreateVenuePage"}
               />
-              <div>
-                <label className="block text-xl font-medium text-gray-700 mb-2">
-                  {tr("searchPlace")}
-                </label>
-                <div className="flex gap-2 mb-3">
-                  <button
-                    type="button"
-                    onClick={() => setSearchType("kakao")}
-                    className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                      searchType === "kakao"
-                        ? "bg-yellow-400 text-black"
-                        : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                    }`}
-                  >
-                    카카오(국내)
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setSearchType("google")}
-                    className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                      searchType === "google"
-                        ? "bg-blue-500 text-white"
-                        : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                    }`}
-                  >
-                    구글 (해외)
-                  </button>
-                </div>
-                {searchType === "kakao" ? (
-                  <KakaoPlaceSearch
-                    onPlaceSelected={handleKaKaoPlaceSelected}
-                    placeholder={tr("searchPlaceHolder")}
-                  ></KakaoPlaceSearch>
-                ) : (
-                  <PlaceAutoComplete
-                    onPlaceSelected={handleGooglePlaceSelected}
-                    placeHolder={tr("searchPlaceHolder")}
-                  ></PlaceAutoComplete>
-                )}
-                <p className="text-sm text-gray-500 mt-1">
-                  {searchType === "kakao"
-                    ? "국내 장소는 카카오 검색을 추천합니다"
-                    : tr("searchHint")}
-                </p>
-              </div>
-              {/* map 구현*/}
-              <div>
-                <div className="flex justify-between items-center mb-2">
-                  <label className="text-sm font-medium text-gray-700">
-                    {tr("selectOnMap")}
-                  </label>
-                  {venueData.latitude && venueData.longitude && (
-                    <button
-                      type="button"
-                      onClick={handleReset}
-                      className="text-sm text-red-600 hover:text-red-800"
-                    >
-                      {tr("selectInit")}
-                    </button>
-                  )}
-                </div>
-                {/*위치 선택*/}
-                <MapPicker
-                  center={currentCoordinates ?? undefined}
-                  markerPosition={currentCoordinates}
-                  onLocationSelect={handleMapClick}
-                />
-                {/*위치에 대한 내용 표시 */}
-                <div className="text-sm text-gray-500 my-2">
-                  {venueData.latitude && venueData.longitude ? (
-                    <>
-                      <p>
-                        {`${countryName}, ${venueData.city} ${venueData.district} ${venueData.details}`}
-                        <span>{tr("checkAddress")}</span>
-                      </p>
-                      <p className="text-xs text-gray-400">
-                        {tr("coordinates")}: {venueData.latitude?.toFixed(6)},{" "}
-                        {venueData.longitude?.toFixed(6)}
-                      </p>
-                    </>
-                  ) : (
-                    <p className="text-sm text-gray-500 my-4">
-                      {tr("noLocationSelected")}
-                    </p>
-                  )}
-                </div>
-              </div>
-
               {/*언어 및 기본사항 표시*/}
               <VenueBasicForm
                 venueData={venueData}
@@ -296,6 +201,7 @@ export default function CreateVenuePage() {
                 setVenueDetail={setVenueDetail}
                 canEditVenueDetail={canEditAll}
               />
+              {/* VenueImage정보 */}
               <VenueImageEdit
                 imageUrls={imageUrls}
                 onAdd={(url) => setImageUrls((prev) => [...prev, url])}
@@ -304,24 +210,7 @@ export default function CreateVenuePage() {
                 }
               />
               {/* Submit */}
-              <div className="flex gap-4 pt-4">
-                <button
-                  type="button"
-                  onClick={() => router.back()}
-                  className="flex-1 px-6 py-3 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
-                >
-                  {t("transaction.cancel")}
-                </button>
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="flex-1 px-6 py-3 bg-primary-600 text-white rounded-md hover:bg-primary-700 disabled:opacity-50"
-                >
-                  {loading
-                    ? t("transaction.creating")
-                    : t("transaction.create")}
-                </button>
-              </div>
+              <VenueSubmit loading={loading} />
             </form>
           </div>
         </div>
