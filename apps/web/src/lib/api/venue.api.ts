@@ -3,8 +3,8 @@ import type {
   IVenueCreateInput,
   IVenueDetailInput,
   IVenuePaginationInput,
-  IVenueUpdateInput,
-  IVenueAdminUpdateInput,
+  IVenueAdminUpdate,
+  IVenueCreatorUpdate,
 } from "@triptags/shared"
 import apiClient from "./api.client"
 import {
@@ -62,7 +62,7 @@ export const venueApi = {
     return response.data.data
   },
 
-  createVenueDetail: async (venueId: string, createDto: IVenueDetailInput) => {
+  createOrUpdateVenueDetail: async (venueId: string, createDto: IVenueDetailInput) => {
     const response = await apiClient.post(`venueDetail/${venueId}`, createDto)
     if (!response.data.success) {
       throw new Error(
@@ -74,7 +74,7 @@ export const venueApi = {
   },
 
   //관리자의 venue수정
-  updateVenue: async (venueId: string, createDto: IVenueUpdateInput) => {
+  updateVenueByAdmin: async (venueId: string, createDto: IVenueAdminUpdate) => {
     const response = await apiClient.post(`venues/${venueId}/admin`, createDto)
     if (!response.data.success) {
       throw new Error(
@@ -86,4 +86,14 @@ export const venueApi = {
   },
 
   //일반 사용자의 venue수정
+    updateVenueByUser: async (venueId: string, createDto: IVenueCreatorUpdate) => {
+    const response = await apiClient.post(`venues/${venueId}/admin`, createDto)
+    if (!response.data.success) {
+      throw new Error(
+        response.data.message ?? response.data.error ?? "조회 실패",
+      )
+    }
+    console.log(response.data.data)
+    return response.data.data
+  },
 }

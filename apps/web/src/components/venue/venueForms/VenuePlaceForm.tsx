@@ -2,7 +2,7 @@ import { KakaoPlaceSearch } from "@/components/common/maps/KakaoPlaceSearch"
 import MapPicker from "@/components/common/maps/MapPicker"
 import { PlaceAutoComplete } from "@/components/common/maps/PlaceAutoComplete"
 import { IKakaoPlaceSelected } from "@/types/maps/kakao"
-import { SelectSearchType, VenuePlaceFormTextNameSpace } from "@/types/types"
+import { SelectSearchType } from "@/types/types"
 import { IVenueAdminUpdateInput } from "@triptags/shared"
 import { useTranslations } from "next-intl"
 
@@ -27,7 +27,6 @@ export interface IVenuePlaceProps<T extends IVenuePlaceData> {
   handleMapClick: (location: { lat: number; lng: number }) => void
   handleReset: () => void
   canEditMap: boolean
-  VenuePlaceFormTextNameSpace: VenuePlaceFormTextNameSpace
 }
 
 export function VenuePlaceForm<T extends IVenuePlaceData>({
@@ -40,9 +39,8 @@ export function VenuePlaceForm<T extends IVenuePlaceData>({
   handleMapClick,
   handleReset,
   canEditMap,
-  VenuePlaceFormTextNameSpace,
 }: IVenuePlaceProps<T>) {
-  const tr = useTranslations(VenuePlaceFormTextNameSpace)
+  const tr = useTranslations("CreateVenuePage")
   const t = useTranslations("Common")
   const currentCoordinates =
     venueData.latitude && venueData.longitude
