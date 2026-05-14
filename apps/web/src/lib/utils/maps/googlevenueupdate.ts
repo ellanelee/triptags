@@ -12,7 +12,7 @@ interface IUpdateVenueFromGoogle {
   googlePlaceId?: string
 }
 
-//구글에서 가져온 징소객채정보를 place정보를 페이지 내부에 설정
+//구글에서 가져온 징소객채정보를 place정보를 페이지 내부에 설정(상태 정보 update용)
 
 export const updateVenueFromGoogle = (
   result: google.maps.GeocoderResult | google.maps.places.PlaceResult,

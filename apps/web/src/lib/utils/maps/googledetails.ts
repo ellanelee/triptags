@@ -7,6 +7,7 @@ interface SyncCallback {
   }) => void
 }
 
+//Google의 VenueDetail에 해당하는 정보를 
 export function syncGoogleVenueDetails(
   placeId: string,
   callbacks: SyncCallback,

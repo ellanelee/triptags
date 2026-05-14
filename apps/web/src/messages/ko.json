@@ -160,7 +160,12 @@
     "priceRange": "가격대 (예시: 10000 ~ 20000원)",
     "selectLocation": "지도에서 위치를 선택해주세요.",
     "workHour": "운영 시간을 기입해주세요",
-    "checkAddress": "  (도로등 세부 주소가 정확하지 않은 지역은 다시 선택해 주세요)"
+    "checkAddress": "  (도로등 세부 주소가 정확하지 않은 지역은 다시 선택해 주세요)",
+    "useMainImage": "첫 번째 이미지가 대표 이미지로 사용됩니다.",
+    "venueImage": "이미지등록/수정",
+    "registerImageUrl": "이미지 URL을 입력해주세요",
+    "languageOption": "언어설정",
+    "venueImageRegister": "이미지 등록하기"
   },
   "VenuesPage": {
     "title": "장소 찾기",
@@ -207,13 +212,11 @@
     "website": "웹사이트",
     "noWebsite": "등록된 웹사이트가 없습니다",
     "visitWebsite": "웹사이트 방문",
-    "noVenueImage": "아직 등록된 이미지가 없습니다",
-    "venueImageRegister": "이미지 등록하기",
-    "updateVenue": "장소 정보수정",
-    "updateVenuePosition": "위치 수정",
-    "venueImage": "이미지등록/수정",
-    "registerImageUrl":"이미지 URL을 입력해주세요",
-    "useMainImage": "첫 번째 이미지가 대표 이미지로 사용됩니다."
+    "noVenueImage": "아직 등록된 이미지가 없습니다"
+  },
+  "UpdateVenuePage": {
+    "title": "장소 정보수정",
+    "updateVenuePosition": "위치 수정"
   },
   "WriteReviewPage": {
     "title": "리뷰 작성",
@@ -269,7 +272,7 @@
       "verify": "인증하기",
       "verified": "✓ 위치 인증됨",
       "languageOption": "표시언어 설정",
-      "language": "표시 언어"
+      "language": "현재 표시되는 언어"
     },
     "categories": {
       "RESTAURANT": "레스토랑",

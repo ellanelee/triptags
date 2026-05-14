@@ -46,4 +46,3 @@ export type IVenueCreatePayload = Omit<
 
 export type SelectSearchType = "kakao" | "google"
 
-export type VenuePlaceFormTextNameSpace = "CreateVenuePage" | "VenueUpdatePage"

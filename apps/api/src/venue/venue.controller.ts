@@ -19,7 +19,6 @@ import { Roles } from '@/common/decorator/roles.decorator';
 import { RolesGuard } from '@/auth/jwt-auth.guard.ts/roels.guard';
 import { VenuePaginationDto } from './dtos/venuepagination.dto';
 import { VenueCreateDto } from './dtos/venuecreate.dto';
-import { VenueUpdateDtoUser } from './dtos/venueupdateuser.dto';
 import { VenueUpdateDto } from './dtos/venueupdate.dto';
 
 @ApiBearerAuth('access-token')
@@ -76,23 +75,6 @@ export class VenueController {
     return createResponse(true, response);
   }
 
-  //사용자의 venue수정 (언어별 이름/이미지 추가가능)
-  @Patch(':id/user')
-  @UseGuards(JwtAccessGuard)
-  async updateVenueByUser(
-    @CurrentUser() user: User,
-    @Param('id') venueId: string,
-    @Body() venueUpdateDtoUser: VenueUpdateDtoUser,
-  ) {
-    console.log(user);
-    const response = await this.venueService.updateVenueByUser(
-      user.id,
-      venueId,
-      venueUpdateDtoUser,
-    );
-    return createResponse(true, response);
-  }
-
   //관리자의 venue수정 (모든 필드 수정가능)
   @Patch(':id/admin')
   @Roles('ADMIN')
@@ -104,6 +86,24 @@ export class VenueController {
   ) {
     console.log(user);
     const response = await this.venueService.updateVenueByAdmin(
+      user.id,
+      venueId,
+      venueUpdateDto,
+    );
+    return createResponse(true, response);
+  }
+
+  //사용자(생성자)의 venue수정 (name, image수정)
+  @Patch(':id/user')
+  @Roles('ADMIN')
+  @UseGuards(JwtAccessGuard, RolesGuard)
+  async updateVenueByCreator(
+    @CurrentUser() user: User,
+    @Param('id') venueId: string,
+    @Body() venueUpdateDto: VenueUpdateDto,
+  ) {
+    console.log(user);
+    const response = await this.venueService.updateVenueByCreator(
       user.id,
       venueId,
       venueUpdateDto,

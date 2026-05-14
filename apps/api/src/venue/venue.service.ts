@@ -331,7 +331,7 @@ export class VenueService {
   }
 
   //사용자 venue추가 (언어별 장소명칭 및 이름)
-  async updateVenueByUser(
+  async updateVenueByCreator(
     userId: string,
     venueId: string,
     updateDto: VenueUpdateDtoUser,
@@ -346,6 +346,9 @@ export class VenueService {
       throw new UnauthorizedException('수정 권한이 없습니다');
     if (updateDto.name) {
       await this.updateVenueNameById(venueId, updateDto.name);
+    }
+    if (updateDto.description) {
+      await this.updateVenueDescriptionById(venueId, updateDto.description);
     }
     //이미지 Update
     if (updateDto.venueImage) {

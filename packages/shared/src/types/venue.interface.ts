@@ -76,7 +76,7 @@ export interface IVenueSearchFilters {
   sortBy?: SortBy
 }
 
-export interface IVenueAdminUpdateInput{
+export interface IVenueAdminUpdateInput {
   language: Language
   name: string
   description: string
@@ -93,4 +93,31 @@ export interface IVenueAdminUpdateInput{
   websiteUrl?: string
   workHour?: string
   venueImage?: string[]
+}
+
+export interface IVenueAdminUpdate {
+  name: I18nText
+  description: I18nText
+  venueCategory: VenueCategory | null
+  country: string
+  city: string
+  district: string
+  details: string
+  latitude: number | null
+  longitude: number | null
+  googlePlaceId?: string
+  venueImage?: string[]
+}
+
+export interface IVenueCreatorUpdate{
+  name?: I18nText
+  description?: I18nText
+  venueImage?: string[]
+}
+
+export interface IVenueDetailUpdateInput {
+  phoneNumber?: string
+  priceRange?: string
+  websiteUrl?: string
+  workHour?: string
 }
