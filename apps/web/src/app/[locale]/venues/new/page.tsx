@@ -33,7 +33,7 @@ import { VenueSubmit } from "@/components/venue/venueForms/VenueSubmit"
 export default function CreateVenuePage() {
   const router = useRouter()
   const locale = useLocale()
-  const tr = useTranslations("CreateVenuePage")
+  const tr = useTranslations("UpdateVenuePage")
   const { isAuthenticated, user } = useAuthStore()
   const [loading, setLoading] = useState(false)
   const [errors, setErrors] = useState<IFormErrors>({})
@@ -125,7 +125,7 @@ export default function CreateVenuePage() {
     setErrors(inputErrors)
     setSubmitted(true)
     if (Object.keys(inputErrors).length > 0) {
-      console.log("Venue input검증 중 에러발생")
+      console.log("Verification Error of venueInput")
       setLoading(false)
       return
     }
@@ -141,7 +141,7 @@ export default function CreateVenuePage() {
         workHour: { [locale]: venueDetail.workHour ?? undefined },
       }
       const response = await venueApi.createVenue(venuePayload)
-      await venueApi.createVenueDetail(response.id, venueDetailsPayload)
+      await venueApi.createOrUpdateVenueDetail(response.id, venueDetailsPayload)
       router.replace(`/venues/${response.id}`)
     } catch (error) {
       console.error(error)
@@ -174,7 +174,6 @@ export default function CreateVenuePage() {
                 handleGooglePlaceSelected={handleGooglePlaceSelected}
                 handleMapClick={handleMapClick}
                 canEditMap={canEditAll}
-                VenuePlaceFormTextNameSpace={"CreateVenuePage"}
               />
               {/*언어 및 기본사항 표시*/}
               <VenueBasicForm
@@ -204,6 +203,7 @@ export default function CreateVenuePage() {
               {/* VenueImage정보 */}
               <VenueImageEdit
                 imageUrls={imageUrls}
+                canEditImage={canEditAll}
                 onAdd={(url) => setImageUrls((prev) => [...prev, url])}
                 onDelete={(url) =>
                   setImageUrls((prev) => prev.filter((item) => item !== url))

@@ -1,10 +1,5 @@
 "use client"
-
-import { FormField } from "@/components/common/form/FormField"
 import { GoogleMapsProvider } from "@/components/common/maps/GoogleMapsProvider"
-import { KakaoPlaceSearch } from "@/components/common/maps/KakaoPlaceSearch"
-import MapPicker from "@/components/common/maps/MapPicker"
-import { PlaceAutoComplete } from "@/components/common/maps/PlaceAutoComplete"
 import { VenueBasicForm } from "@/components/venue/venueForms/VenueBasicForm"
 import { VenueDetailForm } from "@/components/venue/venueForms/VenueDetailForm"
 import { VenueImageEdit } from "@/components/venue/venueImage/VenueImageEditField"
@@ -12,24 +7,33 @@ import { VenueRegionForm } from "@/components/venue/venueForms/VenueRegionForm"
 import { useRouter } from "@/i18n/routing"
 import { venueApi } from "@/lib/api/venue.api"
 import { useAsync } from "@/lib/hooks/use.async"
-import { INITIAL_VENUE_UPDATE_DATA } from "@/lib/utils/common/const"
+import {
+  INITIAL_VENUE_UPDATE,
+  INITIAL_VENUE_UPDATE_DATA,
+} from "@/lib/utils/common/const"
 import { ForbiddenError } from "@/lib/utils/common/validations"
 import {
   IFormErrors,
   validateVenueCreateForm,
 } from "@/lib/utils/domain/validateVenue"
 import { venueResponseForm } from "@/lib/utils/domain/venue.response.form"
-import { syncGoogleVenueDetails } from "@/lib/utils/maps/googledetails"
 import { updateVenueFromGoogle } from "@/lib/utils/maps/googlevenueupdate"
 import { useAuthStore } from "@/store/auth-store"
 import { IGetVenueBase } from "@/types/interfaces/interface.api"
 import {
+  IVenueAdminUpdate,
   IVenueAdminUpdateInput,
+  IVenueCreatorUpdate,
+  IVenueDetailInput,
+  IVenueDetailUpdateInput,
   Language,
-  venueCategories,
 } from "@triptags/shared"
 import { useLocale, useTranslations } from "next-intl"
 import { useEffect, useState } from "react"
+import { VenueSubmit } from "@/components/venue/venueForms/VenueSubmit"
+import { VenuePlaceForm } from "@/components/venue/venueForms/VenuePlaceForm"
+import { IKakaoPlaceSelected } from "@/types/maps/kakao"
+import { CountryUtils } from "@/lib/utils/domain/country.utils"
 
 export default function EditvenueUpdateDataPage({
   params,
@@ -39,7 +43,7 @@ export default function EditvenueUpdateDataPage({
   const router = useRouter()
   const venueId = params.id
   const locale = useLocale()
-  const tr = useTranslations("venueUpdateDataPage")
+  const tr = useTranslations("UpdateVenuePage")
   const t = useTranslations("Common")
   const { isAuthenticated, user } = useAuthStore()
   const venue = useAsync<IGetVenueBase>(null)
@@ -62,28 +66,23 @@ export default function EditvenueUpdateDataPage({
   const canEditImage = isAdmin || isCreator
   const canEditRegion = isAdmin
   const canEditVenueDetail = isAdmin
+  const canEditMap = isAdmin
 
   const currentCoordinates =
     venueUpdateData.latitude && venueUpdateData.longitude
       ? { lat: venueUpdateData.latitude, lng: venueUpdateData.longitude }
       : null
-  const { phoneNumber, priceRange, websiteUrl, workHour, ...venueBaseData } =
-    venueUpdateData
-  //locale과 다른 언어의 이름을 추가할수 있음, 관련 DTO도 create와는 다르게 I18nText
-  const venuePayload = {
-    ...venueBaseData,
-    name: { [venueUpdateData.language]: venueUpdateData.name },
-    description: { [venueUpdateData.language]: venueUpdateData.description },
-  }
 
+  //Patch VenueInfo from DB
   useEffect(() => {
     if (!isAuthenticated) router.replace("/venues")
     venue.run(() => venueApi.getVenueById(venueId))
   }, [venueId, isAuthenticated])
 
+  //Check Authority, Field Valiation, Set State
   useEffect(() => {
     if (!venue.data) return
-    if (!isAdmin || !isCreator) throw new ForbiddenError(t("NoPermission"))
+    if (!isAdmin && !isCreator) throw new ForbiddenError(t("NoPermission"))
     try {
       const form = venueResponseForm(venue.data, locale as Language)
       setVenueUpdateData(form)
@@ -94,6 +93,31 @@ export default function EditvenueUpdateDataPage({
       )
     }
   }, [venue.data, venue.loading, locale])
+
+  //카카오 지도객체에서 장소검색 및 선택,Update Position/Region Info
+  const handleKaKaoPlaceSelected = (place: IKakaoPlaceSelected) => {
+    const addressParts = place.roadAddress.split(" ").filter(Boolean) // address format: 서울 강남구 역삼동 ...
+    const city = addressParts[0] || ""
+    const district = addressParts[1] || ""
+    const details = addressParts.slice(2).join(" ")
+    setVenueUpdateData((prev) => ({
+      ...prev,
+      language: "ko",
+      latitude: place.latitude,
+      longitude: place.longitude,
+      country: "KR",
+      city: city,
+      district: district,
+      details: details,
+    }))
+    setCountryName(CountryUtils.getCountryName("KR", locale))
+  }
+
+  //구글검색결과에서 특정 장소 선택시 객체정보 전달 및 변환
+  const handleGooglePlaceSelected = (place: google.maps.places.PlaceResult) => {
+    console.log("구글에서 선정한 장소 위치: ", place)
+    handleUpdateVenueFromGoogle(place)
+  }
 
   //구글맵에서 위치 Click reverse_geocode (좌표->주소변환)처리 및 db저장용 형식변환
   const handleUpdateVenueFromGoogle = (
@@ -107,16 +131,6 @@ export default function EditvenueUpdateDataPage({
         ...venueUpdateFromGoogle,
       }))
       setCountryName(processedResult.countryName)
-      if (processedResult.googlePlaceId) {
-        syncGoogleVenueDetails(processedResult.googlePlaceId, {
-          onVenueUpdate: (data: any) => {
-            setVenueUpdateData((prev) => ({ ...prev, ...data }))
-          },
-          onDetailUpdate: (data: any) => {
-            setVenueUpdateData((prev) => ({ ...prev, ...data }))
-          },
-        })
-      }
     }
   }
 
@@ -132,18 +146,74 @@ export default function EditvenueUpdateDataPage({
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setLoading(true)
+    //Venue 필수입력칸 검증
     const inputErrors = validateVenueCreateForm({
       venueData: venueUpdateData,
     })
+    setErrors(inputErrors)
+    setSubmitted(true)
+    if (Object.keys(inputErrors).length > 0) {
+      console.log("Verification Error of venueInput")
+      setLoading(false)
+      return
+    }
     try {
-      const response = await venueApi.updateVenue(venueId, venuePayload)
-      await venueApi.venueUpdate(response.id, venueUpdateDataPayload)
-      router.replace(`/venues/${response.id}`)
+      let responseId
+      const {
+        language,
+        name,
+        description,
+        venueImage,
+        phoneNumber,
+        priceRange,
+        websiteUrl,
+        workHour,
+        ...venueBaseData
+      } = venueUpdateData
+      const adminUpdatePayload: IVenueAdminUpdate = {
+        ...venueBaseData,
+        name: { language: name },
+        description: { language: description },
+        venueImage,
+      }
+      const creatorUpdatePayload: IVenueCreatorUpdate = {
+        name: { language: name },
+        description: { language: description },
+        venueImage,
+      }
+      const venueDetail: IVenueDetailInput = {
+        phoneNumber,
+        priceRange,
+        websiteUrl,
+        workHour,
+      }
+      if (isAdmin) {
+        const response = await venueApi.updateVenueByAdmin(
+          venueId,
+          adminUpdatePayload,
+        )
+        await venueApi.createOrUpdateVenueDetail(venueId, venueUpdateData)
+        responseId = response.id
+      }
+      if (isCreator) {
+        const response = await venueApi.updateVenueByUser(
+          venueId,
+          creatorUpdatePayload,
+        )
+        await venueApi.createOrUpdateVenueDetail(venueId, venueDetail)
+        responseId = response.id
+      }
+      await venueApi.createOrUpdateVenueDetail(venueId, venueDetail)
+      router.replace(`/venues/${responseId}`)
     } catch (error) {
       console.error(error)
     } finally {
       setLoading(false)
     }
+  }
+
+  const handleReset = () => {
+    setVenueUpdateData(INITIAL_VENUE_UPDATE)
   }
 
   return (
@@ -154,98 +224,18 @@ export default function EditvenueUpdateDataPage({
             <h1 className="text-3xl font-bold mb-8">{tr("title")}</h1>
             <form className="space-y-6" onSubmit={handleSubmit}>
               {/* 장소찾기 map 설정*/}
-              {isAdmin && (
-                <div>
-                  <label className="block text-xl font-medium text-gray-700 mb-2">
-                    {tr("updateVenuePosition")}
-                  </label>
-                  <div className="flex gap-2 mb-3">
-                    <button
-                      type="button"
-                      onClick={() => setSearchType("kakao")}
-                      className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                        searchType === "kakao"
-                          ? "bg-yellow-400 text-black"
-                          : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                      }`}
-                    >
-                      카카오(국내)
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setSearchType("google")}
-                      className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                        searchType === "google"
-                          ? "bg-blue-500 text-white"
-                          : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                      }`}
-                    >
-                      구글 (해외)
-                    </button>
-                  </div>
-                  {searchType === "kakao" ? (
-                    <KakaoPlaceSearch
-                      onPlaceSelected={handleKaKaoPlaceSelected}
-                      placeholder={tr("searchPlaceHolder")}
-                    ></KakaoPlaceSearch>
-                  ) : (
-                    <PlaceAutoComplete
-                      onPlaceSelected={handleGooglePlaceSelected}
-                      placeHolder={tr("searchPlaceHolder")}
-                    ></PlaceAutoComplete>
-                  )}
-                  <p className="text-sm text-gray-500 mt-1">
-                    {searchType === "kakao"
-                      ? "국내 장소는 카카오 검색을 추천합니다"
-                      : tr("searchHint")}
-                  </p>
-                </div>
-              )}
-              {/* map 구현*/}
-              <div>
-                <div className="flex justify-between items-center mb-2">
-                  <label className="text-sm font-medium text-gray-700">
-                    {tr("selectOnMap")}
-                  </label>
-                  {venueUpdateData?.latitude && venueUpdateData?.longitude && (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setVenueUpdateData(INITIAL_VENUE_UPDATE_DATA)
-                      }}
-                      className="text-sm text-red-600 hover:text-red-800"
-                    >
-                      {tr("selectInit")}
-                    </button>
-                  )}
-                </div>
-                {/*위치 선택*/}
-                <MapPicker
-                  center={currentCoordinates ?? undefined}
-                  markerPosition={currentCoordinates}
-                  onLocationSelect={handleMapClick}
-                />
-                {/*위치에 대한 내용 표시 */}
-                <div className="text-sm text-gray-500 my-2">
-                  {venueUpdateData.latitude && venueUpdateData.longitude ? (
-                    <>
-                      <p>
-                        {`${countryName}, ${venueUpdateData.city} ${venueUpdateData.district} ${venueUpdateData.details}`}
-                        <span>{tr("checkAddress")}</span>
-                      </p>
-                      <p className="text-xs text-gray-400">
-                        {tr("coordinates")}:{" "}
-                        {venueUpdateData.latitude?.toFixed(6)},{" "}
-                        {venueUpdateData.longitude?.toFixed(6)}
-                      </p>
-                    </>
-                  ) : (
-                    <p className="text-sm text-gray-500 my-4">
-                      {tr("noLocationSelected")}
-                    </p>
-                  )}
-                </div>
-              </div>
+              <VenuePlaceForm
+                searchType={searchType}
+                setSearchType={setSearchType}
+                venueData={venueUpdateData}
+                countryName={countryName}
+                setCountryName={setCountryName}
+                handleReset={handleReset}
+                handleKaKaoPlaceSelected={handleKaKaoPlaceSelected}
+                handleGooglePlaceSelected={handleGooglePlaceSelected}
+                handleMapClick={handleMapClick}
+                canEditMap={canEditMap}
+              />
               {/*언어 및 기본사항 표시*/}
               <VenueBasicForm
                 venueData={venueUpdateData}
@@ -274,29 +264,13 @@ export default function EditvenueUpdateDataPage({
               <VenueImageEdit
                 imageUrls={imageUrls}
                 onAdd={(url) => setImageUrls((prev) => [...prev, url])}
+                canEditImage={canEditImage}
                 onDelete={(url) =>
                   setImageUrls((prev) => prev.filter((item) => item !== url))
                 }
               />
               {/* Submit */}
-              <div className="flex gap-4 pt-4">
-                <button
-                  type="button"
-                  onClick={() => router.back()}
-                  className="flex-1 px-6 py-3 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
-                >
-                  {t("transaction.cancel")}
-                </button>
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="flex-1 px-6 py-3 bg-primary-600 text-white rounded-md hover:bg-primary-700 disabled:opacity-50"
-                >
-                  {loading
-                    ? t("transaction.creating")
-                    : t("transaction.create")}
-                </button>
-              </div>
+              <VenueSubmit loading={loading} />
             </form>
           </div>
         </div>
