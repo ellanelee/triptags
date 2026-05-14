@@ -13,6 +13,15 @@ export class VenueUpdateDtoUser {
   @IsIn(['ko', 'en', 'ja', 'zh', 'es', 'fr', 'de'])
   name?: I18nText;
 
+  @ApiPropertyOptional({
+    example: { ko: '서울 여의도에 위치한 콩국수 분점이에요.' },
+    description: '언어별 장소설명',
+    enum: ['ko', 'en', 'ja', 'zh', 'es', 'fr', 'de'],
+  })
+  @IsString()
+  @IsIn(['ko', 'en', 'ja', 'zh', 'es', 'fr', 'de'])
+  description?: I18nText;
+
   @ApiProperty({
     example: [
       'https://previews.123rf.com/images/breakingdots/breakingdots2304/breakingdots230400781/202938341-cat-kawaii-character-cartoon-vector-illustration.jpg',

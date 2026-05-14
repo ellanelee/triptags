@@ -26,7 +26,7 @@ export class VenueDetailService {
     });
   }
 
-  async createVenueDetail(
+  async createOrUpdateVenueDetail(
     user: User,
     venueId: string,
     venueDetailDto: VenueDetailDto,
