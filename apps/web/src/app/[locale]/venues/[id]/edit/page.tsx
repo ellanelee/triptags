@@ -25,7 +25,6 @@ import {
   IVenueAdminUpdateInput,
   IVenueCreatorUpdate,
   IVenueDetailInput,
-  IVenueDetailUpdateInput,
   Language,
 } from "@triptags/shared"
 import { useLocale, useTranslations } from "next-intl"
@@ -134,7 +133,7 @@ export default function EditvenueUpdateDataPage({
     }
   }
 
-  //구글맵에서 직접 위치를 선택 (역지오코딩,구글맵 좌표->주소변환)
+  //Select position at GoogleMap (역지오코딩,구글맵 좌표->주소변환)
   const handleMapClick = async (location: { lat: number; lng: number }) => {
     const geocoder = new google.maps.Geocoder() // geocode 변환 (lat, lng)
     const { results } = await geocoder.geocode({ location })
@@ -143,6 +142,7 @@ export default function EditvenueUpdateDataPage({
     }
   }
 
+  //Submit Edited Venue
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setLoading(true)
@@ -185,7 +185,7 @@ export default function EditvenueUpdateDataPage({
         phoneNumber,
         priceRange,
         websiteUrl,
-        workHour,
+        workHour: { language: workHour },
       }
       if (isAdmin) {
         const response = await venueApi.updateVenueByAdmin(

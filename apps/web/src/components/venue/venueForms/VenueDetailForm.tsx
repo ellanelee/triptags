@@ -18,7 +18,6 @@ export function VenueDetailForm<T extends IVenueDetailData>({
   canEditVenueDetail = false,
 }: IVenueDetailProps<T>) {
   const tr = useTranslations("CreateVenuePage")
-  const t = useTranslations("Common")
 
   return (
     <div className="grid grid-cols-2 gap-4  bg-pink-50 rounded-md p-3">
