@@ -1,4 +1,4 @@
-import { IFormErrors } from "@/lib/utils/domain/validateVenue"
+import { IFormErrors } from "@/lib/utils/domain/venue.create.validate"
 import {
   IVenueAdminUpdateInput,
   Language,
@@ -16,8 +16,9 @@ export interface IBasicVenueData extends Pick<
 
 interface IBasicVenueProps<T extends IBasicVenueData> {
   venueData: T
-  locale: string
-  setVenueData: React.Dispatch<React.SetStateAction<T>>
+  selectedLanguage: Language
+  onLanguageChange?: React.Dispatch<React.SetStateAction<Language>>
+  onVenueBasicChange: React.Dispatch<React.SetStateAction<T>>
   errors: IFormErrors
   submitted: boolean
   canEditName?: boolean
@@ -27,13 +28,14 @@ interface IBasicVenueProps<T extends IBasicVenueData> {
 
 export function VenueBasicForm<T extends IBasicVenueData>({
   venueData,
-  setVenueData,
+  onLanguageChange,
+  onVenueBasicChange,
   errors,
   submitted,
   canEditName = false,
   canEditDescription = false,
   canEditCategory = false,
-  locale,
+  selectedLanguage,
 }: IBasicVenueProps<T>) {
   const tr = useTranslations("CreateVenuePage")
   const t = useTranslations("Common")
@@ -46,23 +48,27 @@ export function VenueBasicForm<T extends IBasicVenueData>({
           <div className="flex items-center">
             <LanguageSelect
               label={tr("languageOption")}
-              value={venueData.language}
-              disabled={!canEditName}
-              onChange={(val) =>
-                setVenueData({
-                  ...venueData,
-                  language: val as Language,
-                })
-              }
+              value={selectedLanguage}
+              disabled={!onLanguageChange}
+              onChange={(val) => {
+                if (!onLanguageChange) return
+                onLanguageChange(val as Language)
+              }}
               tr={t}
             />
+            {!onLanguageChange && (
+              <p className="mx-4 text-sm font-medium text-gray-700">
+                {tr("languageComment")}
+              </p>
+            )}
           </div>
         </FormField>
         {/*이름표시*/}
         <FormField error={submitted ? errors.name : ""}>
           <div className="flex items-center">
             <label className="text-sm font-medium text-gray-700 my-2 flex-shrink:0 whitespace-nowrap">
-              {tr("name")} ({t("transaction.language")}: {locale})
+              {tr("name")} ({t("transaction.language")}:{" "}
+              {t(`languages.${selectedLanguage}`)})
             </label>
             <input
               type="text"
@@ -71,7 +77,7 @@ export function VenueBasicForm<T extends IBasicVenueData>({
               className="w-full border text-sm bg-white border-gray-300 rounded-md m-2 px-2 py-2 focus:outline-none focus:ring-primary-500 focus:border-primary-500"
               value={venueData.name}
               onChange={(e) =>
-                setVenueData((prev) => ({
+                onVenueBasicChange((prev) => ({
                   ...prev,
                   name: e.target.value,
                 }))
@@ -90,7 +96,7 @@ export function VenueBasicForm<T extends IBasicVenueData>({
             disabled={!canEditDescription}
             value={venueData.description || ""}
             onChange={(e) =>
-              setVenueData((prev) => ({
+              onVenueBasicChange((prev) => ({
                 ...prev,
                 description: e.target.value,
               }))
@@ -112,7 +118,7 @@ export function VenueBasicForm<T extends IBasicVenueData>({
               value={venueData.venueCategory ?? ""}
               onChange={(e) => {
                 const value = e.target
-                setVenueData((prev) => ({
+                onVenueBasicChange((prev) => ({
                   ...prev,
                   venueCategory: (e.target.value as VenueCategory) || null,
                 }))

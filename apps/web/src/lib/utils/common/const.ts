@@ -1,5 +1,4 @@
 import type {
-
   IVenueAdminUpdateInput,
   IVenueCreate,
   IVenueDetailInput,
@@ -33,6 +32,7 @@ export const INTITIAL_VENUE_FILTER: IVenueSearchFilters = {
   country: "",
   city: "",
   district: "",
+  rating: 5,
   sortBy: "recent",
 }
 

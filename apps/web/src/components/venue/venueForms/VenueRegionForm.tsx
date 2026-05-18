@@ -1,6 +1,6 @@
 import { useTranslations } from "next-intl"
 import { FormField } from "@/components/common/form/FormField"
-import { IFormErrors } from "@/lib/utils/domain/validateVenue"
+import { IFormErrors } from "@/lib/utils/domain/venue.create.validate"
 import { IVenueAdminUpdateInput } from "@triptags/shared"
 
 export interface IVenueRegionData extends Pick<

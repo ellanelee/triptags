@@ -6,18 +6,15 @@ import {
 } from "@triptags/shared"
 import { requiredString, requiredValue } from "../common/validations"
 
-export function venueResponseForm(
+export function venueResponseToEditForm(
   venue: IGetVenueBase,
   language: Language,
 ): IVenueAdminUpdateInput {
 
   return {
     language,
-    name: requiredString(venue.name?.[language], "No_Venue_Name"),
-    description: requiredString(
-      venue.description?.[language],
-      "No_Venue_Description",
-    ),
+    name: venue.name?.[language] ?? "",
+    description: venue.description?.[language]?? "",
     venueCategory: requiredValue<VenueCategory>(
       venue.venueCategory,
       "No_Category_Information",
@@ -33,6 +30,7 @@ export function venueResponseForm(
 
     priceRange: venue.venueDetail?.priceRange ?? undefined,
     websiteUrl: venue.venueDetail?.websiteUrl ?? undefined,
+    workHour: venue.venueDetail?.workHour?.[language] ?? "", 
     latitude: requiredValue<number>(venue.latitude, "No_Position_Info"),
     longitude: requiredValue<number>(venue.longitude, "No_Position_Info"),
     googlePlaceId: venue.googlePlaceId ?? undefined,
