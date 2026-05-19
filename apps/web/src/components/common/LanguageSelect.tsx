@@ -4,7 +4,7 @@ export const LanguageSelect = ({
   label,
   value,
   onChange,
-  disabled,
+  disabled, 
   tr,
 }: LanguageSelectProps) => {
   const languages = ["ko", "en", "ja", "zh", "de", "es", "fr"]

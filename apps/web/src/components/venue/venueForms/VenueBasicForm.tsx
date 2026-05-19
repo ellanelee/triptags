@@ -22,6 +22,7 @@ interface IBasicVenueProps<T extends IBasicVenueData> {
   errors: IFormErrors
   submitted: boolean
   canEditName?: boolean
+  canEditLanguage: boolean
   canEditDescription?: boolean
   canEditCategory?: boolean
 }
@@ -33,6 +34,7 @@ export function VenueBasicForm<T extends IBasicVenueData>({
   errors,
   submitted,
   canEditName = false,
+  canEditLanguage = false,
   canEditDescription = false,
   canEditCategory = false,
   selectedLanguage,

@@ -12,12 +12,13 @@ import { updateVenueFromGoogle } from "@/lib/utils/maps/googlevenueupdate"
 import {
   IFormErrors,
   validateVenueCreateForm,
-} from "@/lib/utils/domain/validateVenue"
+} from "@/lib/utils/domain/venue.create.validate"
 import { useAuthStore } from "@/store/auth-store"
 import { IKakaoPlaceSelected } from "@/types/maps/kakao"
 import { IVenueCreatePayload, SelectSearchType } from "@/types/types"
 import {
   IVenueDetailPayload,
+  Language,
   type IVenueCreate,
   type IVenueDetailInput,
 } from "@triptags/shared"
@@ -44,6 +45,9 @@ export default function CreateVenuePage() {
   const [venueData, setVenueData] = useState<IVenueCreate>(INITIAL_VENUE_DATA)
   const [venueDetail, setVenueDetail] =
     useState<IVenueDetailInput>(INITIAL_VENUE_DETAIL)
+  const [selectedLanguage, setSelectedLanguage] = useState<Language>(
+    locale as Language,
+  )
 
   //User Authority
   const canEditAll = true
@@ -178,10 +182,12 @@ export default function CreateVenuePage() {
               {/*언어 및 기본사항 표시*/}
               <VenueBasicForm
                 venueData={venueData}
-                setVenueData={setVenueData}
+                onVenueBasicChange={setVenueData}
+                onLanguageChange={setSelectedLanguage}
+                canEditLanguage={canEditAll}
                 errors={errors}
                 submitted={submitted}
-                locale={locale}
+                selectedLanguage={locale as Language}
                 canEditName={canEditAll}
                 canEditDescription={canEditAll}
                 canEditCategory={canEditAll}

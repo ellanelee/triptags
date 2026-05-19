@@ -142,9 +142,10 @@
     "title": "Register a Venue",
     "searchPlace": "Search Place",
     "searchPlaceHolder": "Search by place name or address... (e.g., Gyeongbokgung Palace, restaurants near Times Square)",
+    "kakaoHint": "For places in Korea, we recommend using Kakao Search",
     "searchHint": "Searching on Google will automatically fill in the venue information.",
-    "selectOnMap": "Select Location on Map",
-    "selectInit": "Cancel Selection",
+    "selectOnMap": "Select Venue Location on GoogleMap without Search",
+    "selectInit": "Clear Selection",
     "noLocationSelected": "No Location Selected",
     "noLocationInfo": "No Location Information Available",
     "coordinates": "Coordinates",
@@ -165,6 +166,7 @@
     "venueImage": "Register/Edit Images",
     "registerImageUrl": "Please enter the image URL.",
     "languageOption": "Language Settings",
+    "languageComment": "You can change the language in the top menu.",
     "venueImageRegister": "Register Image"
   },
   "VenuesPage": {

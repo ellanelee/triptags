@@ -15,8 +15,8 @@ import { ForbiddenError } from "@/lib/utils/common/validations"
 import {
   IFormErrors,
   validateVenueCreateForm,
-} from "@/lib/utils/domain/validateVenue"
-import { venueResponseForm } from "@/lib/utils/domain/venue.response.form"
+} from "@/lib/utils/domain/venue.create.validate"
+import { venueResponseToEditForm } from "@/lib/utils/domain/venue.response.toEdit"
 import { updateVenueFromGoogle } from "@/lib/utils/maps/googlevenueupdate"
 import { useAuthStore } from "@/store/auth-store"
 import { IGetVenueBase } from "@/types/interfaces/interface.api"
@@ -53,12 +53,16 @@ export default function EditvenueUpdateDataPage({
   const [imageUrls, setImageUrls] = useState<string[]>([])
   const [venueUpdateData, setVenueUpdateData] =
     useState<IVenueAdminUpdateInput>(INITIAL_VENUE_UPDATE_DATA)
+  const [selectedLanguage, setSelectedLanguage] = useState<Language>(
+    locale as Language,
+  )
   const [submitted, setSubmitted] = useState(false)
   const [formLoadError, setFormLoadError] = useState<string | null>(null)
 
   //User Authority
   const isAdmin = user?.role === "ADMIN"
   const isCreator = user?.id === (venue && venue.data?.createdBy) ? true : false
+  const canEditLanguage = isAdmin || isCreator
   const canEditName = isAdmin || isCreator
   const canEditCategory = isAdmin
   const canEditDescription = isAdmin
@@ -66,11 +70,6 @@ export default function EditvenueUpdateDataPage({
   const canEditRegion = isAdmin
   const canEditVenueDetail = isAdmin
   const canEditMap = isAdmin
-
-  const currentCoordinates =
-    venueUpdateData.latitude && venueUpdateData.longitude
-      ? { lat: venueUpdateData.latitude, lng: venueUpdateData.longitude }
-      : null
 
   //Patch VenueInfo from DB
   useEffect(() => {
@@ -83,7 +82,8 @@ export default function EditvenueUpdateDataPage({
     if (!venue.data) return
     if (!isAdmin && !isCreator) throw new ForbiddenError(t("NoPermission"))
     try {
-      const form = venueResponseForm(venue.data, locale as Language)
+      //select language to show ( in case of I18nText)
+      const form = venueResponseToEditForm(venue.data, selectedLanguage)
       setVenueUpdateData(form)
       setFormLoadError(null)
     } catch (e) {
@@ -91,7 +91,7 @@ export default function EditvenueUpdateDataPage({
         e instanceof Error ? e.message : "Fail_to_fetch_venue_information",
       )
     }
-  }, [venue.data, venue.loading, locale])
+  }, [venue.data, selectedLanguage, venue.loading, locale])
 
   //카카오 지도객체에서 장소검색 및 선택,Update Position/Region Info
   const handleKaKaoPlaceSelected = (place: IKakaoPlaceSelected) => {
@@ -239,10 +239,12 @@ export default function EditvenueUpdateDataPage({
               {/*언어 및 기본사항 표시*/}
               <VenueBasicForm
                 venueData={venueUpdateData}
-                setVenueData={setVenueUpdateData}
+                onLanguageChange={setSelectedLanguage}
+                onVenueBasicChange={setVenueUpdateData}
                 submitted={submitted}
-                locale={locale}
+                selectedLanguage={selectedLanguage}
                 errors={errors}
+                canEditLanguage = {canEditLanguage}
                 canEditName={canEditName}
                 canEditCategory={canEditCategory}
                 canEditDescription={canEditDescription}
