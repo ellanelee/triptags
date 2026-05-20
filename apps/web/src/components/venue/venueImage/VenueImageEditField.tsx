@@ -18,6 +18,7 @@ export function VenueImageEdit({
   const tr = useTranslations("CreateVenuePage")
   const t = useTranslations("Common")
 
+  console.log(imageUrls)
   //Edit imageUrl
   const handleAdd = () => {
     const url = imageUrlInput.trim()
@@ -41,7 +42,7 @@ export function VenueImageEdit({
         <div className="flex flex-1 mr-5 gap-3">
           <input
             type="url"
-            disabled={canEditImage}
+            disabled={!canEditImage}
             className="flex-1 border bg-white border-gray-300 text-sm rounded-md px-3 py-2"
             placeholder="https://example.com/image.jpg"
             value={imageUrlInput}
@@ -59,26 +60,26 @@ export function VenueImageEdit({
       </div>
       {/* display images */}
       {imageUrls.length > 0 && (
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-4">
-          {imageUrls.map((el) => (
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-3 mt-4">
+          {imageUrls.map((url, index) => (
             <div
-              key={el}
-              className="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-4"
+              key={`${url}-${index}`}
+              className="relative aspect-[4/3] overflow-hidden rounded-md border bg-white"
             >
               <img
-                src={el}
+                src={url}
                 alt={"venue preview"}
-                className="w-full aspect-4/3 object-cover"
+                className="w-full h-full object-cover"
                 onError={(e) => {
                   e.currentTarget.style.display = "none"
                 }}
               />
               <button
                 type="button"
-                onClick={() => onDelete(el)}
+                onClick={() => onDelete(url)}
                 className="absolute top-2 right-2 bg-black/60 text-white text-xs px-2 py-1 rounded"
               >
-                {tr("delete")}
+                {t("transaction.delete")}
               </button>
             </div>
           ))}

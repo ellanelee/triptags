@@ -77,6 +77,11 @@ export default function EditvenueUpdateDataPage({
     venue.run(() => venueApi.getVenueById(venueId))
   }, [venueId, isAuthenticated])
 
+  //imageUrl
+  useEffect(() => {
+    if (!venue.data || !venue.data) return
+    
+  }, [venue.data])
   //Check Authority, Field Valiation, Set State
   useEffect(() => {
     if (!venue.data) return
@@ -86,6 +91,7 @@ export default function EditvenueUpdateDataPage({
       const form = venueResponseToEditForm(venue.data, selectedLanguage)
       setVenueUpdateData(form)
       setFormLoadError(null)
+      setImageUrls(venue.data?.venueImages.map(el=> el.imageUrl))
     } catch (e) {
       setFormLoadError(
         e instanceof Error ? e.message : "Fail_to_fetch_venue_information",
@@ -192,7 +198,7 @@ export default function EditvenueUpdateDataPage({
           venueId,
           adminUpdatePayload,
         )
-        await venueApi.createOrUpdateVenueDetail(venueId, venueUpdateData)
+        await venueApi.updateVenueByAdmin(venueId, venueUpdateData)
         responseId = response.id
       }
       if (isCreator) {
@@ -244,7 +250,7 @@ export default function EditvenueUpdateDataPage({
                 submitted={submitted}
                 selectedLanguage={selectedLanguage}
                 errors={errors}
-                canEditLanguage = {canEditLanguage}
+                canEditLanguage={canEditLanguage}
                 canEditName={canEditName}
                 canEditCategory={canEditCategory}
                 canEditDescription={canEditDescription}
