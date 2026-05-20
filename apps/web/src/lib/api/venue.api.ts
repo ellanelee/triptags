@@ -75,7 +75,7 @@ export const venueApi = {
 
   //관리자의 venue수정
   updateVenueByAdmin: async (venueId: string, createDto: IVenueAdminUpdate) => {
-    const response = await apiClient.post(`venues/${venueId}/admin`, createDto)
+    const response = await apiClient.patch(`venues/${venueId}/admin`, createDto)
     if (!response.data.success) {
       throw new Error(
         response.data.message ?? response.data.error ?? "조회 실패",
@@ -87,7 +87,7 @@ export const venueApi = {
 
   //일반 사용자의 venue수정
     updateVenueByUser: async (venueId: string, createDto: IVenueCreatorUpdate) => {
-    const response = await apiClient.post(`venues/${venueId}/admin`, createDto)
+    const response = await apiClient.patch(`venues/${venueId}/user`, createDto)
     if (!response.data.success) {
       throw new Error(
         response.data.message ?? response.data.error ?? "조회 실패",

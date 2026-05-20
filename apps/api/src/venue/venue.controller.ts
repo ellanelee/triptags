@@ -95,7 +95,6 @@ export class VenueController {
 
   //사용자(생성자)의 venue수정 (name, image수정)
   @Patch(':id/user')
-  @Roles('ADMIN')
   @UseGuards(JwtAccessGuard, RolesGuard)
   async updateVenueByCreator(
     @CurrentUser() user: User,

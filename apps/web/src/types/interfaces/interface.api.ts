@@ -80,4 +80,5 @@ export type IGetVenueAllResponse = IPaginatedResponse<IGetVenueBase>
 export interface IVenueImage {
   id: string
   imageUrl: string
+  isThumbnail: boolean
 }
