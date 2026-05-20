@@ -80,7 +80,6 @@ export default function EditvenueUpdateDataPage({
   //imageUrl
   useEffect(() => {
     if (!venue.data || !venue.data) return
-    
   }, [venue.data])
   //Check Authority, Field Valiation, Set State
   useEffect(() => {
@@ -91,7 +90,7 @@ export default function EditvenueUpdateDataPage({
       const form = venueResponseToEditForm(venue.data, selectedLanguage)
       setVenueUpdateData(form)
       setFormLoadError(null)
-      setImageUrls(venue.data?.venueImages.map(el=> el.imageUrl))
+      setImageUrls(venue.data?.venueImages.map((el) => el.imageUrl))
     } catch (e) {
       setFormLoadError(
         e instanceof Error ? e.message : "Fail_to_fetch_venue_information",
@@ -169,7 +168,6 @@ export default function EditvenueUpdateDataPage({
         language,
         name,
         description,
-        venueImage,
         phoneNumber,
         priceRange,
         websiteUrl,
@@ -178,20 +176,20 @@ export default function EditvenueUpdateDataPage({
       } = venueUpdateData
       const adminUpdatePayload: IVenueAdminUpdate = {
         ...venueBaseData,
-        name: { language: name },
-        description: { language: description },
-        venueImage,
+        name: { [language]: name },
+        description: { [language]: description },
+        venueImage: imageUrls,
       }
       const creatorUpdatePayload: IVenueCreatorUpdate = {
-        name: { language: name },
-        description: { language: description },
-        venueImage,
+        name: { [language]: name },
+        description: { [language]: description },
+        venueImage: imageUrls,
       }
       const venueDetail: IVenueDetailInput = {
         phoneNumber,
         priceRange,
         websiteUrl,
-        workHour: { language: workHour },
+        workHour: { [language]: workHour },
       }
       if (isAdmin) {
         const response = await venueApi.updateVenueByAdmin(
@@ -206,11 +204,10 @@ export default function EditvenueUpdateDataPage({
           venueId,
           creatorUpdatePayload,
         )
-        await venueApi.createOrUpdateVenueDetail(venueId, venueDetail)
         responseId = response.id
       }
       await venueApi.createOrUpdateVenueDetail(venueId, venueDetail)
-      router.replace(`/venues/${responseId}`)
+      router.replace(`/venues/${venueId}`)
     } catch (error) {
       console.error(error)
     } finally {

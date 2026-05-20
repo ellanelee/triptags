@@ -20,6 +20,7 @@ import { RolesGuard } from '@/auth/jwt-auth.guard.ts/roels.guard';
 import { VenuePaginationDto } from './dtos/venuepagination.dto';
 import { VenueCreateDto } from './dtos/venuecreate.dto';
 import { VenueUpdateDto } from './dtos/venueupdate.dto';
+import { VenueUpdateDtoUser } from './dtos/venueupdateuser.dto';
 
 @ApiBearerAuth('access-token')
 @ApiTags('venues')
@@ -95,13 +96,12 @@ export class VenueController {
 
   //사용자(생성자)의 venue수정 (name, image수정)
   @Patch(':id/user')
-  @UseGuards(JwtAccessGuard, RolesGuard)
+  @UseGuards(JwtAccessGuard)
   async updateVenueByCreator(
     @CurrentUser() user: User,
     @Param('id') venueId: string,
-    @Body() venueUpdateDto: VenueUpdateDto,
+    @Body() venueUpdateDto: VenueUpdateDtoUser,
   ) {
-    console.log(user);
     const response = await this.venueService.updateVenueByCreator(
       user.id,
       venueId,
