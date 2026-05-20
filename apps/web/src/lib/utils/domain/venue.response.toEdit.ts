@@ -28,7 +28,7 @@ export function venueResponseToEditForm(
     latitude: requiredValue<number>(venue.latitude, "No_Position_Info"),
     longitude: requiredValue<number>(venue.longitude, "No_Position_Info"),
     googlePlaceId: venue.googlePlaceId ?? undefined,
-    venueImage: venue.venueImages,
+    venueImage: venue.venueImages ?? undefined,
 
     phoneNumber: venue.venueDetail?.phoneNumber ?? undefined,
     priceRange: venue.venueDetail?.priceRange ?? undefined,

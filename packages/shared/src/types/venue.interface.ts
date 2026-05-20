@@ -92,7 +92,7 @@ export interface IVenueAdminUpdateInput {
   priceRange?: string
   websiteUrl?: string
   workHour?: string
-  venueImage?: IVenueCreatorUpdate
+  venueImage?: IVenueImage[]
 }
 
 export interface IVenueAdminUpdate {
@@ -120,4 +120,10 @@ export interface IVenueDetailUpdateInput {
   priceRange?: string
   websiteUrl?: string
   workHour?: string
+}
+
+export interface IVenueImage {
+  id: string
+  imageUrl: string
+  isThumbnail: boolean
 }
