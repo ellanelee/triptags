@@ -64,7 +64,7 @@ export function VenuePlaceForm<T extends IVenuePlaceData>({
                 : "bg-gray-100 text-gray-700 hover:bg-gray-200"
             }`}
           >
-            카카오(국내)
+            {tr("Kakao")}
           </button>
           <button
             type="button"
@@ -76,7 +76,7 @@ export function VenuePlaceForm<T extends IVenuePlaceData>({
                 : "bg-gray-100 text-gray-700 hover:bg-gray-200"
             }`}
           >
-            구글 (해외)
+            {tr("Google")}
           </button>
         </div>
         {searchType === "kakao" ? (
@@ -91,9 +91,7 @@ export function VenuePlaceForm<T extends IVenuePlaceData>({
           ></PlaceAutoComplete>
         )}
         <p className="text-sm text-gray-500 mt-1">
-          {searchType === "kakao"
-            ? "국내 장소는 카카오 검색을 추천합니다"
-            : tr("searchHint")}
+          {searchType === "kakao" ? tr("kakaoHint") : tr("searchHint")}
         </p>
       </div>
       {/* map 구현*/}

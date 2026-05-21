@@ -140,8 +140,10 @@
   },
   "CreateVenuePage": {
     "title": "Register a Venue",
-    "searchPlace": "Search Place",
+    "searchPlace": "Search Venue with name (google or kakao map)",
     "searchPlaceHolder": "Search by place name or address... (e.g., Gyeongbokgung Palace, restaurants near Times Square)",
+    "Kakao": "Kakao(Korea recommended)",
+    "Google": "Google(Globally recommended)",
     "kakaoHint": "For places in Korea, we recommend using Kakao Search",
     "searchHint": "Searching on Google will automatically fill in the venue information.",
     "selectOnMap": "Select Venue Location on GoogleMap without Search",

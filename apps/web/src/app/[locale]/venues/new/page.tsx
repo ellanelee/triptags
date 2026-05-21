@@ -73,6 +73,7 @@ export default function CreateVenuePage() {
       district: district,
       details: details,
     }))
+    //국가 정보는 DB에 코드로서 저장하고 이름으로 전환하여 표시
     setCountryName(CountryUtils.getCountryName("KR", locale))
     setVenueDetail((prev) => ({
       ...prev,

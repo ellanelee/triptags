@@ -140,9 +140,11 @@
   },
   "CreateVenuePage": {
     "title": "장소 등록하기",
-    "searchPlace": "장소 검색",
+    "searchPlace": "장소 이름으로 검색 (구글/카카오 검색기능)",
     "searchPlaceHolder": "장소 이름이나 주소를 검색하세요...(예: 경복궁, 강남역 맛집)",
-    "kakaoHint": "한국내의 장소는 Kakao검색을 추천합니다",
+    "Kakao": "카카오 주소검색",
+    "Google": "구글 주소검색",
+    "kakaoHint": "한국내의 장소는 카카오 검색을 추천합니다",
     "searchHint": "Google에서 장소를 검색하면 정보가 자동으로 입력됩니다",
     "selectOnMap": "지도에서 직접 위치 선택",
     "selectInit": "장소선택 취소",
@@ -166,8 +168,7 @@
     "venueImage": "이미지등록/수정",
     "registerImageUrl": "이미지 URL을 입력해주세요",
     "languageOption": "언어설정",
-    "languageComment": "최상단 메뉴에서 언어를 변경할수 있습니다.",
-    "venueImageRegister": "이미지 등록하기"
+    "languageComment": "최상단 메뉴에서 언어를 변경할수 있습니다."
   },
   "VenuesPage": {
     "title": "장소 찾기",
@@ -214,7 +215,8 @@
     "website": "웹사이트",
     "noWebsite": "등록된 웹사이트가 없습니다",
     "visitWebsite": "웹사이트 방문",
-    "noVenueImage": "아직 등록된 이미지가 없습니다"
+    "noVenueImage": "아직 등록된 이미지가 없습니다",
+    "venueImageRegister": "이미지 등록하기"
   },
   "UpdateVenuePage": {
     "title": "장소 정보수정",
