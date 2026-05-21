@@ -4,7 +4,10 @@ import { useTranslations } from "next-intl"
 import Image from "next/image"
 
 import { useState } from "react"
-import { ChevronLeftIcon, ChevronRightIcon } from "../../common/icons/cheronIton"
+import {
+  ChevronLeftIcon,
+  ChevronRightIcon,
+} from "../../common/icons/cheronIton"
 import { useRouter } from "@/i18n/routing"
 
 interface IVenueImageSliderProps {
@@ -26,6 +29,7 @@ export default function VenueImageSlider({
           className="object-cover transition-all duration-500 ease-in-out"
           alt="venue"
           fill
+          referrerPolicy="no-referrer"
           priority
         />
         {venueImages.length > 1 && (
@@ -52,7 +56,7 @@ export default function VenueImageSlider({
             </button>
           </div>
         )}
-        {venueImages.length > 1 && (
+        {venueImages.length > 0 && (
           <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide pt-1">
             {venueImages.map((el, idx) => (
               <button
@@ -68,6 +72,7 @@ export default function VenueImageSlider({
                   src={el.imageUrl}
                   alt="thumbnail"
                   fill
+                  referrerPolicy="no-referrer"
                   className="object-cover"
                 />
               </button>

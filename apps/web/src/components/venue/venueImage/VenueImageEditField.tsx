@@ -1,5 +1,6 @@
 import { useTranslations } from "next-intl"
 import { useState } from "react"
+import Image from "next/image"
 
 interface IVenueImageEdit {
   imageUrls: string[]
@@ -66,9 +67,10 @@ export function VenueImageEdit({
               key={`${url}-${index}`}
               className="relative aspect-[4/3] overflow-hidden rounded-md border bg-white"
             >
-              <img
+              <Image
                 src={url}
                 alt={"venue preview"}
+                referrerPolicy="no-referrer"
                 className="w-full h-full object-cover"
                 onError={(e) => {
                   e.currentTarget.style.display = "none"

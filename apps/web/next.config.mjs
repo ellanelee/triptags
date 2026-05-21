@@ -6,6 +6,7 @@ const ALLOWED_IMAGE_DOMAINS = [
   "maps.googleapis.com",
   "images.unsplash.com",
   "tong.visitkorea.or.kr",
+  "dbscthumb-phinf.pstatic.net",
 ]
 
 const nextConfig = {

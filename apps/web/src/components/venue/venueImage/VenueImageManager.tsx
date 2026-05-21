@@ -21,10 +21,14 @@ export default function VenueImageManager({
     router.replace(`/venues/${venueId}/edit`)
   }
 
+  console.log(venueImages)
+
   return (
     <>
-      {venueImages?.length === 0 && <VenueImageEmptyCard onUpdate={handleUpdateVenues} />}
-      {venueImages && venueImages?.length > 1 && (
+      {venueImages?.length === 0 && (
+        <VenueImageEmptyCard onUpdate={handleUpdateVenues} />
+      )}
+      {venueImages && venueImages?.length > 0 && (
         <VenueImageSlider venueImages={venueImages} />
       )}
     </>
