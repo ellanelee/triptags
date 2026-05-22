@@ -34,7 +34,7 @@ import { VenueSubmit } from "@/components/venue/venueForms/VenueSubmit"
 export default function CreateVenuePage() {
   const router = useRouter()
   const locale = useLocale()
-  const tr = useTranslations("UpdateVenuePage")
+  const tr = useTranslations("CreateVenuePage")
   const { isAuthenticated, user } = useAuthStore()
   const [loading, setLoading] = useState(false)
   const [errors, setErrors] = useState<IFormErrors>({})
@@ -140,11 +140,13 @@ export default function CreateVenuePage() {
         latitude: venueData.latitude ?? undefined,
         longitude: venueData.longitude ?? undefined,
         venueCategory: venueData.venueCategory ?? undefined,
+        venueImage: imageUrls,
       }
       const venueDetailsPayload: IVenueDetailPayload = {
         ...venueDetail,
         workHour: { [locale]: venueDetail.workHour ?? undefined },
       }
+      //create venue
       const response = await venueApi.createVenue(venuePayload)
       await venueApi.createOrUpdateVenueDetail(response.id, venueDetailsPayload)
       router.replace(`/venues/${response.id}`)

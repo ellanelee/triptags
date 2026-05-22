@@ -22,7 +22,7 @@ export default function VenueImageEmptyCard({
         className="px-6 py-1 mt-2 bg-white border border-gray-200 rounded-xl text-gray-700 font-semibold shadow-sm 
                        hover:bg-gray-50 hover:border-gray-300 hover:shadow-md active:scale-95 transition-all"
         type="button"
-        disabled={canEdit}
+        disabled={!canEdit}
         onClick={onUpdate}
       >
         {tr("venueImageRegister")}

@@ -1,21 +1,32 @@
 import { I18nText, Language, SortBy, VenueCategory } from "src/common/types"
 
+export interface IVenueCreate {
+  language: Language
+  name: string
+  description: string
+  venueCategory: VenueCategory | null
+  country: string
+  city: string
+  district: string
+  details: string
+  latitude: number | null
+  longitude: number | null
+  venueImage? : string[] 
+  googlePlaceId?: string
+}
+
 export interface IVenueCreateInput {
   language: Language
   name: string
   description?: string
   venueCategory?: VenueCategory
-
   country: string
   city: string
   district: string
   details: string
-
   latitude?: number
   longitude?: number
-
   googlePlaceId?: string
-
   venueImage?: string[]
 }
 
@@ -49,20 +60,6 @@ export interface IVenuePaginationInput {
 
   rating?: number
   sortBy?: SortBy
-}
-
-export interface IVenueCreate {
-  language: Language
-  name: string
-  description: string
-  venueCategory: VenueCategory | null
-  country: string
-  city: string
-  district: string
-  details: string
-  latitude: number | null
-  longitude: number | null
-  googlePlaceId?: string
 }
 
 export interface IVenueSearchFilters {

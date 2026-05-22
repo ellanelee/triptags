@@ -17,6 +17,7 @@ export const INITIAL_VENUE_DATA: IVenueCreate = {
   district: "",
   details: "",
   googlePlaceId: "",
+  venueImage: []
 }
 
 export const INITIAL_VENUE_DETAIL: IVenueDetailInput = {

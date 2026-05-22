@@ -65,12 +65,13 @@ export function VenueImageEdit({
           {imageUrls.map((url, index) => (
             <div
               key={`${url}-${index}`}
-              className="relative aspect-[4/3] overflow-hidden rounded-md border bg-white"
+              className="relative aspect-4/3 overflow-hidden rounded-md border bg-white"
             >
               <Image
                 src={url}
                 alt={"venue preview"}
                 referrerPolicy="no-referrer"
+                fill
                 className="w-full h-full object-cover"
                 onError={(e) => {
                   e.currentTarget.style.display = "none"

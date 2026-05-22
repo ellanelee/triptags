@@ -7,6 +7,7 @@ const ALLOWED_IMAGE_DOMAINS = [
   "images.unsplash.com",
   "tong.visitkorea.or.kr",
   "dbscthumb-phinf.pstatic.net",
+  "dynamic-media-cdn.tripadvisor.com",
 ]
 
 const nextConfig = {
