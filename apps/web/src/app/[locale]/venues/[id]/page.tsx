@@ -180,7 +180,7 @@ export default function VenueDetailPage({
                 <h2 className="text-2xl font-bold">{tr("reviews")}</h2>
                 {isAuthenticated && (
                   <button
-                    onClick={() => router.push(`/venues/${venueId}/review`)}
+                    onClick={() => router.push(`/venues/${venueId}/review/new`)}
                     className="px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition-colors"
                   >
                     {tr("writeReview")}
@@ -230,7 +230,7 @@ export default function VenueDetailPage({
                   </p>
                 ) : (
                   reviews.data?.items.map((review) => (
-                    <div>
+                    <div key={review.id}>
                       <ReviewCard
                         review={review}
                         setSelectReview={setSelectReview}
@@ -265,6 +265,7 @@ export default function VenueDetailPage({
               <VenueImageManager
                 venueImages={venue.data?.venueImages ?? []}
                 venueId={venue.data?.id ?? ""}
+                canEdit={isCreator || isAdmin}
               />
             </div>
             {/* Info */}
