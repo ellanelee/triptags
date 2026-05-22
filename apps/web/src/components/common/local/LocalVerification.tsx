@@ -18,24 +18,27 @@ export default function LocalVerification({
   //granted(허용), denied(거부), prompt(선택 안함)
   const handleLocation = async () => {
     try {
-      alert("현재 위치를 기반으로 인증합니다. 위치권한을 허용해주세요.")
+      alert(tr("AllowLocalVerifyMessage"))
 
+      //navigator의 geolocation기능으로 위치정보 설정
       const location = await getCurrentPosition()
       const localInfo = {
         verificationMethod: "GPS" as VerificationMethod,
         latitude: location.latitude,
         longitude: location.longitude,
       }
+      console.log(localInfo)
+
       const response = await localVerification.run(() =>
         localApi.getLocalVerification(venueId, localInfo),
       )
       if (response) {
         setLocalVerificationId(response.id)
-        alert("위치가 인증되었습니다.")
+        alert(tr("LocalVerificationSuccess"))
       }
     } catch (e) {
       console.error(e)
-      alert("위치 권한이 필요합니다")
+      alert(tr("LocalVerificationFail"))
     }
   }
   return (
@@ -65,7 +68,7 @@ export default function LocalVerification({
         <div>
           {localVerificationId ? (
             <span className="text-sm text-green-600 font-medium">
-              {t("verified")}
+              {t("transaction.verified")}
             </span>
           ) : (
             <p className="text-xs text-gray-400 mt-2">

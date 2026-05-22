@@ -22,8 +22,8 @@ export class LocalVerificationService {
       where: { id: venueId, deletedAt: null },
       select: { longitude: true, latitude: true, regionId: true },
     });
-    if (!venue || !venue.longitude || !venue.latitude)
-      return new NotFoundException('요청한 장소 정보를 찾을수 없습니다');
+    if (venue === null || venue.longitude === null || venue.latitude === null)
+      throw new NotFoundException('요청한 장소 정보를 찾을수 없습니다');
 
     let localLatitude: number;
     let localLongitude: number;
@@ -66,6 +66,7 @@ export class LocalVerificationService {
       localLng: localLongitude,
     });
 
+    console.log(distance);
     //거리 15km초과 이내에서 로컬 인증
     if (distance > 15000) {
       throw new BadRequestException('허용된 거리범위를 벗어납니다');

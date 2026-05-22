@@ -238,7 +238,10 @@
     "datePlaceHolder": "방문 일자를 선택해주세요",
     "visitPurpose": "방문 목적",
     "LocalVerification": "로컬 위치인증",
+    "AllowLocalVerifyMessage": "현재 위치를 기반으로 인증합니다. 위치권한을 허용해주세요.",
     "LocalIndication": "현재 위치를 인증하면 로컬 리뷰로 등록됩니다",
+    "LocalVerificationSuccess": "위치가 인증되었습니다.", 
+    "LocalVerificationFail": "로컬로 인증가능한 위치가 아닙니다",
     "verfiedCondition": "인증된 위치가 장소와 15km 이내일 경우 로컬 리뷰입니다.",
     "purposes": {
       "solo": "혼자",
