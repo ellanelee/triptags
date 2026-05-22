@@ -65,7 +65,7 @@ export default function EditvenueUpdateDataPage({
   const canEditLanguage = isAdmin || isCreator
   const canEditName = isAdmin || isCreator
   const canEditCategory = isAdmin
-  const canEditDescription = isAdmin
+  const canEditDescription = isAdmin || isCreator
   const canEditImage = isAdmin || isCreator
   const canEditRegion = isAdmin
   const canEditVenueDetail = isAdmin

@@ -10,7 +10,7 @@ import {
   IGetVenueBase,
 } from "@/types/interfaces/interface.api"
 import { reviewApi } from "@/lib/api/review.api"
-import type { Language } from "@triptags/shared"
+import type { Language, ReviewFilterType } from "@triptags/shared"
 import { ReviewCard } from "@/components/review/ReveiwCard"
 import { ISelectReview } from "@/types/interfaces/interface.props"
 import { INITIAL_ISELECT_REVIEW } from "@/lib/utils/common/const"
@@ -30,9 +30,7 @@ export default function VenueDetailPage({
   const { isAuthenticated, user } = useAuthStore()
   const venue = useAsync<IGetVenueBase>(null)
   const reviews = useAsync<IGetReviewByVenueAllResponse>(null)
-  const [reviewFilter, setReviewFilter] = useState<"all" | "LOCAL" | "USER">(
-    "all",
-  )
+  const [reviewFilter, setReviewFilter] = useState<ReviewFilterType>("ALL")
   const reviewPageInfo = { groupSize: 10, items: 9 }
   const [selectReview, setSelectReview] = useState<ISelectReview>(
     INITIAL_ISELECT_REVIEW,
@@ -47,13 +45,15 @@ export default function VenueDetailPage({
   }, [])
 
   useEffect(() => {
+    console.log("REVIEW FILTER:", reviewFilter)
     reviews.run(() =>
       reviewApi.getReviewByVenueId(venueId, {
         page: 1,
         items: reviewPageInfo.items,
+        filter: reviewFilter,
       }),
     )
-  }, [venueId, reviewPageInfo.items])
+  }, [venueId, reviewPageInfo.items, reviewFilter])
 
   const handleEditReview = async () => {
     if (!selectReview || !venue.data?.id) return
@@ -175,6 +175,7 @@ export default function VenueDetailPage({
             )}
 
             {/* Reviews Section */}
+            {/* */}
             <div className="bg-white rounded-lg shadow p-6">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-2xl font-bold">{tr("reviews")}</h2>
@@ -191,9 +192,9 @@ export default function VenueDetailPage({
               {/* Review Filter */}
               <div className="flex gap-2 mb-6">
                 <button
-                  onClick={() => setReviewFilter("all")}
+                  onClick={() => setReviewFilter("ALL")}
                   className={`px-4 py-2 rounded-md transition-colors ${
-                    reviewFilter === "all"
+                    reviewFilter === "ALL"
                       ? "bg-primary-600 text-white"
                       : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                   }`}

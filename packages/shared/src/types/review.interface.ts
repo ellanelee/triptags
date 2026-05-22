@@ -38,6 +38,7 @@ export interface ILocalVerification {
 export interface IReviewPaginationInput {
   page?: number
   items?: number
+  filter?: string
 }
 
 export interface IReviewCreateInput {

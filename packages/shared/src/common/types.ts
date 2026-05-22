@@ -35,3 +35,5 @@ export type VisitPurpose =
   | ""
 
 export type SortBy = "rating" | "reviews" | "recent" | "distance"
+
+export type ReviewFilterType = "ALL" | "LOCAL" | "USER"
