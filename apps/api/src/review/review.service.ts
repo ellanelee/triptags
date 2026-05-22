@@ -6,7 +6,7 @@ import {
 import { PrismaService } from '@/prisma/prisma.service';
 import { Language } from '@triptags/shared';
 import { IUserPoint } from '@/common/type/types';
-import { PointType } from '@prisma/client';
+import { PointType, Prisma } from '@prisma/client';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { ReviewPaginationDto } from './dtos/reviewpagination.dto';
 import { ReviewCreateWithDetailDto } from './dtos/reviewcreatewithdetail.dto';
@@ -47,11 +47,24 @@ export class ReviewService {
   async findReviewByVenueId(venueId: string, pageDto: ReviewPaginationDto) {
     const page = Number(pageDto.page) || 1;
     const items = Number(pageDto.items) || 10;
+    const searchFilter = pageDto.filter;
     const skip = (page - 1) * items;
+    const where: Prisma.ReviewWhereInput = {
+      venueId,
+      deletedAt: null,
+    };
+    if (searchFilter === 'USER') {
+      where.localVerificationId = null;
+    }
+    if (searchFilter === 'LOCAL') {
+      where.localVerificationId = { not: null };
+    }
     const [totalCount, data] = await Promise.all([
-      this.prisma.client.review.count({ where: { venueId, deletedAt: null } }),
+      this.prisma.client.review.count({
+        where,
+      }),
       this.prisma.client.review.findMany({
-        where: { venueId, deletedAt: null },
+        where,
         skip,
         take: items,
         orderBy: { updatedAt: 'desc' },

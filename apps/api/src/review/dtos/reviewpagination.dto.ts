@@ -1,7 +1,7 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IReviewPaginationInput } from '@triptags/shared';
+import { IReviewPaginationInput, ReviewFilterType } from '@triptags/shared';
 import { Type } from 'class-transformer';
-import { IsInt, IsOptional, Min } from 'class-validator';
+import { IsInt, IsOptional, IsString, Min } from 'class-validator';
 
 export class ReviewPaginationDto implements IReviewPaginationInput {
   @ApiPropertyOptional({ example: 1, description: '페이지 number' })
@@ -17,4 +17,12 @@ export class ReviewPaginationDto implements IReviewPaginationInput {
   @IsInt()
   @Min(1)
   items?: number = 10;
+
+  @ApiPropertyOptional({
+    example: 'all',
+    description: 'reiview검색시 필터링 조건(ALL/LOCAL/USER)',
+  })
+  @IsOptional()
+  @IsString()
+  filter?: ReviewFilterType;
 }
