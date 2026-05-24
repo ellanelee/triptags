@@ -21,6 +21,7 @@ import { VenuePaginationDto } from './dtos/venuepagination.dto';
 import { VenueCreateDto } from './dtos/venuecreate.dto';
 import { VenueUpdateDto } from './dtos/venueupdate.dto';
 import { VenueUpdateDtoUser } from './dtos/venueupdateuser.dto';
+import { VenueDuplicatedDto } from './dtos/venueduplicate.dto';
 
 @ApiBearerAuth('access-token')
 @ApiTags('venues')
@@ -45,12 +46,26 @@ export class VenueController {
 
   //VenueId로 update를 위한 정보 불러오기
   @UseGuards(JwtAccessGuard)
-  @Get(':venueId/edit')
-  async getVenueEditById(
+  @Get('checkDuplicated')
+  async getVenueDuplicated(
     @CurrentUser() user: User,
     @Param('venueId') venueId: string,
   ) {
     const result = await this.venueService.findVenueEditById(user.id, venueId);
+    return createResponse(true, result);
+  }
+
+  //VenueId로 update를 위한 정보 불러오기
+  @UseGuards(JwtAccessGuard)
+  @Get(':venueId/edit')
+  async getVenueEditById(
+    @CurrentUser() user: User,
+    @Body() venueDuplicatedDto: VenueDuplicatedDto,
+  ) {
+    const result = await this.venueService.checkDuplication(
+      user.id,
+      venueDuplicatedDto,
+    );
     return createResponse(true, result);
   }
 

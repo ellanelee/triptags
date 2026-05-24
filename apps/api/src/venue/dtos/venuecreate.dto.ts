@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IVenueCreateInput, Language, VenueCategory } from '@triptags/shared';
 
 import {
@@ -33,7 +33,7 @@ export class VenueCreateDto implements IVenueCreateInput {
     description:
       'RESTAURANT(식당), CAFE(카페), HOTEL(호텔), STREET_FOOD(거리음식), BAR(바),SHOPPING(쇼핑), CULTURE(문화) 등등, 하단에서 적절한 영역으로 설정하세요',
   })
-  @IsOptional()
+  @IsNotEmpty()
   venueCategory?: VenueCategory;
 
   @ApiProperty({
@@ -41,8 +41,7 @@ export class VenueCreateDto implements IVenueCreateInput {
     description: '설명을 작성하세요',
   })
   @IsNotEmpty()
-  @IsOptional()
-  description?: string;
+  description!: string;
 
   @ApiProperty({
     example: 'KR',
@@ -92,7 +91,7 @@ export class VenueCreateDto implements IVenueCreateInput {
   @IsOptional()
   longitude?: number;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     example: 12345,
     description: '구글 PlaceID',
   })

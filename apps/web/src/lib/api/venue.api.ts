@@ -5,6 +5,8 @@ import type {
   IVenuePaginationInput,
   IVenueAdminUpdate,
   IVenueCreatorUpdate,
+  IVenueDuplicatedResponse,
+  IVenueDuplicatedInput,
 } from "@triptags/shared"
 import apiClient from "./api.client"
 import {
@@ -40,6 +42,18 @@ export const venueApi = {
     return response.data.data
   },
 
+  //venue등록전 등일 venue존재여부 검색
+  getVenueDuplicated: async (checkDuplicate: IVenueDuplicatedInput): Promise<IVenueDuplicatedResponse[]> => {
+    const response = await apiClient.get(`venues/checkDuplicated`)
+    if (!response.data.success) {
+      throw new Error(
+        response.data.message ?? response.data.error ?? "조회 실패",
+      )
+    }
+    console.log(response.data.data)
+    return response.data.data
+  },
+
   getVenueDetail: async (venueId: string): Promise<IVenueDetailResponse> => {
     const response = await apiClient.get(`venueDetail/${venueId}`)
     if (!response.data.success) {
@@ -62,7 +76,10 @@ export const venueApi = {
     return response.data.data
   },
 
-  createOrUpdateVenueDetail: async (venueId: string, createDto: IVenueDetailInput) => {
+  createOrUpdateVenueDetail: async (
+    venueId: string,
+    createDto: IVenueDetailInput,
+  ) => {
     const response = await apiClient.post(`venueDetail/${venueId}`, createDto)
     if (!response.data.success) {
       throw new Error(
@@ -86,7 +103,10 @@ export const venueApi = {
   },
 
   //일반 사용자의 venue수정
-    updateVenueByUser: async (venueId: string, createDto: IVenueCreatorUpdate) => {
+  updateVenueByUser: async (
+    venueId: string,
+    createDto: IVenueCreatorUpdate,
+  ) => {
     const response = await apiClient.patch(`venues/${venueId}/user`, createDto)
     if (!response.data.success) {
       throw new Error(

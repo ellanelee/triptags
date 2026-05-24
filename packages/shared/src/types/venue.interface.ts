@@ -1,3 +1,4 @@
+import { Venue } from "@triptags/database"
 import { I18nText, Language, SortBy, VenueCategory } from "src/common/types"
 
 export interface IVenueCreate {
@@ -11,7 +12,7 @@ export interface IVenueCreate {
   details: string
   latitude: number | null
   longitude: number | null
-  venueImage? : string[] 
+  venueImage?: string[]
   googlePlaceId?: string
 }
 
@@ -50,14 +51,11 @@ export interface IVenueUpdateInput {
 export interface IVenuePaginationInput {
   page?: number
   items?: number
-
   category?: VenueCategory
   search?: string
-
   country?: string
   city?: string
   district?: string
-
   rating?: number
   sortBy?: SortBy
 }
@@ -123,4 +121,26 @@ export interface IVenueImage {
   id: string
   imageUrl: string
   isThumbnail: boolean
+}
+
+export interface IVenueDuplicatedInput {
+  language: string
+  name: string
+  venueCategory: VenueCategory
+  latitude: number | null
+  longigude: number | null
+  country: string
+  city: string
+  district: string
+  details: string
+  googlePlaceId?: string
+}
+
+export interface IVenueDuplicatedResponse {
+  id: string
+  name: string
+  country: string
+  city: string
+  district: string
+  details: string
 }
