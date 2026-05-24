@@ -18,6 +18,7 @@ import { IKakaoPlaceSelected } from "@/types/maps/kakao"
 import { IVenueCreatePayload, SelectSearchType } from "@/types/types"
 import {
   IVenueDetailPayload,
+  IVenueDuplicatedResponse,
   Language,
   type IVenueCreate,
   type IVenueDetailInput,
@@ -45,9 +46,9 @@ export default function CreateVenuePage() {
   const [venueData, setVenueData] = useState<IVenueCreate>(INITIAL_VENUE_DATA)
   const [venueDetail, setVenueDetail] =
     useState<IVenueDetailInput>(INITIAL_VENUE_DETAIL)
-  const [selectedLanguage, setSelectedLanguage] = useState<Language>(
-    locale as Language,
-  )
+  const [duplicatedVenue, setDuplicatedVenue] = useState<
+    IVenueDuplicatedResponse[]
+  >([])
 
   //User Authority
   const canEditAll = true
@@ -135,6 +136,26 @@ export default function CreateVenuePage() {
       return
     }
     try {
+      //DB내 Venue를 대상으로 DuplicationCheck
+      const duplicatedList = await venueApi.getVenueDuplicated({
+        language: locale,
+        name: venueData.name,
+        venueCategory: venueData.venueCategory,
+        latitude: venueData.latitude ?? null,
+        longigude: venueData.longitude,
+        country: venueData.country,
+        city: venueData.city,
+        district: venueData.district,
+        details: venueData.details,
+        googlePlaceId: venueData.googlePlaceId ?? "",
+      })
+      if (duplicatedList.length > 0) {
+        setDuplicatedVenue(duplicatedList)
+      }
+    } catch (e) {
+    } finally {
+    }
+    try {
       const venuePayload: IVenueCreatePayload = {
         ...venueData,
         latitude: venueData.latitude ?? undefined,
@@ -186,7 +207,6 @@ export default function CreateVenuePage() {
               <VenueBasicForm
                 venueData={venueData}
                 onVenueBasicChange={setVenueData}
-                onLanguageChange={setSelectedLanguage}
                 canEditLanguage={canEditAll}
                 errors={errors}
                 submitted={submitted}

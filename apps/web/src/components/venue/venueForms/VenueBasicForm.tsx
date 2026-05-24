@@ -34,7 +34,6 @@ export function VenueBasicForm<T extends IBasicVenueData>({
   errors,
   submitted,
   canEditName = false,
-  canEditLanguage = false,
   canEditDescription = false,
   canEditCategory = false,
   selectedLanguage,

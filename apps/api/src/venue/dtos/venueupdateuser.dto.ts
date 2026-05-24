@@ -1,4 +1,4 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiPropertyOptional } from '@nestjs/swagger';
 import { I18nText } from '@triptags/shared';
 
 import { IsArray, IsObject, IsOptional, IsString } from 'class-validator';
