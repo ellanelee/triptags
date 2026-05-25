@@ -87,12 +87,13 @@ export default function CreateVenuePage() {
   //구글검색결과에서 특정 장소 선택시 객체정보 전달 및 변환
   const handleGooglePlaceSelected = (place: google.maps.places.PlaceResult) => {
     console.log("구글에서 선정한 장소 위치: ", place)
-    handleUpdateVenueFromGoogle(place)
+    handleUpdateVenueFromGoogle(place, { syncDetails: true })
   }
 
   //특정한 장소의 객체정보를 인자로 db용 정보추출, 상태로 저장
   const handleUpdateVenueFromGoogle = (
     result: google.maps.GeocoderResult | google.maps.places.PlaceResult,
+    options: { syncDetails?: boolean } = {},
   ) => {
     const processedResult = updateVenueFromGoogle(result, locale)
     if (processedResult) {
@@ -102,7 +103,7 @@ export default function CreateVenuePage() {
         ...venueUpdateFromGoogle,
       }))
       setCountryName(processedResult.countryName)
-      if (processedResult.googlePlaceId) {
+      if (processedResult.googlePlaceId && options.syncDetails) {
         syncGoogleVenueDetails(processedResult.googlePlaceId, {
           onVenueUpdate: (data) => {
             setVenueData((prev) => ({ ...prev, ...data }))
@@ -120,7 +121,7 @@ export default function CreateVenuePage() {
     const geocoder = new google.maps.Geocoder() // geocode 변환 (lat, lng)
     const { results } = await geocoder.geocode({ location })
     if (results[0]) {
-      handleUpdateVenueFromGoogle(results[0])
+      handleUpdateVenueFromGoogle(results[0], { syncDetails: false })
     }
   }
 
@@ -188,7 +189,7 @@ export default function CreateVenuePage() {
       <div className="min-h-screen bg-gray-50 py-8">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-white rounded-lg shadow p-6">
-            <h1 className="text-3xl font-bold mb-8">{tr("title")}</h1>
+            <h1 className="text-2xl font-bold mb-8">{tr("title")}</h1>
             <form className="space-y-6" onSubmit={handleSubmit}>
               {/* 장소찾기 map 설정*/}
               <VenuePlaceForm
@@ -203,6 +204,14 @@ export default function CreateVenuePage() {
                 handleMapClick={handleMapClick}
                 canEditMap={canEditAll}
               />
+              {/*주소표시 */}
+              <VenueRegionForm
+                venueData={venueData}
+                setVenueData={setVenueData}
+                errors={errors}
+                submitted={submitted}
+                canEditRegion={canEditAll}
+              />
               {/*언어 및 기본사항 표시*/}
               <VenueBasicForm
                 venueData={venueData}
@@ -214,14 +223,6 @@ export default function CreateVenuePage() {
                 canEditName={canEditAll}
                 canEditDescription={canEditAll}
                 canEditCategory={canEditAll}
-              />
-              {/*주소표시 */}
-              <VenueRegionForm
-                venueData={venueData}
-                setVenueData={setVenueData}
-                errors={errors}
-                submitted={submitted}
-                canEditRegion={canEditAll}
               />
               {/* VenueDetail정보 */}
               <VenueDetailForm
