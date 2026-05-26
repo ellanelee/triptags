@@ -17,7 +17,9 @@ import { useAuthStore } from "@/store/auth-store"
 import { IKakaoPlaceSelected } from "@/types/maps/kakao"
 import { IVenueCreatePayload, SelectSearchType } from "@/types/types"
 import {
+  IVenueAdminUpdateInput,
   IVenueDetailPayload,
+  IVenueDuplicatedInput,
   IVenueDuplicatedResponse,
   Language,
   type IVenueCreate,
@@ -31,6 +33,7 @@ import { VenueDetailForm } from "@/components/venue/venueForms/VenueDetailForm"
 import { VenueBasicForm } from "@/components/venue/venueForms/VenueBasicForm"
 import { VenuePlaceForm } from "@/components/venue/venueForms/VenuePlaceForm"
 import { VenueSubmit } from "@/components/venue/venueForms/VenueSubmit"
+import DuplicateVenueModal from "@/components/venue/VenueDuplicateModal"
 
 export default function CreateVenuePage() {
   const router = useRouter()
@@ -49,6 +52,7 @@ export default function CreateVenuePage() {
   const [duplicatedVenue, setDuplicatedVenue] = useState<
     IVenueDuplicatedResponse[]
   >([])
+  const [showDuplicatedModal, setShowDuplicatedModal] = useState(false)
 
   //User Authority
   const canEditAll = true
@@ -128,6 +132,7 @@ export default function CreateVenuePage() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setLoading(true)
+    console.log("Submit Start")
     const inputErrors = validateVenueCreateForm({ venueData })
     setErrors(inputErrors)
     setSubmitted(true)
@@ -138,22 +143,31 @@ export default function CreateVenuePage() {
     }
     try {
       //DB내 Venue를 대상으로 DuplicationCheck
+      if (venueData.longitude === null || venueData.latitude === null) {
+        console.log("No Coordination")
+        setLoading(false)
+        return
+      }
       const duplicatedList = await venueApi.getVenueDuplicated({
         language: locale,
         name: venueData.name,
         venueCategory: venueData.venueCategory,
-        latitude: venueData.latitude ?? null,
-        longigude: venueData.longitude,
+        latitude: venueData.latitude,
+        longitude: venueData.longitude,
         country: venueData.country,
         city: venueData.city,
         district: venueData.district,
         details: venueData.details,
         googlePlaceId: venueData.googlePlaceId ?? "",
       })
+      console.log(duplicatedList)
       if (duplicatedList.length > 0) {
+        setShowDuplicatedModal(true)
         setDuplicatedVenue(duplicatedList)
+        return
       }
     } catch (e) {
+      console.log(e)
     } finally {
     }
     try {
@@ -242,6 +256,11 @@ export default function CreateVenuePage() {
               {/* Submit */}
               <VenueSubmit loading={loading} />
             </form>
+            <DuplicateVenueModal
+              open={showDuplicatedModal}
+              listDuplicated={duplicatedVenue}
+              onClose={() => setShowDuplicatedModal(false)}
+            />
           </div>
         </div>
       </div>

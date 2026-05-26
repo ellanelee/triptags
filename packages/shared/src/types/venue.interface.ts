@@ -127,8 +127,8 @@ export interface IVenueDuplicatedInput {
   language: string
   name: string
   venueCategory: VenueCategory
-  latitude: number | null
-  longigude: number | null
+  latitude: number
+  longitude: number
   country: string
   city: string
   district: string

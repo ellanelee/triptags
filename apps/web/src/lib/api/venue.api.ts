@@ -43,8 +43,12 @@ export const venueApi = {
   },
 
   //venue등록전 등일 venue존재여부 검색
-  getVenueDuplicated: async (checkDuplicate: IVenueDuplicatedInput): Promise<IVenueDuplicatedResponse[]> => {
-    const response = await apiClient.get(`venues/checkDuplicated`)
+  getVenueDuplicated: async (
+    checkDuplicated: IVenueDuplicatedInput,
+  ): Promise<IVenueDuplicatedResponse[]> => {
+    const response = await apiClient.get(`venues/check/duplicated`, {
+      params: checkDuplicated,
+    })
     if (!response.data.success) {
       throw new Error(
         response.data.message ?? response.data.error ?? "조회 실패",
