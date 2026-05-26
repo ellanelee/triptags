@@ -29,13 +29,6 @@ export class VenueDuplicatedDto {
   venueCategory?: VenueCategory;
 
   @ApiProperty({
-    example: '여의도의 유명한 콩국수 전문점, 줄서는 집',
-    description: '설명을 작성하세요',
-  })
-  @IsNotEmpty()
-  description?: string;
-
-  @ApiProperty({
     example: 'KR',
     description: '거주 국가명의 영문명(KR, UK, USA등등)',
   })

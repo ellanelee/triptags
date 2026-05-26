@@ -37,21 +37,24 @@ export class VenueController {
     return createResponse(true, response);
   }
 
+  //VenueId로 update를 위한 정보 불러오기
+  @UseGuards(JwtAccessGuard)
+  @Get('check/duplicated')
+  async getVenueDuplicated(
+    @CurrentUser() user: User,
+    @Query() venueDuplidatedDto: VenueDuplicatedDto,
+  ) {
+    const result = await this.venueService.checkDuplication(
+      user.id,
+      venueDuplidatedDto,
+    );
+    return createResponse(true, result);
+  }
+
   //VenueId로 정보 불러오기
   @Get(':venueId')
   async getVenueById(@Param('venueId') venueId: string) {
     const result = await this.venueService.findVenueById(venueId);
-    return createResponse(true, result);
-  }
-
-  //VenueId로 update를 위한 정보 불러오기
-  @UseGuards(JwtAccessGuard)
-  @Get('checkDuplicated')
-  async getVenueDuplicated(
-    @CurrentUser() user: User,
-    @Param('venueId') venueId: string,
-  ) {
-    const result = await this.venueService.findVenueEditById(user.id, venueId);
     return createResponse(true, result);
   }
 

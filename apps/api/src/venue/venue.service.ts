@@ -15,7 +15,9 @@ import { CountryUtils } from '@/utils/country.utils';
 import { VenueCreateDto } from './dtos/venuecreate.dto';
 import { VenueUpdateDtoUser } from './dtos/venueupdateuser.dto';
 import { VenueUpdateDto } from './dtos/venueupdate.dto';
+import { VenueDuplicatedDto } from './dtos/venueduplicate.dto';
 
+//Region의 Parent와 image, 통계(stats) 포함
 const venueBaseInclude = {
   venueDetail: true,
   region: {
@@ -34,6 +36,7 @@ const venueBaseInclude = {
   },
 };
 
+//Region의 Parent와 이미지 포함
 const venueEditBaseInclude = {
   venueDetail: true,
   region: {
@@ -440,5 +443,37 @@ export class VenueService {
       where: { id: venueId },
       data: { deletedAt: new Date() },
     });
+  }
+
+  //Venue중복 체크
+  async checkDuplication(userId: string, dto: VenueDuplicatedDto) {
+    console.log('중복제거');
+    const targetUser = await this.prisma.client.user.findUnique({
+      where: { id: userId },
+    });
+    if (!targetUser) throw new NotFoundException('Unauthorized User');
+    const duplicated = await this.prisma.client.venue.findMany({
+      where: {
+        deletedAt: null,
+        venueCategory: dto.venueCategory,
+        region: {
+          name: dto.district,
+          parent: {
+            name: dto.city,
+            parent: {
+              name: dto.country,
+            },
+          },
+        },
+        detailedAddress: dto.details,
+        name: {
+          path: [dto.language],
+          equals: dto.name,
+        },
+        googlePlaceId: dto.googlePlaceId,
+      },
+    });
+    console.log(duplicated);
+    return duplicated;
   }
 }
