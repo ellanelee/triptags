@@ -50,7 +50,7 @@ export default function CreateReviewPage({
   })
   const [loading, setLoading] = useState(false)
 
-  // //카테고리에 따른 rating표시변경 
+  // //카테고리에 따른 rating표시변경
   // const category = venue.data?.venueCategory
   // let canEditTaste: boolean = true
   // if (category) {
@@ -99,11 +99,10 @@ export default function CreateReviewPage({
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-white rounded-lg shadow p-6">
-          <h1 className="text-3xl font-bold mb-2">{tr("title")}</h1>
-          <p className="text-lg text-gray-600 mb-8">
+          <h1 className="text-2xl font-bold mb-2">{tr("title")}</h1>
+          <p className="text-xl text-primary-600 font-bold mb-8">
             {venue.data?.name ? venue.data.name[locale] : ""}
           </p>
-
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Overall Rating */}
             <div>
@@ -165,31 +164,31 @@ export default function CreateReviewPage({
               </h3>
               <div className="grid grid-cols-3 gap-2">
                 {/* Taste 평가*/}
-                  <div className="min-w-0">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      {tr("taste")}
-                    </label>
-                    <select
-                      className="w-full border border-gray-300 rounded-md px-3 py-2"
-                      value={formData.reviewDetail.tasteRating}
-                      onChange={(e) =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          reviewDetail: {
-                            ...prev.reviewDetail,
-                            tasteRating: Number(e.target.value),
-                          },
-                        }))
-                      }
-                    >
-                      <option value={0}>-</option>
-                      {[1, 2, 3, 4, 5].map((n) => (
-                        <option key={n} value={n}>
-                          {n} ★
-                        </option>
-                      ))}
-                    </select>
-                  </div>
+                <div className="min-w-0">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    {tr("taste")}
+                  </label>
+                  <select
+                    className="w-full border border-gray-300 rounded-md px-3 py-2"
+                    value={formData.reviewDetail.tasteRating}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        reviewDetail: {
+                          ...prev.reviewDetail,
+                          tasteRating: Number(e.target.value),
+                        },
+                      }))
+                    }
+                  >
+                    <option value={0}>-</option>
+                    {[1, 2, 3, 4, 5].map((n) => (
+                      <option key={n} value={n}>
+                        {n} ★
+                      </option>
+                    ))}
+                  </select>
+                </div>
 
                 {/* Service 평가*/}
                 <div className="min-w-0">

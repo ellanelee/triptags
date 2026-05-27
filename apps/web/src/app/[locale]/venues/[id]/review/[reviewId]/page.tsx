@@ -86,14 +86,14 @@ export default function EditReviewPage({
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-white rounded-lg shadow p-6">
           <h1 className="text-3xl font-bold mb-2">{tr("title")}</h1>
-          <p className="text-lg text-gray-600 mb-8">
+          <p className="text-3xl bg-primary-600 mb-8">
             {venue.data?.name ? venue.data.name[locale] : ""}
           </p>
 
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Overall Rating */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-lg font-medium text-gray-700 mb-2">
                 {tr("rating")} *
               </label>
               <div className="flex gap-2">

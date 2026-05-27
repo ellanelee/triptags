@@ -235,8 +235,10 @@ export default function VenueDetailPage({
                       <ReviewCard
                         review={review}
                         setSelectReview={setSelectReview}
+                        onEdit={handleEditReview}
+                        onDelete={handleDeleteReview}
                       />
-                      {selectReview?.reviewId === review.id && (
+                      {/* {selectReview?.reviewId === review.id && (
                         <div className="absolute left-1/2 top-5 z-20 w-28 -translate-x-1/2 rounded-xl border border-gray-200 flex flex-col my-4 bg-white shadow-lg">
                           <button
                             className="text-sm py-2 text-gray-800 hover:bg-gray-100"
@@ -251,7 +253,7 @@ export default function VenueDetailPage({
                             삭제
                           </button>
                         </div>
-                      )}
+                      )} */}
                     </div>
                   ))
                 )}
@@ -308,6 +310,7 @@ export default function VenueDetailPage({
                         className="text-primary-600 hover:underline"
                       >
                         {venue.data.venueDetail.websiteUrl}
+                        {tr("visitWebsite")}
                       </a>
                     </span>
                   ) : (
