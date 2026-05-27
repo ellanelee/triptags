@@ -307,7 +307,7 @@ export default function VenueDetailPage({
                         rel="noopener noreferrer"
                         className="text-primary-600 hover:underline"
                       >
-                        {tr("visitWebsite")}
+                        {venue.data.venueDetail.websiteUrl}
                       </a>
                     </span>
                   ) : (

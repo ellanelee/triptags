@@ -17,9 +17,7 @@ import { useAuthStore } from "@/store/auth-store"
 import { IKakaoPlaceSelected } from "@/types/maps/kakao"
 import { IVenueCreatePayload, SelectSearchType } from "@/types/types"
 import {
-  IVenueAdminUpdateInput,
   IVenueDetailPayload,
-  IVenueDuplicatedInput,
   IVenueDuplicatedResponse,
   Language,
   type IVenueCreate,
@@ -33,7 +31,8 @@ import { VenueDetailForm } from "@/components/venue/venueForms/VenueDetailForm"
 import { VenueBasicForm } from "@/components/venue/venueForms/VenueBasicForm"
 import { VenuePlaceForm } from "@/components/venue/venueForms/VenuePlaceForm"
 import { VenueSubmit } from "@/components/venue/venueForms/VenueSubmit"
-import DuplicateVenueModal from "@/components/venue/VenueDuplicateModal"
+import { DuplicateVenueModal } from "@/components/venue/VenueDuplicateModal"
+import { create } from "domain"
 
 export default function CreateVenuePage() {
   const router = useRouter()
@@ -53,6 +52,7 @@ export default function CreateVenuePage() {
     IVenueDuplicatedResponse[]
   >([])
   const [showDuplicatedModal, setShowDuplicatedModal] = useState(false)
+  const [duplicationCheck, setDuplicationCheck] = useState(false)
 
   //User Authority
   const canEditAll = true
@@ -60,6 +60,31 @@ export default function CreateVenuePage() {
   useEffect(() => {
     if (!isAuthenticated) router.replace("/venues")
   }, [isAuthenticated])
+
+  //Venue생성함수
+    const createVenue = async () => {
+    try {
+      const venuePayload: IVenueCreatePayload = {
+        ...venueData,
+        latitude: venueData.latitude ?? undefined,
+        longitude: venueData.longitude ?? undefined,
+        venueCategory: venueData.venueCategory ?? undefined,
+        venueImage: imageUrls,
+      }
+      const venueDetailsPayload: IVenueDetailPayload = {
+        ...venueDetail,
+        workHour: { [locale]: venueDetail.workHour ?? undefined },
+      }
+      //create venue
+      const response = await venueApi.createVenue(venuePayload)
+      await venueApi.createOrUpdateVenueDetail(response.id, venueDetailsPayload)
+      router.replace(`/venues/${response.id}`)
+    } catch (error) {
+      console.error(error)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   //카카오 지도객체에서 장소검색 및 선택
   const handleKaKaoPlaceSelected = (place: IKakaoPlaceSelected) => {
@@ -145,7 +170,6 @@ export default function CreateVenuePage() {
       //DB내 Venue를 대상으로 DuplicationCheck
       if (venueData.longitude === null || venueData.latitude === null) {
         console.log("No Coordination")
-        setLoading(false)
         return
       }
       const duplicatedList = await venueApi.getVenueDuplicated({
@@ -164,30 +188,13 @@ export default function CreateVenuePage() {
       if (duplicatedList.length > 0) {
         setShowDuplicatedModal(true)
         setDuplicatedVenue(duplicatedList)
+        setDuplicationCheck(true)
         return
       }
+      setDuplicationCheck(true)
+      await createVenue()
     } catch (e) {
       console.log(e)
-    } finally {
-    }
-    try {
-      const venuePayload: IVenueCreatePayload = {
-        ...venueData,
-        latitude: venueData.latitude ?? undefined,
-        longitude: venueData.longitude ?? undefined,
-        venueCategory: venueData.venueCategory ?? undefined,
-        venueImage: imageUrls,
-      }
-      const venueDetailsPayload: IVenueDetailPayload = {
-        ...venueDetail,
-        workHour: { [locale]: venueDetail.workHour ?? undefined },
-      }
-      //create venue
-      const response = await venueApi.createVenue(venuePayload)
-      await venueApi.createOrUpdateVenueDetail(response.id, venueDetailsPayload)
-      router.replace(`/venues/${response.id}`)
-    } catch (error) {
-      console.error(error)
     } finally {
       setLoading(false)
     }
@@ -260,6 +267,7 @@ export default function CreateVenuePage() {
               open={showDuplicatedModal}
               listDuplicated={duplicatedVenue}
               onClose={() => setShowDuplicatedModal(false)}
+              onCreate={createVenue}
             />
           </div>
         </div>
