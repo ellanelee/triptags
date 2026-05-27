@@ -168,7 +168,11 @@
     "venueImage": "이미지등록/수정",
     "registerImageUrl": "이미지 URL을 입력해주세요",
     "languageOption": "언어설정",
-    "languageComment": "( 최상단 메뉴에서 언어를 변경할수 있습니다 )"
+    "languageComment": "( 최상단 메뉴에서 언어를 변경할수 있습니다 )",
+    "venueDuplicatedNotice": "이미 등록된 유사한 장소가 있습니다",
+    "venueDuplicatedList": "Venue를 클릭하면 내용을 확인할수 있습니다.",
+    "venueEdit": "되돌아가기",
+    "venueRegister": "등록하기"
   },
   "VenuesPage": {
     "title": "장소 찾기",
@@ -280,7 +284,8 @@
       "verify": "인증하기",
       "verified": "✓ 위치 인증됨",
       "languageOption": "표시언어 설정",
-      "language": "현재 표시되는 언어"
+      "language": "현재 표시되는 언어",
+      "close": "닫기"
     },
     "categories": {
       "RESTAURANT": "레스토랑",

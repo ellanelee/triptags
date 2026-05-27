@@ -50,7 +50,7 @@ export function VenuePlaceForm<T extends IVenuePlaceData>({
   return (
     <>
       <div>
-        <label className="block text-xl font-medium text-gray-700 mb-2">
+        <label className="block text-lg font-medium text-gray-700 mb-2">
           {tr("searchPlace")}
         </label>
         <div className="flex gap-2 mb-3">
@@ -97,7 +97,7 @@ export function VenuePlaceForm<T extends IVenuePlaceData>({
       {/* map 구현*/}
       <div>
         <div className="flex justify-between items-center mb-2">
-          <label className="text-sm font-medium text-gray-700">
+          <label className="text-lg font-medium text-gray-700">
             {tr("selectOnMap")}
           </label>
           {venueData.latitude && venueData.longitude && (

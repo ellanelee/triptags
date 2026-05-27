@@ -138,9 +138,10 @@ export interface IVenueDuplicatedInput {
 
 export interface IVenueDuplicatedResponse {
   id: string
-  name: string
+  name: I18nText
+  venueCategory: VenueCategory
   country: string
   city: string
   district: string
-  details: string
+  detailedAddress: string
 }
