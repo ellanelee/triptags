@@ -25,6 +25,17 @@ import { ReviewUpdateDto } from './dtos/reviewupdate.dto';
 export class ReviewController {
   constructor(private reviewService: ReviewService) {}
 
+  //개별 Review검색
+  @Get(':venueId/review/:reviewId/edit')
+  async getReviewById(
+    @Param('venueId') venueId: string,
+    @Param('reviewId') reviewId: string,
+  ) {
+    const response = await this.reviewService.findReviewById(venueId, reviewId);
+    return createResponse(true, response);
+  }
+
+  //Venue의 Review검색
   @Get(':venueId')
   async getReviewByVenueId(
     @Param('venueId') venueId: string,
@@ -37,6 +48,7 @@ export class ReviewController {
     return createResponse(true, response);
   }
 
+  //특정 User의 Review검색
   @UseGuards(JwtAccessGuard)
   @Get()
   async getReviewByUser(@CurrentUser() user: User) {
@@ -60,7 +72,7 @@ export class ReviewController {
     return createResponse(true, targetVenue);
   }
 
-  //사용자의 review수정 (평가점수, 평가내용수정)
+  //review수정 (평가점수, 평가내용수정)
   @Patch(':reviewId')
   @UseGuards(JwtAccessGuard)
   async updateReview(
@@ -86,6 +98,7 @@ export class ReviewController {
     return createResponse(true, response);
   }
 
+  //Review삭제
   @Delete(':reviewId')
   @UseGuards(JwtAccessGuard)
   async deleteReview(

@@ -43,6 +43,28 @@ export class ReviewService {
   //   })
   //  }
 
+  //review 받아오기
+  async findReviewById(venueId: string, reviewId: string) {
+    const targetReview = this.prisma.client.review.findFirst({
+      where: { id: reviewId, deletedAt: null },
+      select: {
+        rating: true,
+        contents: true,
+        user: true,
+        reviewDetail: {
+          select: {
+            tasteRating: true,
+            serviceRating: true,
+            priceRating: true,
+            visitDate: true,
+            visitPurpose: true,
+          },
+        },
+      },
+    });
+    return targetReview;
+  }
+
   //venue별 review 받아오기
   async findReviewByVenueId(venueId: string, pageDto: ReviewPaginationDto) {
     const page = Number(pageDto.page) || 1;
