@@ -1,15 +1,40 @@
+"use client"
+import { useRouter } from "@/i18n/routing"
+import { reviewApi } from "@/lib/api/review.api"
 import { useAuthStore } from "@/store/auth-store"
 import { IReviewCardProps } from "@/types/interfaces/interface.props"
-import { useLocale } from "next-intl"
+import { useLocale, useTranslations } from "next-intl"
+import { useState } from "react"
 
 export function ReviewCard({
   review,
-  setSelectReview,
+  venueId,
+  userId,
+  userNickname,
+  onRefresh,
 }: IReviewCardProps) {
-
   const locale = useLocale()
-  const { user } = useAuthStore()
+  const router = useRouter()
+  const t = useTranslations("Common")
+  const [showEditOption, setShowEditOption] = useState(false)
 
+  console.log(review)
+  console.log("ReviewCard Start")
+  const handleEditReview = async () => {
+    if (!review || !venueId) return
+    router.replace(`/venues/${venueId}/review/${review.id}/edit`)
+  }
+  const handleDeleteReview = async () => {
+    if (!userId || !review.id) return
+    const reconfirm = window.confirm("리뷰를 삭제하시겠습니까?")
+    if (!reconfirm) return
+    try {
+      await reviewApi.deleteReview(review.id)
+      onRefresh()
+    } catch (error) {
+      console.error("삭제 실패", error)
+    }
+  }
   return (
     <div
       key={review.id}
@@ -40,17 +65,30 @@ export function ReviewCard({
           </p>
         </div>
         <div className="relative">
-          {review.userId === user?.id && (
+          {review.userId === userId && (
             <button
               onClick={() => {
-                setSelectReview({
-                  userId: user.id,
-                  reviewId: review.id,
-                })
+                setShowEditOption(true)
               }}
             >
               ...
             </button>
+          )}
+          {showEditOption && (
+            <div className="absolute left-1/2 top-5 z-20 w-28 -translate-x-1/2 rounded-xl border border-gray-200 flex flex-col my-4 bg-white shadow-lg">
+              <button
+                className="text-sm py-2 text-gray-800 hover:bg-gray-100"
+                onClick={handleEditReview}
+              >
+                {t("transaction.edit")}
+              </button>
+              <button
+                className="text-sm py-2 text-gray-800 hover:bg-gray-100"
+                onClick={handleDeleteReview}
+              >
+                {t("transaction.delete")}
+              </button>
+            </div>
           )}
         </div>
       </div>

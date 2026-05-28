@@ -1,33 +1,28 @@
 "use client"
-
-import { localeMap } from "@/lib/utils/format/dateLocales"
-import DatePicker from "react-datepicker"
+import LocalVerification from "@/components/common/local/LocalVerification"
 import { useRouter } from "@/i18n/routing"
 import { reviewApi } from "@/lib/api/review.api"
 import { venueApi } from "@/lib/api/venue.api"
 import { useAsync } from "@/lib/hooks/use.async"
+import { localeMap } from "@/lib/utils/format/dateLocales"
 import { useAuthStore } from "@/store/auth-store"
-import {
-  Language,
-  ReviewForm,
-  VisitPurpose,
-} from "@triptags/shared"
+import { IGetVenueBase } from "@/types/interfaces/interface.api"
+import type { Language, ReviewForm, VisitPurpose } from "@triptags/shared"
 import { useLocale, useTranslations } from "next-intl"
 import { useEffect, useState } from "react"
-import LocalVerification from "@/components/common/local/LocalVerification"
-import { IGetVenueBase } from "@/types/interfaces/interface.api"
+import DatePicker from "react-datepicker"
 
-export default function CreateReviewPage({
+export default function EditReviewPage({
   params,
 }: {
   params: {
     id: string
+    reviewId: string
   }
 }) {
   const tr = useTranslations("CreateReviewPage")
   const t = useTranslations("Common")
   const router = useRouter()
-  const venueId = params.id
   const locale = useLocale() as Language
   const venue = useAsync<IGetVenueBase>(null)
   const { isAuthenticated, user } = useAuthStore()
@@ -38,7 +33,7 @@ export default function CreateReviewPage({
     rating: 5,
     contents: { [locale]: "" },
     authorRole: "USER",
-    localVerificationId: null,
+    localVerificationId: localVerificationId,
     reviewDetail: {
       tasteRating: 5,
       serviceRating: 5,
@@ -48,6 +43,8 @@ export default function CreateReviewPage({
     },
   })
   const [loading, setLoading] = useState(false)
+  const venueId = params.id
+  const reviewId = params.reviewId
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -59,7 +56,7 @@ export default function CreateReviewPage({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!venue.data?.id || !user?.role) {
-      alert("informations are not loaded")
+      alert("정보가 로드되지 않았습니다.")
       return
     }
     const userRole = user?.role
@@ -84,19 +81,19 @@ export default function CreateReviewPage({
       setLoading(false)
     }
   }
-
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-white rounded-lg shadow p-6">
-          <h1 className="text-2xl font-bold mb-2">{tr("title")}</h1>
+          <h1 className="text-3xl font-bold mb-2">{tr("title")}</h1>
           <p className="text-xl text-primary-600 font-bold mb-8">
             {venue.data?.name ? venue.data.name[locale] : ""}
           </p>
+
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Overall Rating */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-lg font-medium text-gray-700 mb-2">
                 {tr("rating")} *
               </label>
               <div className="flex gap-2">
