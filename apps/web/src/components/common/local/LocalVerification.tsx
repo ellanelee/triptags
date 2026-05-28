@@ -11,7 +11,7 @@ export default function LocalVerification({
   localVerificationId,
   setLocalVerificationId,
 }: ILocalVerificationProps) {
-  const tr = useTranslations("WriteReviewPage")
+  const tr = useTranslations("CreateReviewPage")
   const t = useTranslations("Common")
   const localVerification = useAsync<ILocalVerification>(null)
 

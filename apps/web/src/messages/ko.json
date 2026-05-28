@@ -204,12 +204,6 @@
     "localRating": "로컬 평점",
     "travelerRating": "여행자 평점",
     "about": "소개",
-    "reviews": "리뷰",
-    "writeReview": "리뷰 작성",
-    "allReviews": "전체",
-    "localReviews": "로컬",
-    "travelerReviews": "여행자",
-    "noReviews": "아직 리뷰가 없습니다.",
     "information": "세부 정보",
     "phone": "전화",
     "noPhone": "등록된 전화번호가 없습니다",
@@ -221,13 +215,15 @@
     "visitWebsite": "웹사이트 방문",
     "noVenueImage": "아직 등록된 이미지가 없습니다",
     "venueImageRegister": "이미지 등록하기",
-    "unableToRegisterImage": "장소의 등록자만 이미지를 편집할수 있습니다"
+    "unableToRegisterImage": "장소의 등록자만 이미지를 편집할수 있습니다",
+    "checkwithKaKaoMap": "카카오맵에서 보기",
+    "checkwithGoogleMap": "구글맵에서 보기"
   },
   "UpdateVenuePage": {
     "title": "장소 정보수정",
     "updateVenuePosition": "위치 수정"
   },
-  "WriteReviewPage": {
+  "CreateReviewPage": {
     "title": "리뷰 작성",
     "rating": "전체 평점",
     "content": "리뷰 내용",
@@ -255,6 +251,14 @@
       "friends": "친구",
       "business": "비즈니스"
     }
+  },
+  "ReviewList": {
+    "reviews": "리뷰",
+    "writeReview": "리뷰 작성",
+    "allReviews": "전체",
+    "localReviews": "로컬",
+    "travelerReviews": "여행자",
+    "noReviews": "아직 리뷰가 없습니다."
   },
   "Common": {
     "languages": {

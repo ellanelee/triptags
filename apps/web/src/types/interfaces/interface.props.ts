@@ -38,7 +38,11 @@ export interface ISelectReview {
 
 export interface IReviewCardProps {
   review: IGetReviewByVenueAll
-  setSelectReview: React.Dispatch<React.SetStateAction<ISelectReview>>
-  onEdit: () => void
-  onDelete: () => void
+  venueId: string
+  userId: string
+  userNickname: string
+  onRefresh: () => void
+  // setSelectReview: React.Dispatch<React.SetStateAction<ISelectReview>>
+  // onEdit: () => void
+  // onDelete: () => void
 }
