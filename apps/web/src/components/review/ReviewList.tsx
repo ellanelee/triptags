@@ -6,16 +6,17 @@ import { useAuthStore } from "@/store/auth-store"
 import { IGetReviewByVenueAllResponse } from "@/types/interfaces/interface.api"
 import { ReviewFilterType } from "@triptags/shared"
 import { useTranslations } from "next-intl"
-import { useEffect, useState, useTransition } from "react"
+import { useEffect, useState } from "react"
 import { ReviewCard } from "./ReveiwCard"
 
-export function ReviewList({ venueId }: { venueId: string}) {
+export function ReviewList({ venueId }: { venueId: string }) {
   const reviews = useAsync<IGetReviewByVenueAllResponse>(null)
   const tr = useTranslations("ReviewList")
   const router = useRouter()
   const [reviewFilter, setReviewFilter] = useState<ReviewFilterType>("ALL")
   const reviewPageInfo = { groupSize: 10, items: 9 }
   const { isAuthenticated, user } = useAuthStore()
+  const reviewList = reviews.data?.items ?? []
 
   //function fetch review
   const fetchReviews = () => {
@@ -84,7 +85,7 @@ export function ReviewList({ venueId }: { venueId: string}) {
 
       {/* Reviews List */}
       <div className="space-y-6">
-        {reviews.data?.items.length === 0 ? (
+        {reviewList.length === 0 ? (
           <p className="text-center text-gray-600 py-8">{tr("noReviews")}</p>
         ) : (
           reviews.data?.items.map((review) => (
