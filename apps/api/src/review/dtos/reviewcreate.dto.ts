@@ -22,8 +22,7 @@ export class ReviewCreateDto implements IReviewCreateInput {
 
   @ApiProperty({
     example: { ko: '음식이 맛있지만 줄을 많이 서야해요.' },
-    description:
-      '장소에 대한 선호도 평가, 언어는 ko/en/ja/zh/es/fr/de중에 선택',
+    description: '장소에 대한 설명, 언어는 ko/en/ja/zh/es/fr/de중에 선택',
   })
   @IsNotEmpty()
   contents!: I18nText;

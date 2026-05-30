@@ -1,6 +1,7 @@
 import {
   IReviewCreateWithDetailInput,
   IReviewPaginationInput,
+  IReviewUpdate,
 } from "@triptags/shared"
 import apiClient from "./api.client"
 
@@ -17,7 +18,7 @@ export const reviewApi = {
     return response.data.data ?? ""
   },
 
-  //VenueId기준 Review조회 (페이지)
+  //VenueId기준 Review조회 (페이지 Dto기준)
   getReviewByVenueId: async (
     venueId: string,
     pageDto: IReviewPaginationInput,
@@ -35,8 +36,10 @@ export const reviewApi = {
   },
 
   //개별 Review조회 (페이지)
-  getReviewById: async (reviewId: string) => {
-    const response = await apiClient.get(`/reviews/${venueId}`)
+  getReviewById: async (reviewId: string, venueId: string) => {
+    const response = await apiClient.get(
+      `/reviews/${venueId}/review/${reviewId}/edit`,
+    )
     if (!response.data.success) {
       throw new Error(
         response.data.message ?? response.data.error ?? "조회 실패",
@@ -63,5 +66,10 @@ export const reviewApi = {
 
   deleteReview: async (reviewId: string) => {
     await apiClient.delete(`/reviews/${reviewId}`)
+  },
+
+  //Review Update
+  updateReview: async (reviewId: string, updateDto: IReviewUpdate) => {
+    await apiClient.patch(`/reviews/${reviewId}`, updateDto)
   },
 }

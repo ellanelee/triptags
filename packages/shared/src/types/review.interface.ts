@@ -24,6 +24,14 @@ export interface ReviewDetailForm {
   visitPurpose: VisitPurpose
 }
 
+export interface ReviewResponse {
+  rating: number
+  contents: I18nText
+  userId: string
+  localVerificationId?: string | null
+  reviewDetail: ReviewDetailForm
+}
+
 export interface ILocalVerification {
   id: string
   userId: string
@@ -58,4 +66,8 @@ export interface IReviewDetailCreateInput {
 
 export interface IReviewCreateWithDetailInput extends IReviewCreateInput {
   reviewDetail: IReviewDetailCreateInput
+}
+
+export interface IReviewUpdate {
+  description: I18nText
 }
