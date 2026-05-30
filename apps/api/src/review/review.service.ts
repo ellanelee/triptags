@@ -50,7 +50,7 @@ export class ReviewService {
       select: {
         rating: true,
         contents: true,
-        user: true,
+        userId: true,
         reviewDetail: {
           select: {
             tasteRating: true,
@@ -158,44 +158,32 @@ export class ReviewService {
     return review;
   }
 
-  //Update
+  //Update Review
   async UpdateReview(reviewId: string, updateDto: ReviewUpdateDto) {
     const targetReview = await this.prisma.client.review.findFirst({
       where: { id: reviewId, deletedAt: null },
-      select: { rating: true, contents: true, venueId: true },
+      select: { contents: true },
     });
     if (!targetReview)
       throw new NotFoundException('Review가 존재하지 않습니다');
-
-    if (updateDto.rating) {
-      await this.prisma.client.review.update({
-        where: { id: reviewId },
-        data: { rating: updateDto.rating },
-      });
-      //review rating변경에 대한 재집계
-      this.event.emit('reviewrating.updated', targetReview.venueId);
-    }
-
-    if (updateDto.contents) {
-      const existingContents = (
-        typeof targetReview.contents === 'string'
-          ? JSON.parse(targetReview.contents) // 문자열이면 객체로 변환
-          : targetReview.contents
-      ) as Record<Language, string>;
-      await this.prisma.client.review.update({
-        where: { id: reviewId },
-        data: {
-          contents: {
-            ...existingContents,
-            ...updateDto.contents,
-          },
+    const existingContents = (targetReview.contents ?? {}) as Record<
+      Language,
+      string
+    >;
+    await this.prisma.client.review.update({
+      where: { id: reviewId },
+      data: {
+        contents: {
+          ...existingContents,
+          ...updateDto.contents,
         },
-      });
-    }
+      },
+    });
     return await this.prisma.client.review.findFirst({
       where: { id: reviewId, deletedAt: null },
     });
   }
+
   //review에 대해 "도움이 됐어요"표시 (토글)
   async createHelpful(reviewId: string, userId: string) {
     const targetHelpful = await this.prisma.client.reviewHelpful.findUnique({

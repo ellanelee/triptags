@@ -7,7 +7,7 @@ import { useAsync } from "@/lib/hooks/use.async"
 import { localeMap } from "@/lib/utils/format/dateLocales"
 import { useAuthStore } from "@/store/auth-store"
 import { IGetVenueBase } from "@/types/interfaces/interface.api"
-import type { Language, ReviewForm, VisitPurpose } from "@triptags/shared"
+import type { Language, ReviewResponse, VisitPurpose } from "@triptags/shared"
 import { useLocale, useTranslations } from "next-intl"
 import { useEffect, useState } from "react"
 import DatePicker from "react-datepicker"
@@ -24,16 +24,13 @@ export default function EditReviewPage({
   const t = useTranslations("Common")
   const router = useRouter()
   const locale = useLocale() as Language
-  const venue = useAsync<IGetVenueBase>(null)
+  const venue = useAsync<IGetVenueBase|null>(null)
   const { isAuthenticated, user } = useAuthStore()
-  const [localVerificationId, setLocalVerificationId] = useState<string | null>(
-    null,
-  )
-  const [formData, setFormData] = useState<ReviewForm>({
+  const review = useAsync<ReviewResponse|null>(null)
+  const [formData, setFormData] = useState<ReviewResponse>({
     rating: 5,
     contents: { [locale]: "" },
-    authorRole: "USER",
-    localVerificationId: localVerificationId,
+    userId: "",
     reviewDetail: {
       tasteRating: 5,
       serviceRating: 5,
@@ -45,12 +42,16 @@ export default function EditReviewPage({
   const [loading, setLoading] = useState(false)
   const venueId = params.id
   const reviewId = params.reviewId
-
+  const isCreator = !!user?.id && user.id === review.data?.userId
   useEffect(() => {
-    if (!isAuthenticated) {
+    if (!isAuthenticated || !isCreator) {
       router.back()
     }
-    venue.run(() => venueApi.getVenueById(venueId))
+      venue.run(() => venueApi.getVenueById(venueId))
+  }, [isAuthenticated])
+
+   useEffect(() => {
+    review.run(()=> reviewApi.getReviewById(venueId, reviewId))
   }, [isAuthenticated])
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -59,20 +60,12 @@ export default function EditReviewPage({
       alert("정보가 로드되지 않았습니다.")
       return
     }
-    const userRole = user?.role
-    const submitData = {
-      ...formData,
-      authorRole: userRole,
-      localVerificationId: localVerificationId ?? undefined,
-      reviewDetail: {
-        ...formData.reviewDetail,
-        visitDate: formData.reviewDetail.visitDate ?? undefined,
-      },
-    }
+    
+    const { contents, ... rest} = formData
     setLoading(true)
     try {
-      console.log(submitData)
-      const response = await reviewApi.createReview(venue.data?.id, submitData)
+      console.log(contents)
+      const response = await reviewApi.updateReview(venue.data?.id, contents)
       console.log(response)
       router.push(`/venues/${params.id}`)
     } catch (error) {
@@ -286,12 +279,6 @@ export default function EditReviewPage({
                 </select>
               </div>
             </div>
-            {/* Location Verification */}
-            <LocalVerification
-              venueId={venueId}
-              localVerificationId={localVerificationId}
-              setLocalVerificationId={setLocalVerificationId}
-            />
             {/* Submit Buttons */}
             <div className="flex gap-4 pt-4">
               <button
