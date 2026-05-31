@@ -3,6 +3,7 @@ import type {
   IVenueCreate,
   IVenueDetailInput,
   IVenueSearchFilters,
+  ReviewResponse,
 } from "@triptags/shared"
 
 export const INITIAL_VENUE_DATA: IVenueCreate = {
@@ -17,7 +18,7 @@ export const INITIAL_VENUE_DATA: IVenueCreate = {
   district: "",
   details: "",
   googlePlaceId: "",
-  venueImage: []
+  venueImage: [],
 }
 
 export const INITIAL_VENUE_DETAIL: IVenueDetailInput = {
@@ -76,4 +77,17 @@ export const INITIAL_VENUE_UPDATE: IVenueAdminUpdateInput = {
   priceRange: undefined,
   websiteUrl: undefined,
   venueImage: [],
+}
+
+export const INITIAL_REVIEW_DATA: ReviewResponse = {
+  rating: 5,
+  contents: { ko: "" },
+  userId: "",
+  reviewDetail: {
+    tasteRating: 5,
+    serviceRating: 5,
+    priceRating: 5,
+    visitDate: null,
+    visitPurpose: "",
+  },
 }

@@ -129,7 +129,7 @@ export default function VenueDetailPage({
             )}
 
             {/* Reviews Section */}
-            <ReviewList venueId={venue.data?.id ?? ""} />
+            {venue.data?.id && <ReviewList venueId={venue.data?.id ?? ""} />}
           </div>
 
           {/* Sidebar */}

@@ -4,6 +4,7 @@ import { useRouter } from "@/i18n/routing"
 import { reviewApi } from "@/lib/api/review.api"
 import { venueApi } from "@/lib/api/venue.api"
 import { useAsync } from "@/lib/hooks/use.async"
+import { INITIAL_REVIEW_DATA } from "@/lib/utils/common/const"
 import { localeMap } from "@/lib/utils/format/dateLocales"
 import { useAuthStore } from "@/store/auth-store"
 import { IGetVenueBase } from "@/types/interfaces/interface.api"
@@ -24,35 +25,45 @@ export default function EditReviewPage({
   const t = useTranslations("Common")
   const router = useRouter()
   const locale = useLocale() as Language
-  const venue = useAsync<IGetVenueBase|null>(null)
+  const venue = useAsync<IGetVenueBase | null>(null)
   const { isAuthenticated, user } = useAuthStore()
-  const review = useAsync<ReviewResponse|null>(null)
-  const [formData, setFormData] = useState<ReviewResponse>({
-    rating: 5,
-    contents: { [locale]: "" },
-    userId: "",
-    reviewDetail: {
-      tasteRating: 5,
-      serviceRating: 5,
-      priceRating: 5,
-      visitDate: null,
-      visitPurpose: "",
-    },
-  })
+  const review = useAsync<ReviewResponse | null>(null)
+  const [formData, setFormData] = useState<ReviewResponse>(INITIAL_REVIEW_DATA)
   const [loading, setLoading] = useState(false)
   const venueId = params.id
   const reviewId = params.reviewId
-  const isCreator = !!user?.id && user.id === review.data?.userId
+  const isCreator =
+    !!user?.id && !!review.data && user.id === review.data?.userId
+  const isAdmin = user?.role === "ADMIN"
+  const canEditDescription = isAdmin || isCreator
+
+  console.log(isCreator, isAdmin, canEditDescription)
   useEffect(() => {
-    if (!isAuthenticated || !isCreator) {
+    if (!isAuthenticated) {
       router.back()
     }
-      venue.run(() => venueApi.getVenueById(venueId))
+    review.run(() => reviewApi.getReviewById(reviewId))
   }, [isAuthenticated])
 
-   useEffect(() => {
-    review.run(()=> reviewApi.getReviewById(venueId, reviewId))
-  }, [isAuthenticated])
+  useEffect(() => {
+    if (!review.data) return
+    if (!isCreator) {
+      router.back()
+    }
+    setFormData({
+      rating: review.data.rating,
+      contents: review.data.contents,
+      userId: review.data.userId,
+      reviewDetail: {
+        tasteRating: review.data.reviewDetail.tasteRating,
+        serviceRating: review.data.reviewDetail.serviceRating,
+        priceRating: review.data.reviewDetail.priceRating,
+        visitDate: review.data.reviewDetail.visitDate,
+        visitPurpose: review.data.reviewDetail.visitPurpose,
+      },
+    })
+    venue.run(() => venueApi.getVenueById(venueId))
+  }, [review.data])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -60,8 +71,8 @@ export default function EditReviewPage({
       alert("정보가 로드되지 않았습니다.")
       return
     }
-    
-    const { contents, ... rest} = formData
+
+    const { contents, ...rest } = formData
     setLoading(true)
     try {
       console.log(contents)
@@ -94,6 +105,8 @@ export default function EditReviewPage({
                   <button
                     key={star}
                     type="button"
+                    disabled={!isAdmin}
+                    value={formData.rating}
                     onClick={() => setFormData({ ...formData, rating: star })}
                     className="text-3xl focus:outline-none"
                   >
@@ -121,6 +134,7 @@ export default function EditReviewPage({
               </label>
               <textarea
                 required
+                disabled={!canEditDescription}
                 rows={6}
                 className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-primary-500 focus:border-primary-500"
                 placeholder={tr("contentPlaceholder")}
@@ -151,6 +165,7 @@ export default function EditReviewPage({
                   <select
                     className="w-full border border-gray-300 rounded-md px-3 py-2"
                     value={formData.reviewDetail.tasteRating}
+                    disabled={!isAdmin}
                     onChange={(e) =>
                       setFormData((prev) => ({
                         ...prev,
@@ -178,6 +193,7 @@ export default function EditReviewPage({
                   <select
                     className="w-full border border-gray-300 rounded-md px-3 py-2"
                     value={formData.reviewDetail.serviceRating}
+                    disabled={!isAdmin}
                     onChange={(e) =>
                       setFormData((prev) => ({
                         ...prev,
@@ -204,6 +220,7 @@ export default function EditReviewPage({
                   <select
                     className="w-full border border-gray-300 rounded-md px-3 py-2"
                     value={formData.reviewDetail.priceRating}
+                    disabled={!isAdmin}
                     onChange={(e) =>
                       setFormData((prev) => ({
                         ...prev,
@@ -234,6 +251,7 @@ export default function EditReviewPage({
                   wrapperClassName="w-full"
                   className="w-full border border-gray-300 rounded-md px-3 py-2"
                   locale={localeMap[locale] || localeMap.en}
+                  disabled={!isAdmin}
                   selected={
                     formData.reviewDetail.visitDate
                       ? new Date(formData.reviewDetail.visitDate)
@@ -260,6 +278,7 @@ export default function EditReviewPage({
                 <select
                   className="w-full border border-gray-300 rounded-md px-3 py-2"
                   value={formData.reviewDetail.visitPurpose}
+                  disabled={!isAdmin}
                   onChange={(e) =>
                     setFormData((prev) => ({
                       ...prev,
@@ -293,9 +312,7 @@ export default function EditReviewPage({
                 disabled={loading}
                 className="flex-1 px-6 py-3 bg-primary-600 text-white rounded-md hover:bg-primary-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {loading
-                  ? t("transaction.submitting")
-                  : t("transaction.submit")}
+                {loading ? t("transaction.editting") : t("transaction.change")}
               </button>
             </div>
           </form>
