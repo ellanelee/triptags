@@ -26,12 +26,9 @@ export class ReviewController {
   constructor(private reviewService: ReviewService) {}
 
   //개별 Review검색
-  @Get(':venueId/review/:reviewId/edit')
-  async getReviewById(
-    @Param('venueId') venueId: string,
-    @Param('reviewId') reviewId: string,
-  ) {
-    const response = await this.reviewService.findReviewById(venueId, reviewId);
+  @Get('/review/:reviewId')
+  async getReviewById(@Param('reviewId') reviewId: string) {
+    const response = await this.reviewService.findReviewById(reviewId);
     return createResponse(true, response);
   }
 

@@ -44,7 +44,7 @@ export class ReviewService {
   //  }
 
   //review 받아오기
-  async findReviewById(venueId: string, reviewId: string) {
+  async findReviewById(reviewId: string) {
     const targetReview = this.prisma.client.review.findFirst({
       where: { id: reviewId, deletedAt: null },
       select: {
