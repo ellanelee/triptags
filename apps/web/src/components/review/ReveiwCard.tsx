@@ -1,7 +1,6 @@
 "use client"
 import { useRouter } from "@/i18n/routing"
 import { reviewApi } from "@/lib/api/review.api"
-import { useAuthStore } from "@/store/auth-store"
 import { IReviewCardProps } from "@/types/interfaces/interface.props"
 import { useLocale, useTranslations } from "next-intl"
 import { useState } from "react"
@@ -10,7 +9,6 @@ export function ReviewCard({
   review,
   venueId,
   userId,
-  userNickname,
   onRefresh,
 }: IReviewCardProps) {
   const locale = useLocale()
@@ -18,8 +16,6 @@ export function ReviewCard({
   const t = useTranslations("Common")
   const [showEditOption, setShowEditOption] = useState(false)
 
-  console.log(review)
-  console.log("ReviewCard Start")
   const handleEditReview = async () => {
     if (!review || !venueId) return
     router.replace(`/venues/${venueId}/review/${review.id}/edit`)

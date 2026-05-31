@@ -20,6 +20,7 @@ export function ReviewList({ venueId }: { venueId: string }) {
 
   //function fetch review
   const fetchReviews = () => {
+    if (!venueId) return
     reviews.run(() =>
       reviewApi.getReviewByVenueId(venueId, {
         page: 1,
