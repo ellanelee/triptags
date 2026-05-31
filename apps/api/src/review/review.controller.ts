@@ -25,15 +25,8 @@ import { ReviewUpdateDto } from './dtos/reviewupdate.dto';
 export class ReviewController {
   constructor(private reviewService: ReviewService) {}
 
-  //개별 Review검색
-  @Get('/review/:reviewId')
-  async getReviewById(@Param('reviewId') reviewId: string) {
-    const response = await this.reviewService.findReviewById(reviewId);
-    return createResponse(true, response);
-  }
-
   //Venue의 Review검색
-  @Get(':venueId')
+  @Get('/venue/:venueId')
   async getReviewByVenueId(
     @Param('venueId') venueId: string,
     @Query() paginationDto: ReviewPaginationDto,
@@ -42,6 +35,13 @@ export class ReviewController {
       venueId,
       paginationDto,
     );
+    return createResponse(true, response);
+  }
+
+  //개별 Review검색
+  @Get(':reviewId')
+  async getReviewById(@Param('reviewId') reviewId: string) {
+    const response = await this.reviewService.findReviewById(reviewId);
     return createResponse(true, response);
   }
 

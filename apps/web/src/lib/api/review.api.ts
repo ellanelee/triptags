@@ -23,7 +23,7 @@ export const reviewApi = {
     venueId: string,
     pageDto: IReviewPaginationInput,
   ) => {
-    const response = await apiClient.get(`/reviews/${venueId}`, {
+    const response = await apiClient.get(`/reviews/venue/${venueId}`, {
       params: pageDto,
     })
     if (!response.data.success) {
@@ -36,10 +36,8 @@ export const reviewApi = {
   },
 
   //개별 Review조회 (페이지)
-  getReviewById: async (reviewId: string, venueId: string) => {
-    const response = await apiClient.get(
-      `/reviews/${venueId}/review/${reviewId}/edit`,
-    )
+  getReviewById: async (reviewId: string) => {
+    const response = await apiClient.get(`/reviews/${reviewId}`)
     if (!response.data.success) {
       throw new Error(
         response.data.message ?? response.data.error ?? "조회 실패",
