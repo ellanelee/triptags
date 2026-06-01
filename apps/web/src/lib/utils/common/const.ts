@@ -1,9 +1,9 @@
 import type {
+  IReviewResponse,
   IVenueAdminUpdateInput,
   IVenueCreate,
   IVenueDetailInput,
   IVenueSearchFilters,
-  ReviewResponse,
 } from "@triptags/shared"
 
 export const INITIAL_VENUE_DATA: IVenueCreate = {
@@ -79,7 +79,7 @@ export const INITIAL_VENUE_UPDATE: IVenueAdminUpdateInput = {
   venueImage: [],
 }
 
-export const INITIAL_REVIEW_DATA: ReviewResponse = {
+export const INITIAL_REVIEW_DATA: IReviewResponse = {
   rating: 5,
   contents: { ko: "" },
   userId: "",

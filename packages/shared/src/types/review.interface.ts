@@ -24,7 +24,7 @@ export interface ReviewDetailForm {
   visitPurpose: VisitPurpose
 }
 
-export interface ReviewResponse {
+export interface IReviewResponse {
   rating: number
   contents: I18nText
   userId: string
@@ -52,7 +52,6 @@ export interface IReviewPaginationInput {
 export interface IReviewCreateInput {
   rating: number
   contents: I18nText
-  authorRole: UserRole
   localVerificationId?: string
 }
 
@@ -68,6 +67,8 @@ export interface IReviewCreateWithDetailInput extends IReviewCreateInput {
   reviewDetail: IReviewDetailCreateInput
 }
 
-export interface IReviewUpdate {
-  contents : I18nText
+export interface IReviewUpdateInput {
+  rating: number
+  contents: I18nText
+  reviewDetail: ReviewDetailForm
 }

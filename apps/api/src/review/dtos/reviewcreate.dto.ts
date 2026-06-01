@@ -1,5 +1,5 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { I18nText, IReviewCreateInput, UserRole } from '@triptags/shared';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { I18nText, IReviewCreateInput } from '@triptags/shared';
 import {
   IsInt,
   IsNotEmpty,
@@ -27,14 +27,7 @@ export class ReviewCreateDto implements IReviewCreateInput {
   @IsNotEmpty()
   contents!: I18nText;
 
-  @ApiProperty({
-    example: ['USER', 'USER_LOCAL', 'BUSINESS', 'ADMIN'],
-    description: 'USER, USER_LOCAL , BUSINESS , ADMIN 중 택1',
-  })
-  @IsNotEmpty()
-  authorRole!: UserRole;
-
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: '로컬 인증이 완료된 경우 연결할 인증 ID',
     example: 'a3b2c1d4-e5f6-7890-abcd-ef1234567890',
   })

@@ -1,13 +1,20 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { I18nText } from '@triptags/shared';
-import { IsNotEmpty } from 'class-validator';
+import { IReviewCreateWithDetailInput } from '@triptags/shared';
+import { IsNotEmpty, ValidateNested } from 'class-validator';
+import { ReviewCreateDto } from './reviewcreate.dto';
+import { ReviewDetailCreateDto } from '@/reviewDetail/dtos/reviewdetailcreate.dto';
+import { Type } from 'class-transformer';
 
-export class ReviewUpdateDto {
+export class ReviewUpdateDto
+  extends ReviewCreateDto
+  implements IReviewCreateWithDetailInput
+{
   @ApiProperty({
-    example: { en: 'Nice, But need waiting more than 1hour.' },
-    description:
-      '장소에 대한 선호도 평가, 언어는 ko/en/ja/zh/es/fr/de중에 선택',
+    type: ReviewDetailCreateDto,
+    description: '리뷰 상세정보 추가',
   })
   @IsNotEmpty()
-  contents!: I18nText;
+  @ValidateNested()
+  @Type(() => ReviewDetailCreateDto)
+  reviewDetail!: ReviewDetailCreateDto;
 }
