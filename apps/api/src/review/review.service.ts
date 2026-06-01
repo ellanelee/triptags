@@ -159,13 +159,19 @@ export class ReviewService {
   }
 
   //Update Review
-  async UpdateReview(reviewId: string, updateDto: ReviewUpdateDto) {
+  async UpdateDescription(
+    userId: string,
+    reviewId: string,
+    updateDto: ReviewUpdateDto,
+  ) {
     const targetReview = await this.prisma.client.review.findFirst({
       where: { id: reviewId, deletedAt: null },
-      select: { contents: true },
+      select: { userId: true, contents: true },
     });
     if (!targetReview)
       throw new NotFoundException('Review가 존재하지 않습니다');
+    if (userId !== targetReview.userId)
+      throw new ForbiddenException('Review수정 권한이 없습니다');
     const existingContents = (targetReview.contents ?? {}) as Record<
       Language,
       string

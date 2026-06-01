@@ -69,15 +69,16 @@ export class ReviewController {
     return createResponse(true, targetVenue);
   }
 
-  //review수정 (평가점수, 평가내용수정)
+  //review수정 (Description 수정)
   @Patch(':reviewId')
   @UseGuards(JwtAccessGuard)
-  async updateReview(
+  async updateReviewByCreator(
     @CurrentUser() user: User,
     @Param('reviewId') reviewId: string,
     @Body() reviewUpdateDto: ReviewUpdateDto,
   ) {
-    const response = await this.reviewService.UpdateReview(
+    const response = await this.reviewService.UpdateDescription(
+      user.id,
       reviewId,
       reviewUpdateDto,
     );
