@@ -1,7 +1,7 @@
 import {
   IReviewCreateWithDetailInput,
   IReviewPaginationInput,
-  IReviewUpdate,
+  IReviewUpdateInput,
 } from "@triptags/shared"
 import apiClient from "./api.client"
 
@@ -67,7 +67,7 @@ export const reviewApi = {
   },
 
   //Review Update
-  updateReview: async (reviewId: string, updateDto: IReviewUpdate) => {
+  updateReview: async (reviewId: string, updateDto: IReviewUpdateInput) => {
     await apiClient.patch(`/reviews/${reviewId}`, updateDto)
   },
 }

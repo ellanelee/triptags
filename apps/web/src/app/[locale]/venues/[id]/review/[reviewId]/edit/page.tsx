@@ -1,5 +1,4 @@
 "use client"
-import LocalVerification from "@/components/common/local/LocalVerification"
 import { useRouter } from "@/i18n/routing"
 import { reviewApi } from "@/lib/api/review.api"
 import { venueApi } from "@/lib/api/venue.api"
@@ -8,7 +7,12 @@ import { INITIAL_REVIEW_DATA } from "@/lib/utils/common/const"
 import { localeMap } from "@/lib/utils/format/dateLocales"
 import { useAuthStore } from "@/store/auth-store"
 import { IGetVenueBase } from "@/types/interfaces/interface.api"
-import type { Language, ReviewResponse, VisitPurpose } from "@triptags/shared"
+import type {
+  IReviewResponse,
+  IReviewUpdateInput,
+  Language,
+  VisitPurpose,
+} from "@triptags/shared"
 import { useLocale, useTranslations } from "next-intl"
 import { useEffect, useState } from "react"
 import DatePicker from "react-datepicker"
@@ -27,8 +31,9 @@ export default function EditReviewPage({
   const locale = useLocale() as Language
   const venue = useAsync<IGetVenueBase | null>(null)
   const { isAuthenticated, user } = useAuthStore()
-  const review = useAsync<ReviewResponse | null>(null)
-  const [formData, setFormData] = useState<ReviewResponse>(INITIAL_REVIEW_DATA)
+  const review = useAsync<IReviewResponse | null>(null)
+  const [formData, setFormData] =
+    useState<IReviewUpdateInput>(INITIAL_REVIEW_DATA)
   const [loading, setLoading] = useState(false)
   const venueId = params.id
   const reviewId = params.reviewId
@@ -53,7 +58,6 @@ export default function EditReviewPage({
     setFormData({
       rating: review.data.rating,
       contents: review.data.contents,
-      userId: review.data.userId,
       reviewDetail: {
         tasteRating: review.data.reviewDetail.tasteRating,
         serviceRating: review.data.reviewDetail.serviceRating,
@@ -72,13 +76,18 @@ export default function EditReviewPage({
       alert("관련 정보가 로드되지 않았습니다.")
       return
     }
+    const submitData = {
+      ...formData,
+      reviewDetail: {
+        ...formData.reviewDetail,
+        visitDate: formData.reviewDetail.visitDate ?? null,
+      },
+    }
     setLoading(true)
     try {
       console.log(formData.contents)
       console.log(venueId, reviewId)
-      const response = await reviewApi.updateReview(reviewId, {
-        contents: formData.contents,
-      })
+      const response = await reviewApi.updateReview(reviewId, submitData)
       console.log(response)
       router.push(`/venues/${params.id}`)
     } catch (error) {
