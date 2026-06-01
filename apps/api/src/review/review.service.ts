@@ -4,9 +4,8 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from '@/prisma/prisma.service';
-import { Language } from '@triptags/shared';
 import { IUserPoint } from '@/common/type/types';
-import { PointType, Prisma } from '@prisma/client';
+import { PointType, Prisma, UserRole } from '@prisma/client';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { ReviewPaginationDto } from './dtos/reviewpagination.dto';
 import { ReviewCreateWithDetailDto } from './dtos/reviewcreatewithdetail.dto';
@@ -35,13 +34,6 @@ export class ReviewService {
       orderBy: { createdAt: 'desc' },
     });
   }
-
-  //검색 조건에 의해 review받아오기
-  //  async findReviewByInput(pageDto: VenuePaginationDto){
-  //   return  return await this.prisma.client.review.findMany({
-
-  //   })
-  //  }
 
   //review 받아오기
   async findReviewById(reviewId: string) {
@@ -131,7 +123,6 @@ export class ReviewService {
       data: {
         rating: createDto.rating,
         contents: createDto.contents,
-        authorRole: createDto.authorRole,
         localVerificationId: createDto.localVerificationId,
         venueId: venueId,
         userId: userId,
@@ -159,8 +150,9 @@ export class ReviewService {
   }
 
   //Update Review
-  async UpdateDescription(
+  async UpdateReview(
     userId: string,
+    userRole: UserRole,
     reviewId: string,
     updateDto: ReviewUpdateDto,
   ) {
@@ -170,21 +162,44 @@ export class ReviewService {
     });
     if (!targetReview)
       throw new NotFoundException('Review가 존재하지 않습니다');
-    if (userId !== targetReview.userId)
+    const isCreator = userId !== targetReview.userId;
+    const isAdmin = userRole === 'ADMIN';
+    if (!isCreator && !isAdmin)
       throw new ForbiddenException('Review수정 권한이 없습니다');
-    const existingContents = (targetReview.contents ?? {}) as Record<
-      Language,
-      string
-    >;
-    await this.prisma.client.review.update({
-      where: { id: reviewId },
-      data: {
-        contents: {
-          ...existingContents,
-          ...updateDto.contents,
+    if (isAdmin) {
+      await this.prisma.client.review.update({
+        where: { id: reviewId },
+        data: {
+          rating: updateDto.rating,
+          contents: updateDto.contents,
+          reviewDetail: {
+            upsert: {
+              update: {
+                tasteRating: updateDto.reviewDetail.tasteRating,
+                serviceRating: updateDto.reviewDetail.serviceRating,
+                priceRating: updateDto.reviewDetail.priceRating,
+                visitPurpose: updateDto.reviewDetail.visitPurpose,
+                visitDate: updateDto.reviewDetail.visitDate ?? null,
+              },
+              create: {
+                tasteRating: updateDto.reviewDetail.tasteRating,
+                serviceRating: updateDto.reviewDetail.serviceRating,
+                priceRating: updateDto.reviewDetail.priceRating,
+                visitPurpose: updateDto.reviewDetail.visitPurpose,
+                visitDate: updateDto.reviewDetail.visitDate ?? null,
+              },
+            },
+          },
         },
-      },
-    });
+      });
+    } else if (isCreator) {
+      await this.prisma.client.review.update({
+        where: { id: reviewId },
+        data: {
+          contents: updateDto.contents,
+        },
+      });
+    }
     return await this.prisma.client.review.findFirst({
       where: { id: reviewId, deletedAt: null },
     });

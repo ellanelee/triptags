@@ -17,7 +17,6 @@ import { User } from '@prisma/client';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { ReviewPaginationDto } from './dtos/reviewpagination.dto';
 import { ReviewCreateWithDetailDto } from './dtos/reviewcreatewithdetail.dto';
-import { ReviewUpdateDto } from './dtos/reviewupdate.dto';
 
 @ApiBearerAuth('access-token')
 @ApiTags('reviews')
@@ -75,10 +74,11 @@ export class ReviewController {
   async updateReviewByCreator(
     @CurrentUser() user: User,
     @Param('reviewId') reviewId: string,
-    @Body() reviewUpdateDto: ReviewUpdateDto,
+    @Body() reviewUpdateDto: ReviewCreateWithDetailDto,
   ) {
-    const response = await this.reviewService.UpdateDescription(
+    const response = await this.reviewService.UpdateReview(
       user.id,
+      user.role,
       reviewId,
       reviewUpdateDto,
     );
