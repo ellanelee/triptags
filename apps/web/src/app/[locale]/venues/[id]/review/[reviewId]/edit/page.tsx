@@ -67,16 +67,18 @@ export default function EditReviewPage({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!venue.data?.id || !user?.role) {
-      alert("정보가 로드되지 않았습니다.")
+    console.log(venueId, reviewId)
+    if (!reviewId) {
+      alert("관련 정보가 로드되지 않았습니다.")
       return
     }
-
-    const { contents, ...rest } = formData
     setLoading(true)
     try {
-      console.log(contents)
-      const response = await reviewApi.updateReview(venue.data?.id, contents)
+      console.log(formData.contents)
+      console.log(venueId, reviewId)
+      const response = await reviewApi.updateReview(reviewId, {
+        contents: formData.contents,
+      })
       console.log(response)
       router.push(`/venues/${params.id}`)
     } catch (error) {

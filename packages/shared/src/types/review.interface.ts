@@ -69,5 +69,5 @@ export interface IReviewCreateWithDetailInput extends IReviewCreateInput {
 }
 
 export interface IReviewUpdate {
-  description: I18nText
+  contents : I18nText
 }
