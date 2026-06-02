@@ -3,7 +3,7 @@ import { useRouter } from "@/i18n/routing"
 import { reviewApi } from "@/lib/api/review.api"
 import { IReviewCardProps } from "@/types/interfaces/interface.props"
 import { useLocale, useTranslations } from "next-intl"
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 
 export function ReviewCard({
   review,
@@ -15,6 +15,21 @@ export function ReviewCard({
   const router = useRouter()
   const t = useTranslations("Common")
   const [showEditOption, setShowEditOption] = useState(false)
+  const menuRef = useRef<HTMLDivElement | null>(null)
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (!menuRef.current) return
+      if (!menuRef.current.contains(event.target as Node)) {
+        setShowEditOption(false)
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside)
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside)
+    }
+  }, [])
 
   const handleEditReview = async () => {
     if (!review || !venueId) return
@@ -36,7 +51,7 @@ export function ReviewCard({
       key={review.id}
       className="border-b border-gray-200 pb-6 last:border-0"
     >
-      <div className="flex items-start justify-between mb-2">
+      <div className="flex items-start justify-between">
         <div className="flex flex-col item-center">
           <div className="flex items-center gap-2">
             <span className="font-medium mx-2">{review.user.nickname}</span>
@@ -60,7 +75,7 @@ export function ReviewCard({
               : review.contents[locale]}
           </p>
         </div>
-        <div className="relative">
+        <div ref={menuRef} className="relative">
           {review.userId === userId && (
             <button
               onClick={() => {
@@ -86,6 +101,15 @@ export function ReviewCard({
               </button>
             </div>
           )}
+        </div>
+      </div>
+      <div className="flex justify-end">
+        <div className="text-sm text-gray-500 mx-10 items-center">
+          <span className="mx-2">{t("Helpful")}</span>
+          <span className="inline-block text-xl cursor-pointer hover:scale-125 transition-transform ">
+            ❤️
+          </span>
+          <span className="mx-2">{review.likeCount}</span>
         </div>
       </div>
     </div>
