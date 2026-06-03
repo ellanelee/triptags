@@ -35,7 +35,7 @@ export class ReviewService {
     });
   }
 
-  //review 받아오기
+  //개별 review Id로 내용 받아오기
   async findReviewById(reviewId: string) {
     const targetReview = this.prisma.client.review.findFirst({
       where: { id: reviewId, deletedAt: null },
@@ -52,6 +52,7 @@ export class ReviewService {
             visitPurpose: true,
           },
         },
+        reviewHelpfuls: true,
       },
     });
     return targetReview;
@@ -86,6 +87,11 @@ export class ReviewService {
           user: {
             select: {
               nickname: true,
+            },
+          },
+          _count: {
+            select: {
+              reviewHelpfuls: true,
             },
           },
         },

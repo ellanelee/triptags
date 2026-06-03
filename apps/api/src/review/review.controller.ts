@@ -68,7 +68,7 @@ export class ReviewController {
     return createResponse(true, targetVenue);
   }
 
-  //review수정 (Description 수정)
+  //Review수정 (Description 수정)
   @Patch(':reviewId')
   @UseGuards(JwtAccessGuard)
   async updateReviewByCreator(
@@ -85,8 +85,8 @@ export class ReviewController {
     return createResponse(true, response);
   }
 
-  //도움돼요 추천을 받은 Review
-  @Post(':reviewId/helpful')
+  //도움돼요 추천반영
+  @Post('helpful/:reviewId')
   @UseGuards(JwtAccessGuard)
   async checkHelpful(
     @CurrentUser() user: User,
