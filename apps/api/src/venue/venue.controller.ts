@@ -37,38 +37,10 @@ export class VenueController {
     return createResponse(true, response);
   }
 
-  //VenueId로 update를 위한 정보 불러오기
-  @UseGuards(JwtAccessGuard)
-  @Get('check/duplicated')
-  async getVenueDuplicated(
-    @CurrentUser() user: User,
-    @Query() venueDuplidatedDto: VenueDuplicatedDto,
-  ) {
-    const result = await this.venueService.checkDuplication(
-      user.id,
-      venueDuplidatedDto,
-    );
-    return createResponse(true, result);
-  }
-
   //VenueId로 정보 불러오기
   @Get(':venueId')
   async getVenueById(@Param('venueId') venueId: string) {
     const result = await this.venueService.findVenueById(venueId);
-    return createResponse(true, result);
-  }
-
-  //VenueId로 update를 위한 정보 불러오기
-  @UseGuards(JwtAccessGuard)
-  @Get(':venueId/edit')
-  async getVenueEditById(
-    @CurrentUser() user: User,
-    @Body() venueDuplicatedDto: VenueDuplicatedDto,
-  ) {
-    const result = await this.venueService.checkDuplication(
-      user.id,
-      venueDuplicatedDto,
-    );
     return createResponse(true, result);
   }
 
@@ -77,6 +49,20 @@ export class VenueController {
   async getVenueImageById(@Param('venueId') venueId: string) {
     const response = await this.venueService.findVenueImageById(venueId);
     return createResponse(true, response);
+  }
+
+  //VenueId로 update를 위한 정보 불러오기
+  @UseGuards(JwtAccessGuard)
+  @Post('check/duplicated')
+  async getVenueDuplicated(
+    @CurrentUser() user: User,
+    @Body() venueDuplidatedDto: VenueDuplicatedDto,
+  ) {
+    const result = await this.venueService.checkDuplication(
+      user.id,
+      venueDuplidatedDto,
+    );
+    return createResponse(true, result);
   }
 
   //Venue생성하기
@@ -95,7 +81,7 @@ export class VenueController {
   }
 
   //관리자의 venue수정 (모든 필드 수정가능)
-  @Patch(':id/admin')
+  @Patch('/admin:id')
   @Roles('ADMIN')
   @UseGuards(JwtAccessGuard, RolesGuard)
   async updateVenueByAdmin(
@@ -113,7 +99,7 @@ export class VenueController {
   }
 
   //사용자(생성자)의 venue수정 (name, image수정)
-  @Patch(':id/user')
+  @Patch('/user/:id')
   @UseGuards(JwtAccessGuard)
   async updateVenueByCreator(
     @CurrentUser() user: User,

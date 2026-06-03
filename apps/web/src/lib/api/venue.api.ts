@@ -46,9 +46,7 @@ export const venueApi = {
   getVenueDuplicated: async (
     checkDuplicated: IVenueDuplicatedInput,
   ): Promise<IVenueDuplicatedResponse[]> => {
-    const response = await apiClient.get(`venues/check/duplicated`, {
-      params: checkDuplicated,
-    })
+    const response = await apiClient.post(`venues/check/duplicated`, checkDuplicated)
     if (!response.data.success) {
       throw new Error(
         response.data.message ?? response.data.error ?? "조회 실패",
