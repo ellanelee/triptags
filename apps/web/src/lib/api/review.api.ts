@@ -70,4 +70,9 @@ export const reviewApi = {
   updateReview: async (reviewId: string, updateDto: IReviewUpdateInput) => {
     await apiClient.patch(`/reviews/${reviewId}`, updateDto)
   },
+
+ //Toggle Helpful
+  toggleReviewHelpful: async (reviewId: string) => {
+    await apiClient.post(`reviews/helpful/${reviewId}`)
+  }
 }

@@ -51,12 +51,15 @@ export interface IGetReviewByVenueAll {
   user: {
     nickname: string
   }
+  _count: {
+    reviewHelpfuls: number
+  }
 }
 
 export type IGetReviewByVenueAllResponse =
   IPaginatedResponse<IGetReviewByVenueAll>
 
-//Venues
+//Venues의 기본정보 받아오기
 export interface IGetVenueBase {
   id: string
   name: I18nText | null

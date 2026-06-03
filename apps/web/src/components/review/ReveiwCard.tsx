@@ -46,6 +46,16 @@ export function ReviewCard({
       console.error("삭제 실패", error)
     }
   }
+
+  const handleToggleHelpful = async () => {
+    try {
+      await reviewApi.toggleReviewHelpful(review.id)
+      onRefresh()
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
   return (
     <div
       key={review.id}
@@ -106,10 +116,13 @@ export function ReviewCard({
       <div className="flex justify-end">
         <div className="text-sm text-gray-500 mx-10 items-center">
           <span className="mx-2">{t("Helpful")}</span>
-          <span className="inline-block text-xl cursor-pointer hover:scale-125 transition-transform ">
+          <button
+            onClick={handleToggleHelpful}
+            className="inline-block text-xl cursor-pointer hover:scale-125 transition-transform "
+          >
             ❤️
-          </span>
-          <span className="mx-2">{review.likeCount}</span>
+          </button>
+          <span className="mx-2">{review._count.reviewHelpfuls}</span>
         </div>
       </div>
     </div>
