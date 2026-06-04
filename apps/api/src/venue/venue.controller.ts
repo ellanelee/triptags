@@ -81,12 +81,12 @@ export class VenueController {
   }
 
   //관리자의 venue수정 (모든 필드 수정가능)
-  @Patch('/admin:id')
+  @Patch('admin/:venueId')
   @Roles('ADMIN')
   @UseGuards(JwtAccessGuard, RolesGuard)
   async updateVenueByAdmin(
     @CurrentUser() user: User,
-    @Param('id') venueId: string,
+    @Param('venueId') venueId: string,
     @Body() venueUpdateDto: VenueUpdateDto,
   ) {
     console.log(user);
@@ -99,11 +99,11 @@ export class VenueController {
   }
 
   //사용자(생성자)의 venue수정 (name, image수정)
-  @Patch('/user/:id')
+  @Patch('user/:venueId')
   @UseGuards(JwtAccessGuard)
   async updateVenueByCreator(
     @CurrentUser() user: User,
-    @Param('id') venueId: string,
+    @Param('venueId') venueId: string,
     @Body() venueUpdateDto: VenueUpdateDtoUser,
   ) {
     const response = await this.venueService.updateVenueByCreator(
