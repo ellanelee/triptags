@@ -7,11 +7,7 @@ import { reviewApi } from "@/lib/api/review.api"
 import { venueApi } from "@/lib/api/venue.api"
 import { useAsync } from "@/lib/hooks/use.async"
 import { useAuthStore } from "@/store/auth-store"
-import {
-  Language,
-  ReviewForm,
-  VisitPurpose,
-} from "@triptags/shared"
+import { Language, ReviewForm, VisitPurpose } from "@triptags/shared"
 import { useLocale, useTranslations } from "next-intl"
 import { useEffect, useState } from "react"
 import LocalVerification from "@/components/common/local/LocalVerification"
@@ -37,7 +33,6 @@ export default function CreateReviewPage({
   const [formData, setFormData] = useState<ReviewForm>({
     rating: 5,
     contents: { [locale]: "" },
-    authorRole: "USER",
     localVerificationId: null,
     reviewDetail: {
       tasteRating: 5,
@@ -65,7 +60,6 @@ export default function CreateReviewPage({
     const userRole = user?.role
     const submitData = {
       ...formData,
-      authorRole: userRole,
       localVerificationId: localVerificationId ?? undefined,
       reviewDetail: {
         ...formData.reviewDetail,

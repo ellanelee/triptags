@@ -196,7 +196,6 @@ export default function EditvenueUpdateDataPage({
           venueId,
           adminUpdatePayload,
         )
-        await venueApi.updateVenueByAdmin(venueId, adminUpdatePayload)
         responseId = response.id
       }
       if (isCreator) {

@@ -64,7 +64,9 @@ export default function MyPage() {
   //언어 변경
   const handleLanguage = async (newLang: string) => {
     try {
-      const response = await userApi.updateLanguage({ language: newLang as Language})
+      const response = await userApi.updateLanguage({
+        language: newLang as Language,
+      })
       if (response.success) {
         useAuthStore.getState()
       }
@@ -140,7 +142,7 @@ export default function MyPage() {
                   </p>
                   {/* 언어 설정 */}
                   <LanguageSelect
-                    label={tr("languageOption")}
+                    label={t("transaction.languageOption")}
                     value={user?.language ?? "ko"}
                     onChange={(value) => handleLanguage(value)}
                     tr={t}
