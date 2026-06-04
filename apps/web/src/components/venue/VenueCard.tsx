@@ -2,6 +2,7 @@ import { IGetVenueBase } from "@/types/interfaces/interface.api"
 import { useLocale, useTranslations } from "next-intl"
 import { Link } from "@/i18n/routing"
 import { Language } from "@triptags/shared"
+import Image from "next/image"
 
 export interface IVenueCardProps {
   venue: IGetVenueBase
@@ -18,9 +19,11 @@ export default function VenueCard({ venue }: IVenueCardProps) {
         {/* Image */}
         <div className="relative h-56 bg-gradient-to-br from-gray-200 to-gray-300 overflow-hidden">
           {venue.venueImages[0] ? (
-            <img 
+            <Image
               src={venue.venueImages[0].imageUrl}
-              alt={venue?.name?.[locale]}
+              alt={venue?.name?.[locale] ?? "Venue Image"}
+              referrerPolicy="no-referrer"
+              fill
               className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
             />
           ) : (
