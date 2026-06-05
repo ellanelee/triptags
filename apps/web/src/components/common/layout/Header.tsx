@@ -158,17 +158,17 @@ export function Header() {
                     <img
                       src={user.profileImage}
                       alt={user.nickname || "Profile"}
-                      className="w-[35px] h-[35px] rounded-full object-cover border border-gray-200 hover:scale-110 transition-transform"
+                      className="w-[35px] h-[35px] rounded-full object-cover p-2 m-2 border border-gray-200 hover:scale-110 transition-transform"
                     />
                   ) : (
                     <div
-                      className={`w-[35px] h-[35px] rounded-full flex items-center justify-center text-sm font-bold border border-gray-200 hover:scale-110 transition-transform ${
+                      className={`rounded-full flex items-center justify-center text-sm px-2 font-bold border border-gray-200 hover:scale-110 transition-transform ${
                         isTransparentNav
                           ? "bg-white/20 text-white"
                           : "bg-primary-100 text-primary-600"
                       }`}
                     >
-                      {user?.nickname?.charAt(0)?.toUpperCase() || "?"}
+                      {user?.nickname?.toUpperCase() || "?"}
                     </div>
                   )}
                 </Link>
