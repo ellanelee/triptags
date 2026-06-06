@@ -4,10 +4,11 @@ import Redis from 'ioredis';
 
 @Injectable()
 export class RedisService implements OnModuleInit, OnModuleDestroy {
-  private client: Redis;
+  private client!: Redis;
 
   constructor(private configService: ConfigService) {}
 
+  //client 초기화
   onModuleInit() {
     this.client = new Redis({
       host: this.configService.get<string>('REDIS_HOST', 'localhost'),
