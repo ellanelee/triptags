@@ -4,8 +4,6 @@ export default function PageGroups({
   groupSize,
   currentPage,
   totalPage,
-  hasNextPage,
-  hasPrevPage,
   onPageChange,
 }: PageProps) {
   const pageGroup = Math.floor((currentPage - 1) / groupSize)

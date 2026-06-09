@@ -9,13 +9,11 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import {
-  createResponse,
-  RegionCreateDto,
-  RegionSearchDto,
-} from '@triptags/shared';
+import { createResponse } from '@triptags/shared';
 import { JwtAccessGuard } from '@/auth/jwt-auth.guard.ts/jwt-auth.access.guard';
 import { RolesGuard } from '@/auth/jwt-auth.guard.ts/roels.guard';
+import { RegionSearchDto } from './dtos/regionsearch.dto';
+import { RegionCreateDto } from './dtos/regioncreate.dto';
 
 @Controller('regions')
 @ApiTags('regions')

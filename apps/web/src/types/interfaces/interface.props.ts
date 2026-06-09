@@ -1,4 +1,5 @@
 import { Dispatch, SetStateAction } from "react"
+import { IGetReviewByVenueAll } from "./interface.api"
 
 export interface IBasicButtonProps {
   children?: React.ReactNode
@@ -10,6 +11,7 @@ export interface IBasicButtonProps {
 export interface LanguageSelectProps {
   label?: string
   value: string
+  disabled?: boolean
   onChange: (value: string) => void
   tr: (key: string) => string // 언어변역
 }
@@ -19,8 +21,6 @@ export interface PageProps {
   totalCount: number
   currentPage: number
   totalPage: number
-  hasNextPage: boolean
-  hasPrevPage: boolean
   onPageChange: (newPage: number) => void
 }
 
@@ -30,3 +30,19 @@ export interface ILocalVerificationProps {
   setLocalVerificationId: Dispatch<SetStateAction<string | null>>
 }
 
+//Venue세부 페이지의 Review
+export interface ISelectReview {
+  userId: string | null
+  reviewId: string | null
+}
+
+export interface IReviewCardProps {
+  review: IGetReviewByVenueAll
+  venueId: string
+  userId: string
+  userNickname: string
+  onRefresh: () => void
+  // setSelectReview: React.Dispatch<React.SetStateAction<ISelectReview>>
+  // onEdit: () => void
+  // onDelete: () => void
+}

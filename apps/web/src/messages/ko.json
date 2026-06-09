@@ -38,7 +38,6 @@
     "nickname": "닉네임",
     "password": "비밀번호",
     "passwordConfirm": "비밀번호 확인",
-    "language": "언어 선택",
     "agreeAll": "전체 동의합니다",
     "agreeTerms": "이용약관 동의",
     "agreePrivacy": "개인정보 처리방침 동의",
@@ -79,8 +78,6 @@
     "noDestinations": "아직 관심 여행지가 없습니다.",
     "noDestinationsHint": "여행지를 추가하면 맞춤형 추천을 받을 수 있습니다.",
     "loading": "로딩 중...",
-    "language": "사용 언어",
-    "languageOption": "언어 변경",
     "role": "사용자 권한",
     "pointHistory": "포인트 이력조회",
     "totalPoint": "전체 포인트",
@@ -130,10 +127,11 @@
     "cityLabel": "자치도/특별시/광역시",
     "city": "광역행정구역(주/도/특별시/광역시)",
     "cityPlaceholder": "예: 서울특별시 혹은 제주특별자치도",
+    "priorityPlaceholder": "선호 여행지 우선 순위를 정해주세요. 0순위부터 검색돼요",
     "districtLabel": "시/군/구",
     "district": "개별행정구역(시/군/구)",
     "districtPlaceholder": "예: 강남구",
-    "priority": "우선 순위 (0~9 중에서 선택)"
+    "priority": "우선 순위 (1~9 중에서 선택)"
   },
   "MyReview": {
     "reviewTitle": "리뷰 내역",
@@ -142,16 +140,18 @@
   },
   "CreateVenuePage": {
     "title": "장소 등록하기",
-    "searchPlace": "장소 검색",
-    "searchPlaceHolder": "장소 이름이나 주소를 검색하세요...(예: 경복궁, 강남역 맛집)",
+    "searchPlace": "카카오나 구글 검색 ( 검색결과 주소 자동입력 ) ",
+    "searchPlaceHolder": "카카오나 구글 검색으로 장소를 선택하세요(경복궁, 강남역 맛집). 관련 장소가 없는 경우 지도를 클릭해 위치를 선택하세요.(",
+    "Kakao": "카카오 주소검색",
+    "Google": "구글 주소검색",
+    "kakaoHint": "한국내의 장소는 카카오 검색을 추천합니다",
     "searchHint": "Google에서 장소를 검색하면 정보가 자동으로 입력됩니다",
-    "selectOnMap": "지도에서 위치 선택",
+    "selectOnMap": "지도에서 직접 위치 선택 (장소를 검색으로 찾을수 없는 경우 지도상에 클릭으로 표시하세요)",
     "selectInit": "장소선택 취소",
     "noLocationSelected": "선택한 위치 없음",
     "noLocationInfo": "위치 정보없음",
     "coordinates": "좌표",
     "name": "장소 이름",
-    "language": "언어표시",
     "category": "카테고리",
     "selectCategory": "카테고리를 선택하세요",
     "description": "설명",
@@ -162,18 +162,30 @@
     "website": "웹사이트",
     "priceRange": "가격대 (예시: 10000 ~ 20000원)",
     "selectLocation": "지도에서 위치를 선택해주세요.",
-    "workHour":"운영 시간을 기입해주세요",
-    "checkAddress": "  (도로등 세부 주소가 정확하지 않은 지역은 다시 선택해 주세요)"
+    "workHour": "운영 시간을 기입해주세요",
+    "checkAddress": "  (도로등 세부 주소가 정확하지 않은 지역은 다시 선택해 주세요)",
+    "useMainImage": "첫 번째 이미지가 대표 이미지로 사용됩니다.",
+    "venueImage": "이미지등록/수정",
+    "registerImageUrl": "이미지 URL을 입력해주세요",
+    "languageOption": "언어설정",
+    "languageComment": "( 최상단 메뉴에서 언어를 변경할수 있습니다 )",
+    "venueDuplicatedNotice": "이미 등록된 유사한 장소가 있습니다",
+    "venueDuplicatedList": "Venue를 클릭하면 내용을 확인할수 있습니다.",
+    "venueEdit": "되돌아가기",
+    "venueRegister": "등록하기"
   },
   "VenuesPage": {
     "title": "장소 찾기",
     "searchPlaceholder": "장소 이름이나 설명으로 검색하세요...",
     "category": "카테고리",
     "allCategories": "전체",
+    "country": "국가",
+    "countryPlaceholder": "국가 이름을 입력하세요",
     "city": "특별시/광역시/도",
     "cityPlaceholder": "행정구역 이름을 입력하세요",
     "district": "시/군/구",
     "districtPlaceholder": "시/군/그 이름을 입력하세요",
+    "rating": "평점",
     "sortBy": "정렬",
     "sort": {
       "recent": "최신순",
@@ -183,7 +195,8 @@
     },
     "resultsCount": "{count}개의 장소",
     "reviewsCount": "{count}개의 리뷰",
-    "total": "건이 조회되었습니다."
+    "total": "건이 조회되었습니다.",
+    "submitSearchForm": "검색"
   },
   "VenueDetailPage": {
     "notFound": "장소를 찾을 수 없습니다.",
@@ -191,20 +204,26 @@
     "localRating": "로컬 평점",
     "travelerRating": "여행자 평점",
     "about": "소개",
-    "reviews": "리뷰",
-    "writeReview": "리뷰 작성",
-    "allReviews": "전체",
-    "localReviews": "로컬",
-    "travelerReviews": "여행자",
-    "noReviews": "아직 리뷰가 없습니다.",
-    "information": "정보",
+    "information": "세부 정보",
     "phone": "전화",
+    "noPhone": "등록된 전화번호가 없습니다",
     "address": "주소",
     "priceRange": "가격대",
+    "noPrice": "관련 정보가 없습니다",
     "website": "웹사이트",
-    "visitWebsite": "웹사이트 방문"
+    "noWebsite": "등록된 웹사이트가 없습니다",
+    "visitWebsite": "웹사이트 방문",
+    "noVenueImage": "아직 등록된 이미지가 없습니다",
+    "venueImageRegister": "이미지 등록하기",
+    "unableToRegisterImage": "장소의 등록자만 이미지를 편집할수 있습니다",
+    "checkwithKaKaoMap": "카카오맵에서 보기",
+    "checkwithGoogleMap": "구글맵에서 보기"
   },
-  "WriteReviewPage": {
+  "UpdateVenuePage": {
+    "title": "장소 정보수정",
+    "updateVenuePosition": "위치 수정"
+  },
+  "CreateReviewPage": {
     "title": "리뷰 작성",
     "rating": "전체 평점",
     "content": "리뷰 내용",
@@ -220,7 +239,10 @@
     "datePlaceHolder": "방문 일자를 선택해주세요",
     "visitPurpose": "방문 목적",
     "LocalVerification": "로컬 위치인증",
+    "AllowLocalVerifyMessage": "현재 위치를 기반으로 인증합니다. 위치권한을 허용해주세요.",
     "LocalIndication": "현재 위치를 인증하면 로컬 리뷰로 등록됩니다",
+    "LocalVerificationSuccess": "위치가 인증되었습니다.",
+    "LocalVerificationFail": "로컬로 인증가능한 위치가 아닙니다",
     "verfiedCondition": "인증된 위치가 장소와 15km 이내일 경우 로컬 리뷰입니다.",
     "purposes": {
       "solo": "혼자",
@@ -228,9 +250,15 @@
       "family": "가족",
       "friends": "친구",
       "business": "비즈니스"
-    },
-    "noVenueImage": "아직 등록된 이미지가 없습니다",
-    "venueImageRegister": "venueImage를 등록하세요"
+    }
+  },
+  "ReviewList": {
+    "reviews": "리뷰",
+    "writeReview": "리뷰 작성",
+    "allReviews": "전체",
+    "localReviews": "로컬",
+    "travelerReviews": "여행자",
+    "noReviews": "아직 리뷰가 없습니다."
   },
   "Common": {
     "languages": {
@@ -248,6 +276,7 @@
       "cancel": "취소",
       "reset": "초기화",
       "edit": "편집",
+      "editting": "편집 중",
       "editContents": "내용 수정",
       "change": "변경",
       "delete": "삭제",
@@ -258,7 +287,10 @@
       "creating": "등록 중...",
       "error": "등록에 실패했습니다.",
       "verify": "인증하기",
-      "verified": "✓ 위치 인증됨"
+      "verified": "✓ 위치 인증됨",
+      "languageOption": "표시언어 설정",
+      "language": "현재 표시되는 언어",
+      "close": "닫기"
     },
     "categories": {
       "RESTAURANT": "레스토랑",
@@ -274,6 +306,8 @@
     },
     "loading": "로딩 중...",
     "noResults": "검색 결과가 없습니다.",
-    "noResultsHint": "다른 검색어나 필터를 시도해보세요."
+    "noResultsHint": "다른 검색어나 필터를 시도해보세요.",
+    "NoPermission": "접근권한이 없습니다",
+    "Helpful": "도움이 되었어요"
   }
 }

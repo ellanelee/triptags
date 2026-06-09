@@ -13,7 +13,7 @@ export function calculateDistance(distanceInput: IDistance): number {
     Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2) +
     Math.cos(lat1Rad) *
       Math.cos(lat2Rad) *
-      Math.sin(deltaLat / 2) *
+      Math.sin(deltaLng / 2) *
       Math.sin(deltaLng / 2);
   const angleDistance =
     2 * Math.atan2(Math.sqrt(hValue), Math.sqrt(1 - hValue));

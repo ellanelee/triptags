@@ -3,7 +3,7 @@
 import { userApi } from "@/lib/api/user.api"
 import { useAsync } from "@/lib/hooks/use.async"
 import { useAuthStore } from "@/store/auth-store"
-import { IUserPointAll } from "@triptags/shared"
+import type { IUserPointAll } from "@triptags/shared"
 import { useLocale, useTranslations } from "next-intl"
 import { useRouter } from "next/navigation"
 import { useEffect } from "react"

@@ -13,16 +13,15 @@ import { VenueService } from './venue.service';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { CurrentUser } from '@/common/decorator/current_user.decorator';
 import { User } from '@prisma/client';
-import {
-  createResponse,
-  VenueCreateDto,
-  VenuePaginationDto,
-  VenueUpdateDto,
-  VenueUpdateDtoUser,
-} from '@triptags/shared';
+import { createResponse } from '@triptags/shared';
 import { JwtAccessGuard } from '@/auth/jwt-auth.guard.ts/jwt-auth.access.guard';
 import { Roles } from '@/common/decorator/roles.decorator';
 import { RolesGuard } from '@/auth/jwt-auth.guard.ts/roels.guard';
+import { VenuePaginationDto } from './dtos/venuepagination.dto';
+import { VenueCreateDto } from './dtos/venuecreate.dto';
+import { VenueUpdateDto } from './dtos/venueupdate.dto';
+import { VenueUpdateDtoUser } from './dtos/venueupdateuser.dto';
+import { VenueDuplicatedDto } from './dtos/venueduplicate.dto';
 
 @ApiBearerAuth('access-token')
 @ApiTags('venues')
@@ -52,6 +51,20 @@ export class VenueController {
     return createResponse(true, response);
   }
 
+  //VenueId로 update를 위한 정보 불러오기
+  @UseGuards(JwtAccessGuard)
+  @Post('check/duplicated')
+  async getVenueDuplicated(
+    @CurrentUser() user: User,
+    @Body() venueDuplidatedDto: VenueDuplicatedDto,
+  ) {
+    const result = await this.venueService.checkDuplication(
+      user.id,
+      venueDuplidatedDto,
+    );
+    return createResponse(true, result);
+  }
+
   //Venue생성하기
   @Post()
   @UseGuards(JwtAccessGuard)
@@ -67,34 +80,33 @@ export class VenueController {
     return createResponse(true, response);
   }
 
-  //사용자의 venue수정 (언어별 이름/이미지 추가가능)
-  @Patch(':id/user')
-  @UseGuards(JwtAccessGuard)
-  async updateVenueByUser(
+  //관리자의 venue수정 (모든 필드 수정가능)
+  @Patch('admin/:venueId')
+  @Roles('ADMIN')
+  @UseGuards(JwtAccessGuard, RolesGuard)
+  async updateVenueByAdmin(
     @CurrentUser() user: User,
-    @Param('id') venueId: string,
-    @Body() venueUpdateDtoUser: VenueUpdateDtoUser,
+    @Param('venueId') venueId: string,
+    @Body() venueUpdateDto: VenueUpdateDto,
   ) {
     console.log(user);
-    const response = await this.venueService.updateVenueByUser(
+    const response = await this.venueService.updateVenueByAdmin(
       user.id,
       venueId,
-      venueUpdateDtoUser,
+      venueUpdateDto,
     );
     return createResponse(true, response);
   }
 
-  //관리자의 venue수정 (모든 필드 수정가능)
-  @Patch(':id/admin')
-  @Roles('ADMIN')
-  @UseGuards(JwtAccessGuard, RolesGuard)
-  async updateVenue(
+  //사용자(생성자)의 venue수정 (name, image수정)
+  @Patch('user/:venueId')
+  @UseGuards(JwtAccessGuard)
+  async updateVenueByCreator(
     @CurrentUser() user: User,
-    @Param('id') venueId: string,
-    @Body() venueUpdateDto: VenueUpdateDto,
+    @Param('venueId') venueId: string,
+    @Body() venueUpdateDto: VenueUpdateDtoUser,
   ) {
-    console.log(user);
-    const response = await this.venueService.updateVenue(
+    const response = await this.venueService.updateVenueByCreator(
       user.id,
       venueId,
       venueUpdateDto,

@@ -1,7 +1,7 @@
 import type {
-  LanguageDto,
-  UserAddressDto,
-  UserIntroductionDto,
+  ILanguageInput,
+  IUserAddressInput,
+  IUserIntroductionInput,
 } from "@triptags/shared"
 import apiClient from "./api.client"
 
@@ -28,7 +28,7 @@ export const userApi = {
     return response.data.data
   },
 
-  updateLanguage: async (data: LanguageDto) => {
+  updateLanguage: async (data: ILanguageInput) => {
     const response = await apiClient.patch("users/language", data)
     if (!response.data.success) {
       throw new Error(
@@ -39,7 +39,7 @@ export const userApi = {
     return response.data
   },
 
-  updateAddress: async (data: UserAddressDto) => {
+  updateAddress: async (data: IUserAddressInput) => {
     const response = await apiClient.post("users/address", data)
     if (!response.data.success) {
       throw new Error(
@@ -50,7 +50,7 @@ export const userApi = {
     return response.data.data
   },
 
-  updateIntroduction: async (data: UserIntroductionDto) => {
+  updateIntroduction: async (data: IUserIntroductionInput) => {
     const response = await apiClient.patch("users/introduction", data)
     if (!response.data.success) {
       throw new Error(

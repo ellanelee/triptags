@@ -6,6 +6,14 @@ export type UserRole = "USER" | "USER_LOCAL" | "BUSINESS" | "ADMIN"
 
 export type I18nText = Partial<Record<Language, string>>
 
+export type PointType =
+  | "REVIEW_WRITE"
+  | "VENUE_CREATE"
+  | "HELPFUL_RECEIVED"
+  | "LOCAL_VERIFIED"
+
+export type VerificationMethod = "ADDRESS" | "GPS" | "ACTIVITY"
+
 export type VenueCategory =
   | "RESTAURANT"
   | "CAFE"
@@ -18,18 +26,14 @@ export type VenueCategory =
   | "NATURE"
   | "CULTURE"
 
-export type PointType =
-  | "REVIEW_WRITE"
-  | "VENUE_CREATE"
-  | "HELPFUL_RECEIVED"
-  | "LOCAL_VERIFIED"
-
-export type VerificationMethod = "ADDRESS" | "GPS" | "ACTIVITY"
-
-export type VisitPurpose = 
+export type VisitPurpose =
   | "solo"
   | "couple"
   | "family"
   | "friends"
   | "business"
   | ""
+
+export type SortBy = "rating" | "reviews" | "recent" | "distance"
+
+export type ReviewFilterType = "ALL" | "LOCAL" | "USER"

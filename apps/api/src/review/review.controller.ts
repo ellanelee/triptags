@@ -10,16 +10,13 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ReviewService } from './review.service';
-import {
-  createResponse,
-  ReviewCreateWithDetailDto,
-  ReviewPaginationDto,
-  ReviewUpdateDto,
-} from '@triptags/shared';
+import { createResponse } from '@triptags/shared';
 import { JwtAccessGuard } from '@/auth/jwt-auth.guard.ts/jwt-auth.access.guard';
 import { CurrentUser } from '@/common/decorator/current_user.decorator';
 import { User } from '@prisma/client';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ReviewPaginationDto } from './dtos/reviewpagination.dto';
+import { ReviewCreateWithDetailDto } from './dtos/reviewcreatewithdetail.dto';
 
 @ApiBearerAuth('access-token')
 @ApiTags('reviews')
@@ -27,7 +24,8 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 export class ReviewController {
   constructor(private reviewService: ReviewService) {}
 
-  @Get(':venueId')
+  //Venue의 Review검색
+  @Get('/venue/:venueId')
   async getReviewByVenueId(
     @Param('venueId') venueId: string,
     @Query() paginationDto: ReviewPaginationDto,
@@ -39,12 +37,14 @@ export class ReviewController {
     return createResponse(true, response);
   }
 
-  //검색 조건에 따라 Venue검색
-  // @Get()
-  // async getReviewBySearch(@Query() paginationDto: VenuePaginationDto) {
-  //   return await this.reviewService.findReviewByInput(paginationDto);
-  // }
+  //개별 Review검색
+  @Get(':reviewId')
+  async getReviewById(@Param('reviewId') reviewId: string) {
+    const response = await this.reviewService.findReviewById(reviewId);
+    return createResponse(true, response);
+  }
 
+  //특정 User의 Review검색
   @UseGuards(JwtAccessGuard)
   @Get()
   async getReviewByUser(@CurrentUser() user: User) {
@@ -68,22 +68,25 @@ export class ReviewController {
     return createResponse(true, targetVenue);
   }
 
-  //사용자의 review수정 (평가점수, 평가내용수정)
+  //Review수정 (Description 수정)
   @Patch(':reviewId')
   @UseGuards(JwtAccessGuard)
-  async updateReview(
+  async updateReviewByCreator(
     @CurrentUser() user: User,
     @Param('reviewId') reviewId: string,
-    @Body() reviewUpdateDto: ReviewUpdateDto,
+    @Body() reviewUpdateDto: ReviewCreateWithDetailDto,
   ) {
     const response = await this.reviewService.UpdateReview(
+      user.id,
+      user.role,
       reviewId,
       reviewUpdateDto,
     );
     return createResponse(true, response);
   }
 
-  @Post(':reviewId/helpful')
+  //도움돼요 추천반영
+  @Post('helpful/:reviewId')
   @UseGuards(JwtAccessGuard)
   async checkHelpful(
     @CurrentUser() user: User,
@@ -93,6 +96,7 @@ export class ReviewController {
     return createResponse(true, response);
   }
 
+  //Review삭제
   @Delete(':reviewId')
   @UseGuards(JwtAccessGuard)
   async deleteReview(

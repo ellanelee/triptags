@@ -18,3 +18,11 @@ export interface IVenueDetailResponse {
   description: I18nText | null
   venueId: string
 }
+
+export interface IVenueDetailPayload {
+  phoneNumber?: string
+  priceRange?: string
+  subCategory?: string
+  websiteUrl?: string
+  workHour?: I18nText
+}

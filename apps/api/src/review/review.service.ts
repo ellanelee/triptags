@@ -4,15 +4,12 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from '@/prisma/prisma.service';
-import {
-  Language,
-  ReviewCreateWithDetailDto,
-  ReviewPaginationDto,
-  ReviewUpdateDto,
-} from '@triptags/shared';
 import { IUserPoint } from '@/common/type/types';
-import { PointType } from '@prisma/client';
+import { PointType, Prisma, UserRole } from '@prisma/client';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { ReviewPaginationDto } from './dtos/reviewpagination.dto';
+import { ReviewCreateWithDetailDto } from './dtos/reviewcreatewithdetail.dto';
+import { ReviewUpdateDto } from './dtos/reviewupdate.dto';
 
 @Injectable()
 export class ReviewService {
@@ -38,22 +35,51 @@ export class ReviewService {
     });
   }
 
-  //검색 조건에 의해 review받아오기
-  //  async findReviewByInput(pageDto: VenuePaginationDto){
-  //   return  return await this.prisma.client.review.findMany({
-
-  //   })
-  //  }
+  //개별 review Id로 내용 받아오기
+  async findReviewById(reviewId: string) {
+    const targetReview = this.prisma.client.review.findFirst({
+      where: { id: reviewId, deletedAt: null },
+      select: {
+        rating: true,
+        contents: true,
+        userId: true,
+        reviewDetail: {
+          select: {
+            tasteRating: true,
+            serviceRating: true,
+            priceRating: true,
+            visitDate: true,
+            visitPurpose: true,
+          },
+        },
+        reviewHelpfuls: true,
+      },
+    });
+    return targetReview;
+  }
 
   //venue별 review 받아오기
   async findReviewByVenueId(venueId: string, pageDto: ReviewPaginationDto) {
     const page = Number(pageDto.page) || 1;
     const items = Number(pageDto.items) || 10;
+    const searchFilter = pageDto.filter;
     const skip = (page - 1) * items;
+    const where: Prisma.ReviewWhereInput = {
+      venueId,
+      deletedAt: null,
+    };
+    if (searchFilter === 'USER') {
+      where.localVerificationId = null;
+    }
+    if (searchFilter === 'LOCAL') {
+      where.localVerificationId = { not: null };
+    }
     const [totalCount, data] = await Promise.all([
-      this.prisma.client.review.count({ where: { venueId, deletedAt: null } }),
+      this.prisma.client.review.count({
+        where,
+      }),
       this.prisma.client.review.findMany({
-        where: { venueId, deletedAt: null },
+        where,
         skip,
         take: items,
         orderBy: { updatedAt: 'desc' },
@@ -61,6 +87,11 @@ export class ReviewService {
           user: {
             select: {
               nickname: true,
+            },
+          },
+          _count: {
+            select: {
+              reviewHelpfuls: true,
             },
           },
         },
@@ -98,7 +129,6 @@ export class ReviewService {
       data: {
         rating: createDto.rating,
         contents: createDto.contents,
-        authorRole: createDto.authorRole,
         localVerificationId: createDto.localVerificationId,
         venueId: venueId,
         userId: userId,
@@ -125,37 +155,54 @@ export class ReviewService {
     return review;
   }
 
-  //Update
-  async UpdateReview(reviewId: string, updateDto: ReviewUpdateDto) {
+  //Update Review
+  async UpdateReview(
+    userId: string,
+    userRole: UserRole,
+    reviewId: string,
+    updateDto: ReviewUpdateDto,
+  ) {
     const targetReview = await this.prisma.client.review.findFirst({
       where: { id: reviewId, deletedAt: null },
-      select: { rating: true, contents: true, venueId: true },
+      select: { userId: true, contents: true },
     });
     if (!targetReview)
       throw new NotFoundException('Review가 존재하지 않습니다');
-
-    if (updateDto.rating) {
-      await this.prisma.client.review.update({
-        where: { id: reviewId },
-        data: { rating: updateDto.rating },
-      });
-      //review rating변경에 대한 재집계
-      this.event.emit('reviewrating.updated', targetReview.venueId);
-    }
-
-    if (updateDto.contents) {
-      const existingContents = (
-        typeof targetReview.contents === 'string'
-          ? JSON.parse(targetReview.contents) // 문자열이면 객체로 변환
-          : targetReview.contents
-      ) as Record<Language, string>;
+    const isCreator = userId !== targetReview.userId;
+    const isAdmin = userRole === 'ADMIN';
+    if (!isCreator && !isAdmin)
+      throw new ForbiddenException('Review수정 권한이 없습니다');
+    if (isAdmin) {
       await this.prisma.client.review.update({
         where: { id: reviewId },
         data: {
-          contents: {
-            ...existingContents,
-            ...updateDto.contents,
+          rating: updateDto.rating,
+          contents: updateDto.contents,
+          reviewDetail: {
+            upsert: {
+              update: {
+                tasteRating: updateDto.reviewDetail.tasteRating,
+                serviceRating: updateDto.reviewDetail.serviceRating,
+                priceRating: updateDto.reviewDetail.priceRating,
+                visitPurpose: updateDto.reviewDetail.visitPurpose,
+                visitDate: updateDto.reviewDetail.visitDate ?? null,
+              },
+              create: {
+                tasteRating: updateDto.reviewDetail.tasteRating,
+                serviceRating: updateDto.reviewDetail.serviceRating,
+                priceRating: updateDto.reviewDetail.priceRating,
+                visitPurpose: updateDto.reviewDetail.visitPurpose,
+                visitDate: updateDto.reviewDetail.visitDate ?? null,
+              },
+            },
           },
+        },
+      });
+    } else if (isCreator) {
+      await this.prisma.client.review.update({
+        where: { id: reviewId },
+        data: {
+          contents: updateDto.contents,
         },
       });
     }
@@ -163,6 +210,7 @@ export class ReviewService {
       where: { id: reviewId, deletedAt: null },
     });
   }
+
   //review에 대해 "도움이 됐어요"표시 (토글)
   async createHelpful(reviewId: string, userId: string) {
     const targetHelpful = await this.prisma.client.reviewHelpful.findUnique({

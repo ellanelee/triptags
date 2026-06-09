@@ -5,15 +5,22 @@ const ALLOWED_IMAGE_DOMAINS = [
   "ldb-phinf.pstatic.net",
   "maps.googleapis.com",
   "images.unsplash.com",
+  "tong.visitkorea.or.kr",
+  "dbscthumb-phinf.pstatic.net",
+  "dynamic-media-cdn.tripadvisor.com",
+  "postfiles.pstatic.net",
 ]
 
 const nextConfig = {
   images: {
-    remotePatterns: ALLOWED_IMAGE_DOMAINS.map((domain) => ({
-      protocol: "https",
-      hostname: domain,
-      pathname: "/**",
-    })),
+    remotePatterns: [
+      ...ALLOWED_IMAGE_DOMAINS.map((domain) => ({
+        protocol: "https",
+        hostname: domain,
+        pathname: "/**",
+      })),
+      { protocol: "http", hostname: "tong.visitkorea.or.kr", pathname: "/**" },
+    ],
   },
 }
 

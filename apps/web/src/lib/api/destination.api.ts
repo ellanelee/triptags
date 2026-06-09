@@ -1,4 +1,4 @@
-import type { DestinationCreateDto } from "@triptags/shared"
+import type { IDestinationCreateInput } from "@triptags/shared"
 import apiClient from "./api.client"
 
 export const destinationApi = {
@@ -21,7 +21,7 @@ export const destinationApi = {
     return response.data.data ?? []
   },
 
-  create: async (data: DestinationCreateDto) => {
+  create: async (data: IDestinationCreateInput) => {
     const response = await apiClient.post("destination", data)
     console.log(response.data)
     return response.data

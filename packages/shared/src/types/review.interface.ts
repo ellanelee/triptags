@@ -11,8 +11,7 @@ export interface IUserReview {
 export interface ReviewForm {
   rating: number
   contents: I18nText
-  authorRole: UserRole
-  localVerificationId: string | null
+  localVerificationId?: string | null
   reviewDetail: ReviewDetailForm
 }
 
@@ -24,6 +23,14 @@ export interface ReviewDetailForm {
   visitPurpose: VisitPurpose
 }
 
+export interface IReviewResponse {
+  rating: number
+  contents: I18nText
+  userId: string
+  localVerificationId?: string | null
+  reviewDetail: ReviewDetailForm
+}
+
 export interface ILocalVerification {
   id: string
   userId: string
@@ -33,4 +40,34 @@ export interface ILocalVerification {
   longitude: number
   verificationMethod: "ADDRESS" | "GPS" | "ACTIVITY"
   createdAt: string | Date
+}
+
+export interface IReviewPaginationInput {
+  page?: number
+  items?: number
+  filter?: string
+}
+
+export interface IReviewCreateInput {
+  rating: number
+  contents: I18nText
+  localVerificationId?: string
+}
+
+export interface IReviewDetailCreateInput {
+  tasteRating: number
+  serviceRating: number
+  priceRating: number
+  visitPurpose: VisitPurpose
+  visitDate?: Date
+}
+
+export interface IReviewCreateWithDetailInput extends IReviewCreateInput {
+  reviewDetail: IReviewDetailCreateInput
+}
+
+export interface IReviewUpdateInput {
+  rating: number
+  contents: I18nText
+  reviewDetail: ReviewDetailForm
 }

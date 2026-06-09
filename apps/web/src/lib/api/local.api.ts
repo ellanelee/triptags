@@ -1,13 +1,13 @@
 import type {
   ILocalVerification,
-  LocalVerificationCreateDto,
+  ILocalVerificationCreateInput,
 } from "@triptags/shared"
 import apiClient from "./api.client"
 
 export const localApi = {
   getLocalVerification: async (
     venueId: string,
-    data: LocalVerificationCreateDto,
+    data: ILocalVerificationCreateInput,
   ) : Promise<ILocalVerification> => {
     const response = await apiClient.post(`local_verification/${venueId}`, data)
     if (!response.data.success) {

@@ -2,11 +2,10 @@
 
 import { destinationApi } from "@/lib/api/destination.api"
 import { regionApi } from "@/lib/api/region.api"
-import { userApi } from "@/lib/api/user.api"
 import { useAsync } from "@/lib/hooks/use.async"
-import { getAllCountries, toCountryLang } from "@/lib/utils/country"
+import { CountryUtils } from "@/lib/utils/domain/country.utils"
 import { useAuthStore } from "@/store/auth-store"
-import { DestinationWithRegion, RegionInfo } from "@/types/types"
+import { RegionInfo } from "@/types/types"
 import { useLocale, useTranslations } from "next-intl"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
@@ -16,8 +15,7 @@ export default function MyDestination() {
   const t = useTranslations("Common")
   const locale = useLocale()
   const router = useRouter()
-  const { isAuthenticated, user } = useAuthStore()
-  const [country, setCountry] = useState("")
+  const { isAuthenticated } = useAuthStore()
   const [cities, setCities] = useState<RegionInfo[]>([])
   const [districts, setDistricts] = useState<RegionInfo[]>([])
   const [data, setData] = useState({
@@ -26,10 +24,11 @@ export default function MyDestination() {
     district: "",
     priority: 0,
   })
-  const countryList = getAllCountries(toCountryLang(locale))
-  const countryInfo = useAsync<string>("")
+  const countryList = CountryUtils.getAllCountries(
+    CountryUtils.toCountryLang(locale),
+  )
   const regionInfo = useAsync<RegionInfo[]>([])
-  const destinationsInitials = useAsync<DestinationWithRegion[]>([])
+  // const destinationsInitials = useAsync<DestinationWithRegion[]>([])
   const fullAddress = [data.country, data.city, data.district].join(" ") || ""
 
   const extractSub = async (parentId: string) => {
@@ -38,31 +37,22 @@ export default function MyDestination() {
 
   useEffect(() => {
     if (!isAuthenticated) router.replace(`/${locale}/login`)
-    destinationsInitials.run(() => destinationApi.getInfo())
-  }, [destinationsInitials.run])
+  }, [isAuthenticated, locale, router])
 
-  const handleSubmitDestination = async (e: React.FormEvent) => {
-    e.preventDefault()
-
-    try {
-    } catch (error) {
-    } finally {
-    }
-  }
   const handleCountryInfo = async (e: React.ChangeEvent<HTMLSelectElement>) => {
     const code = e.target.value
     const selected = countryList.find((el) => el.code === code)
+    if (!selected) return
+
     setData((prev) => ({
       ...prev,
-      country: selected?.name ?? "",
+      country: selected.name,
       city: "",
       district: "",
       priority: 0,
     }))
     try {
-      const countryId = await countryInfo.run(() =>
-        regionApi.getCountryIdByCode(code),
-      )
+      const countryId = await regionApi.getCountryIdByCode(code)
       if (!countryId) return
       const cities = await extractSub(countryId)
       setCities(cities)
@@ -258,7 +248,7 @@ export default function MyDestination() {
                 htmlFor="priority"
                 className="block text-sm font-medium text-gray-700 mb-1.5"
               >
-                {tr("priority") ?? "우선 순위 (0~9사이에서 선택"}
+                {tr("priority") ?? "select priority ( 1~9) "}
               </label>
               <input
                 id="priority"
@@ -282,7 +272,7 @@ export default function MyDestination() {
                 onClick={() => router.push(`/${locale}/mypage`)}
                 className="px-4 py-2 rounded-lg bg-gray-100 text-gray-800 hover:bg-gray-200 transition-colors"
               >
-                {t("transaction.cancel") ?? "취소"}
+                {t("transaction.cancel") ?? "cancel"}
               </button>
 
               <button
@@ -301,7 +291,7 @@ export default function MyDestination() {
                     : undefined
                 }
               >
-                {t("transaction.save") ?? "저장"}
+                {t("transaction.save") ?? "save"}
               </button>
             </div>
           </div>

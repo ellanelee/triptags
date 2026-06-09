@@ -13,18 +13,17 @@ import { UserService } from './user.service';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { CurrentUser } from '@/common/decorator/current_user.decorator';
 import {
-  UpdatePasswordDto,
   IUserResponse,
   createResponse,
   IUserPublicResponse,
-  UpdateNicknameDto,
-  UserProfileImageDto,
-  UserIntroductionDto,
-  UserAddressDto,
-  LanguageDto,
-  Language,
 } from '@triptags/shared';
 import { User } from '@prisma/client';
+import { UpdateNicknameDto } from './dtos/nicknameupdate.dto';
+import { UpdatePasswordDto } from './dtos/passwordupdate.dto';
+import { UserProfileImageDto } from './dtos/userimageprofile.dto';
+import { LanguageDto } from './dtos/language.dto';
+import { UserAddressDto } from './dtos/useraddress.dto';
+import { UserIntroductionDto } from './dtos/userintroduction.dto';
 
 @ApiBearerAuth('access-token')
 @ApiTags('users')
@@ -95,7 +94,7 @@ export class UserController {
   ) {
     const updatedLanguage = await this.userService.updateLanguage(
       user.id,
-      updateDto.language as Language,
+      updateDto.language,
     );
     console.log(user.id);
     return createResponse(true, updatedLanguage, '회원 정보 수정완료');

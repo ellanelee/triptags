@@ -16,7 +16,7 @@ const languages = [
 ]
 
 export function Header() {
-  const t = useTranslations("Navbar")
+  const tr = useTranslations("Navbar")
   const locale = useLocale()
   const pathname = usePathname()
   const router = useI18nRouter()
@@ -25,6 +25,7 @@ export function Header() {
   const langMenuRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
+    //close Laguage select menu
     const handleClickOutside = (event: MouseEvent) => {
       if (
         langMenuRef.current &&
@@ -34,6 +35,7 @@ export function Header() {
       }
     }
 
+    //Event Listen: mouse down language select menu
     if (isLangMenuOpen) {
       document.addEventListener("mousedown", handleClickOutside)
     }
@@ -43,13 +45,16 @@ export function Header() {
     }
   }, [isLangMenuOpen])
 
+  //handle logout
   const handleLogout = () => {
     logout()
     router.push("/")
   }
 
+  //Change Language ( replace with newlocale input )
   const handleLanguageChange = (newLocale: string) => {
     router.replace(pathname, { locale: newLocale as any })
+    console.log(pathname)
     setIsLangMenuOpen(false)
   }
 
@@ -153,17 +158,17 @@ export function Header() {
                     <img
                       src={user.profileImage}
                       alt={user.nickname || "Profile"}
-                      className="w-[35px] h-[35px] rounded-full object-cover border border-gray-200 hover:scale-110 transition-transform"
+                      className="w-[35px] h-[35px] rounded-full object-cover p-2 m-2 border border-gray-200 hover:scale-110 transition-transform"
                     />
                   ) : (
                     <div
-                      className={`w-[35px] h-[35px] rounded-full flex items-center justify-center text-sm font-bold border border-gray-200 hover:scale-110 transition-transform ${
+                      className={`rounded-full flex items-center justify-center text-sm px-2 font-bold border border-gray-200 hover:scale-110 transition-transform ${
                         isTransparentNav
                           ? "bg-white/20 text-white"
                           : "bg-primary-100 text-primary-600"
                       }`}
                     >
-                      {user?.nickname?.charAt(0)?.toUpperCase() || "?"}
+                      {user?.nickname?.toUpperCase() || "?"}
                     </div>
                   )}
                 </Link>
@@ -171,11 +176,11 @@ export function Header() {
                   onClick={handleLogout}
                   className={`text-sm ${
                     isTransparentNav
-                      ? 'text-white hover:text-white/80'
-                      : 'text-gray-700 hover:text-primary-600'
+                      ? "text-white hover:text-white/80"
+                      : "text-gray-700 hover:text-primary-600"
                   }`}
                 >
-                  {t('logout')}
+                  {tr("logout")}
                 </button>
               </>
             ) : (
@@ -188,7 +193,7 @@ export function Header() {
                       : "text-gray-700 hover:text-primary-600"
                   }`}
                 >
-                  {t("login")}
+                  {tr("login")}
                 </Link>
                 <Link
                   href="/register"
@@ -198,7 +203,7 @@ export function Header() {
                       : "border-transparent text-white bg-primary-600 hover:bg-primary-700"
                   }`}
                 >
-                  {t("register")}
+                  {tr("register")}
                 </Link>
               </>
             )}
@@ -215,14 +220,14 @@ export function Header() {
                 href="/venues"
                 className="text-sm font-medium text-gray-700 hover:text-primary-600"
               >
-                {t("venues")}
+                {tr("venues")}
               </Link>
               {isAuthenticated && (
                 <Link
                   href="/venues/new"
                   className="text-sm font-medium text-gray-700 hover:text-primary-600"
                 >
-                  {t("addVenue")}
+                  {tr("addVenue")}
                 </Link>
               )}
             </div>

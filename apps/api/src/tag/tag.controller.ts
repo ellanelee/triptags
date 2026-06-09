@@ -1,10 +1,10 @@
 import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { TagService } from './tag.service';
-import { TagCreateDto } from '@triptags/shared';
 import { User } from '@prisma/client';
 import { CurrentUser } from '@/common/decorator/current_user.decorator';
 import { JwtAccessGuard } from '@/auth/jwt-auth.guard.ts/jwt-auth.access.guard';
+import { TagCreateDto } from './dtos/tagcreate.dto';
 
 @ApiTags('tags')
 @ApiBearerAuth('access-token')

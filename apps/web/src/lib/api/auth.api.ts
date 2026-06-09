@@ -1,8 +1,8 @@
-import type { RegisterDto, LoginDto, ApiResponse } from "@triptags/shared"
+import type { IRegisterInput, ILoginInput, ApiResponse } from "@triptags/shared"
 import apiClient from "./api.client"
 
 export const authApi = {
-  register: async (data: RegisterDto) => {
+  register: async (data: IRegisterInput) => {
     const response = await apiClient.post<ApiResponse<null>>(
       "auth/register",
       data,
@@ -11,7 +11,7 @@ export const authApi = {
     return response.data
   },
 
-  login: async (data: LoginDto) => {
+  login: async (data: ILoginInput) => {
     const response = await apiClient.post("auth/login", data, {
       withCredentials: true,
     })

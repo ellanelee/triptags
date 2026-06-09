@@ -3,8 +3,8 @@ import { CurrentUser } from '@/common/decorator/current_user.decorator';
 import { Body, Controller, Param, Post, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { User } from '@prisma/client';
-import { ReviewDetailCreateDto } from '@triptags/shared';
 import { ReviewDetailService } from './reviewDetail.service';
+import { ReviewDetailCreateDto } from './dtos/reviewdetailcreate.dto';
 
 @Controller('reviewDetail')
 @ApiTags('reviewDetail')

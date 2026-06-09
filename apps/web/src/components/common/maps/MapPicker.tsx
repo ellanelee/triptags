@@ -19,6 +19,7 @@ export default function MapPicker({
     lng: number
   } | null>(null)
 
+  //lat & lng from latlng of MapClick event
   const markerPosition = externalMarkerPosition ?? internalMarkerPosition
   const onMapClick = useCallback(
     (e: any) => {
@@ -38,7 +39,7 @@ export default function MapPicker({
         className={`w-full h-[400px] rounded-lg overflow-hidden ${className}`}
       >
         <Map
-          defaultCenter={center}
+          center={center}
           defaultZoom={zoom}
           zoom={zoom}
           onClick={onMapClick}

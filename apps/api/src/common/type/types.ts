@@ -1,5 +1,5 @@
+import { LocalVerificationCreateDto } from '@/local/dto/localverficationcreated.dto';
 import { PointType, VerificationMethod } from '@prisma/client';
-import { LocalVerificationCreateDto } from '@triptags/shared';
 import { Request } from 'express';
 
 export interface RequestWithUser extends Request {

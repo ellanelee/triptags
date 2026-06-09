@@ -8,13 +8,14 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { ApiResponse, createResponse, RegisterDto } from '@triptags/shared';
-import { LoginDto } from '@triptags/shared';
+import { ApiResponse, createResponse } from '@triptags/shared';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtAccessGuard } from './jwt-auth.guard.ts/jwt-auth.access.guard';
 import { CurrentUser } from '@/common/decorator/current_user.decorator';
 import { Request, Response } from 'express';
 import { User } from '@prisma/client';
+import { RegisterDto } from './dtos/register.dto';
+import { LoginDto } from './dtos/login.dto';
 
 @ApiBearerAuth('access-token')
 @ApiTags('auth')
